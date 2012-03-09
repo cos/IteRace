@@ -170,7 +170,7 @@ particles.Particle$27.op(Particle$27.java:371)
    (b)  particles.Particle$27.op(Particle$27.java:370)
 """)
 
-testResult("verySimpleRaceWithIndex","")
+// testResult("verySimpleRaceWithIndex","")
 
 // verySimpleRaceToStatic
 
