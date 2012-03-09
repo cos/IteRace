@@ -9,13 +9,10 @@ import org.junit.Assert._
 import iterace.LoopContextSelector.LoopCallSiteContext
 import scala.collection.mutable._
 import org.scalatest.FunSuite
-import org.junit.rules.TestName
 import org.junit.Rule
 
 @RunWith(classOf[JUnitRunner])
 class TestParticle extends FunSuite with BeforeAndAfter {
-  
-  @Rule val testName = new TestName();
 
   val dependencies = List("particles", "../lib/parallelArray.mock")
   val startClass = "Lparticles/Particle"
