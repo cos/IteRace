@@ -10,6 +10,9 @@ import com.ibm.wala.util.intset.EmptyIntSet
 import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
 import iterace.WALAConversions._
+import com.ibm.wala.ssa.SSAGetInstruction
+import com.ibm.wala.ssa.SSAFieldAccessInstruction
+import com.ibm.wala.ssa.SSAPutInstruction
 
 object LoopContextSelector extends ContextSelector {
   case object LoopN extends ContextKey
@@ -54,8 +57,28 @@ object LoopContextSelector extends ContextSelector {
   def getCalleeTarget(caller: CGNode, site: CallSiteReference, callee: IMethod, actualParameters: Array[InstanceKey]): Context = {
     val opsPattern = ".*Ops.*".r
     caller.getContext() match {
-      case LoopCallSiteContext(_, _) => 
-        LoopContext(caller, site.getProgramCounter() == 5 || site.getProgramCounter() == 2);
+      case LoopCallSiteContext(_, _) => {
+        val invocations = caller.getIR().getCalls(site);
+        if(invocations.length != 1)
+          throw new AnalysisException("There should be only invocation for an mock operation call site");
+        
+        val e0PutVals = caller.getIR().getInstructions().
+        	  collect {case x:SSAPutInstruction if x.getDeclaredField.toString.contains("e0") => x.getVal()}
+        
+        val e0GetVals = caller.getIR().getInstructions().
+        	  collect {case x:SSAGetInstruction if x.getDeclaredField.toString.contains("e0") => x.getDef()}
+        
+        val e0Vals = (e0PutVals ++ e0GetVals).toSet
+        
+        val invoke = invocations.head
+        val defAndUses = (invoke.uses ++ Iterable(invoke.getDef())).toSet
+        
+        val alphaIteration = !(defAndUses & e0Vals).isEmpty
+        
+        LoopContext(caller, alphaIteration) 
+        
+            // site.getProgramCounter() == 5 || site.getProgramCounter() == 2 || site.getProgramCounter() == 30);
+      }
       case LoopContext(_, _) => caller.getContext()
       case _ => {
         callee match {
