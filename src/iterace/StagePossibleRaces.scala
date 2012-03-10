@@ -13,7 +13,7 @@ import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 
-class PossibleRaces (pa: PointerAnalysis) {
+class StagePossibleRaces (pa: PointerAnalysis) {
   import pa._
   
   def firstIteration(n: N): Boolean = {

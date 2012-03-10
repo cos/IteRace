@@ -17,5 +17,5 @@ class IteRace(startClass: String, startMethod: String, dependencies: List[String
   val pa = new PointerAnalysis(startClass, startMethod, dependencies)
   import pa._
   
-  val races = new PossibleRaces(pa).races
+  val races = new StagePossibleRaces(pa).races
 }
