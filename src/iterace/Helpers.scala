@@ -1,8 +1,9 @@
 package iterace
 import scala.collection.JavaConversions._
 import WALAConversions._
+import scala.collection._
 
-class HelpersForWALA(pa: PointerAnalysis) {
+class Helpers(pa: PointerAnalysis) {
   import pa._
   import iterace.memoizeRec
   
@@ -13,8 +14,12 @@ class HelpersForWALA(pa: PointerAnalysis) {
   private def instructionsReachableFromRec(rec: N => Set[(N,I)])(n: N): Set[(N,I)] = {
     val localStatements = n.getIR().iterateAllInstructions().map({(n,_)}).toSet 
     
-    
     return localStatements ++ callGraph.getSuccNodes(n).map(m => rec(m)).flatten
   }
   val statementsReachableFrom: N => Set[(N,I)] = memoizeRec(instructionsReachableFromRec)
+  
+  def getLoops(): immutable.Set[Loop] = {
+    callGraph collect
+      { case n: N if n.getContext().isInstanceOf[LoopContext] => n.getContext().asInstanceOf[LoopContext].loop } toSet
+  }
 }
