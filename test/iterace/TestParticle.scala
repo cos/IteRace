@@ -137,7 +137,14 @@ particles.Particle$27.op(Particle$27.java:371)
    (b)  particles.Particle$27.op(Particle$27.java:370)
 """)
 
-// testResult("verySimpleRaceWithIndex","")
+  testResult("verySimpleRaceWithIndex","""
+Loop: particles.Particle.verySimpleRaceWithIndex(Particle.java:383)
+
+particles.Particle.verySimpleRaceWithIndex(Particle.java:381)
+ .x
+   (a)  particles.Particle$28.op(Particle$28.java:386)
+   (b)  particles.Particle$28.op(Particle$28.java:386)
+""")
 
 // verySimpleRaceToStatic
 
