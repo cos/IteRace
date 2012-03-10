@@ -2,7 +2,7 @@ package iterace
 import WALAConversions._
 import scala.collection.mutable.HashSet
 
-case class R(l: N, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
+case class R(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
   def prettyPrint() = {
     o.prettyPrint() + "   " + f.getName() + "\n" +
       " (a)  " + a.prettyPrint() + "\n" +

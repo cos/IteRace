@@ -40,7 +40,7 @@ class PossibleRaces (pa: PointerAnalysis) {
   
   val icfg = ExplodedInterproceduralCFG.make(callGraph)
   
-  val races: Map[N, Map[O, Map[F, RSet]]] = Map.empty[N, Map[O, Map[F, RSet]]]
+  val races: Map[Loop, Map[O, Map[F, RSet]]] = Map.empty[Loop, Map[O, Map[F, RSet]]]
 
   for (
     S(n1: N, i1: SSAPutInstruction) <- icfg if firstIteration(n1) && inParallel(n1);
@@ -55,7 +55,7 @@ class PossibleRaces (pa: PointerAnalysis) {
     if (!oS.isEmpty) {
       // we have races here
 
-      def l = n1.getContext().asInstanceOf[LoopContext].l
+      def l = Loop(n1.getContext().asInstanceOf[LoopContext].l)
       def racesInLoop = races.getOrElseUpdate(l, Map.empty[O, Map[F, RSet]])
       def f = i1.getDeclaredField()
       for (oBla <- oS) {

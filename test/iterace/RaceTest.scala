@@ -13,11 +13,11 @@ abstract class RaceTest extends FunSuite with BeforeAndAfter  {
 
   def analyze(method: String) = new IteRace(startClass, method, dependencies)
 
-  def printRaces(races: Map[N, Map[O, Map[F, RSet]]]): String = {
+  def printRaces(races: Map[Loop, Map[O, Map[F, RSet]]]): String = {
     val s = new StringBuilder
     s ++= "\n"
     for ((l, lr) <- races) {
-      s ++= "Loop: "+l.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint() + "\n\n"
+      s ++= "Loop: "+l.n.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint() + "\n\n"
       for ((o, fr) <- lr) {
         s ++= o.prettyPrint() + "\n"
         for ((f, rr) <- fr) {
