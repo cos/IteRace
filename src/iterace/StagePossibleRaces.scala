@@ -2,11 +2,10 @@ package iterace
 import com.ibm.wala.analysis.pointers.HeapGraph
 import scala.collection.mutable.Map
 import scala.collection.mutable.Set
+import scala.collection._
 import scala.collection.JavaConversions._
 import WALAConversions._
 import com.ibm.wala.util.graph.traverse.DFS
-import iterace.LoopContextSelector.LoopN
-import iterace.LoopContextSelector.LoopContext
 import com.ibm.wala.ipa.cfg.ExplodedInterproceduralCFG
 import com.ibm.wala.ssa.SSAPutInstruction
 import com.ibm.wala.ssa.SSAGetInstruction
@@ -41,12 +40,14 @@ class StagePossibleRaces (pa: PointerAnalysis) {
   val icfg = ExplodedInterproceduralCFG.make(callGraph)
   
   val races: Map[Loop, Map[O, Map[F, RSet]]] = Map.empty[Loop, Map[O, Map[F, RSet]]]
-
+  
+  //TODO: transform this to visit: first x second iteration of each loop
+  // not: everything x everything of everything
   for (
     S(n1: N, i1: SSAPutInstruction) <- icfg if firstIteration(n1) && inParallel(n1);
     S(n2: N, i2: SSAFieldAccessInstruction) <- icfg if inLoop(n2) && !firstIteration(n2) &&
       i1.getDeclaredField() == i2.getDeclaredField()
-  ) { 
+  ) {
     val oS1 = P(n1, i1.getRef()).pt.toSet
     val oS2 = P(n2, i2.getRef()).pt.toSet
 

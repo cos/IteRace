@@ -7,10 +7,7 @@ import iterace.LoopContextSelector.LoopCallSiteContext
 import org.junit.Assert._
 import scala.collection._
 
-abstract class RaceTest extends FunSuite with BeforeAndAfter  {
-  val dependencies = List("particles", "../lib/parallelArray.mock")
-  val startClass = "Lparticles/Particle"
-
+abstract class RaceTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter  {
   def analyze(method: String) = new IteRace(startClass, method, dependencies)
 
   def printRaces(races: Map[Loop, Map[O, Map[F, RSet]]]): String = {

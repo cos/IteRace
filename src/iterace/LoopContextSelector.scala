@@ -14,23 +14,23 @@ import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ssa.SSAPutInstruction
 
+case object Loop extends ContextKey
+case class Loop(n: N) extends ContextItem 
+case object LoopIteration extends ContextKey
+case class LoopIteration(alpha: Boolean) extends ContextItem
+// this is the context for all the nodes in the loop iterations
+case class LoopContext(l: CGNode, alphaIteration: Boolean) extends Context {
+	def loop = Loop(l)
+			def get(key: ContextKey): ContextItem = {
+		key match {
+		case Loop => Loop(l)
+		case LoopIteration => LoopIteration(alphaIteration)
+		case _ => null
+		}
+	}
+}
+
 object LoopContextSelector extends ContextSelector {
-  case object LoopN extends ContextKey
-  case class LoopN(n: N) extends ContextItem
-  case object LoopIteration extends ContextKey
-  case class LoopIteration(alpha: Boolean) extends ContextItem
-
-  // this is the context for all the nodes in the loop iterations
-  case class LoopContext(l: CGNode, alphaIteration: Boolean) extends Context {
-    def get(key: ContextKey): ContextItem = {
-      key match {
-        case LoopN => LoopN(l)
-        case LoopIteration => LoopIteration(alphaIteration)
-        case _ => null
-      }
-    }
-  }
-
   // this is used for marking the entrance to the loop, so that it differentiated between loops at different locations
   // e.g. n is the method that calls the apply
   // site is the call site for the apply
@@ -47,7 +47,7 @@ object LoopContextSelector extends ContextSelector {
         case _ => null
       }
     }
-    
+
     def prettyPrint = {
       printCodeLocation(n.getMethod(), site.getProgramCounter())
     }
@@ -59,25 +59,25 @@ object LoopContextSelector extends ContextSelector {
     caller.getContext() match {
       case LoopCallSiteContext(_, _) => {
         val invocations = caller.getIR().getCalls(site);
-        if(invocations.length != 1)
+        if (invocations.length != 1)
           throw new AnalysisException("There should be only invocation for an mock operation call site");
-        
+
         val e0PutVals = caller.getIR().getInstructions().
-        	  collect {case x:SSAPutInstruction if x.getDeclaredField.toString.contains("e0") => x.getVal()}
-        
+          collect { case x: SSAPutInstruction if x.getDeclaredField.toString.contains("e0") => x.getVal() }
+
         val e0GetVals = caller.getIR().getInstructions().
-        	  collect {case x:SSAGetInstruction if x.getDeclaredField.toString.contains("e0") => x.getDef()}
-        
+          collect { case x: SSAGetInstruction if x.getDeclaredField.toString.contains("e0") => x.getDef() }
+
         val e0Vals = (e0PutVals ++ e0GetVals).toSet
-        
+
         val invoke = invocations.head
         val defAndUses = (invoke.uses ++ Iterable(invoke.getDef())).toSet
-        
+
         val alphaIteration = !(defAndUses & e0Vals).isEmpty
-        
-        LoopContext(caller, alphaIteration) 
-        
-            // site.getProgramCounter() == 5 || site.getProgramCounter() == 2 || site.getProgramCounter() == 30);
+
+        LoopContext(caller, alphaIteration)
+
+        // site.getProgramCounter() == 5 || site.getProgramCounter() == 2 || site.getProgramCounter() == 30);
       }
       case LoopContext(_, _) => caller.getContext()
       case _ => {

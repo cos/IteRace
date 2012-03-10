@@ -13,7 +13,6 @@ import com.ibm.wala.ipa.callgraph.Context
 import com.ibm.wala.classLoader.IClass
 import com.ibm.wala.util.strings.Atom
 import com.ibm.wala.types.Descriptor
-import iterace.LoopContextSelector.LoopContext
 import com.ibm.wala.ipa.cfg.BasicBlockInContext
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
 import com.ibm.wala.ssa.SSAGetInstruction
@@ -24,6 +23,8 @@ import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 import com.ibm.wala.ssa.SSAInvokeInstruction
 import com.ibm.wala.ssa.SSAPhiInstruction
 import com.ibm.wala.ssa.IR
+import com.ibm.wala.util.intset.IntSet
+import com.ibm.wala.util.intset.IntSetAction
 
 object WALAConversions {
   trait Named {
@@ -55,6 +56,11 @@ object WALAConversions {
   implicit def n2prettyprintable(n: CGNode): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = {
       n.getMethod().prettyPrint
+    }
+  }
+  implicit def n2iterable(n: CGNode) = new Traversable[SSAInstruction] {
+    override def foreach[U](f: SSAInstruction => U) {
+    	n.getIR().getInstructions().foreach(f)
     }
   }
 
@@ -150,7 +156,7 @@ object WALAConversions {
     "" + m.prettyPrint + "(" + className + ".java:" + lineNo + ")"
   }
 
-  implicit def iWithEasyUses(i: SSAInstruction) = new {
+  implicit def iWithEasyUses(i: I) = new {
     def uses: Iterable[V] = Stream.range(0, i.getNumberOfUses()).map(index => { i.getUse(index) })
   }
 
@@ -161,16 +167,16 @@ object WALAConversions {
     }
     def apply[T <: I](n: N, i: T) = new S(n, i)
   }
-  class S[T <: I](n: N, val i: T) extends PrettyPrintable {
+  class S[T <: I](val n: N, val i: T) extends PrettyPrintable {
     def prettyPrint() = {
       printCodeLocation()
     }
     def printCodeLocation(): String = {
-      val ssaInstructionNo = S(n, i).irNo
       val m = n.getMethod().asInstanceOf[ShrikeBTMethod]
-      val bytecodeIndex = m.getBytecodeIndex(ssaInstructionNo)
+      val bytecodeIndex = m.getBytecodeIndex(irNo)
       WALAConversions.printCodeLocation(m, bytecodeIndex)
     }
+ 
     def irNo = n.getIR().getInstructions().findIndexOf(ii => i == ii)
 
     def valuesForVariableName(name: String): Iterable[V] = {
@@ -198,7 +204,16 @@ object WALAConversions {
       }
     }
   }
+  
+  implicit def intsetTraversable(s: IntSet) = new Traversable[Int]{
+    def foreach[U](f : Int => U) = {
+      s.foreach(new IntSetAction() {
+        override def act(x:Int) = f(x)
+      })
+    }
+  }
 
+  type SS = BasicBlockInContext[IExplodedBasicBlock]
   type V = Int
   type N = CGNode
   type P = LocalPointerKey

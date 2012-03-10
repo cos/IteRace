@@ -12,6 +12,7 @@ class PointerAnalysis(startClass: String, startMethod: String, dependencies: Lis
 
   val callGraph = walaAnalysis.callGraph
   val heap = walaAnalysis.pointerAnalysis.getHeapGraph()
+  val analysisCache = walaAnalysis.cache
 
   def findNode(pattern: String): Option[N] = {
     val p = (".*" + pattern + ".*").r

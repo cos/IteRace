@@ -51,7 +51,7 @@ public class WalaAnalysisStart {
 	public final List<String> jarDependencies = new ArrayList<String>();
 	public final List<String> extensionBinaryDependencies = new ArrayList<String>();
 	public PropagationCallGraphBuilder builder = null;
-	private AnalysisCache cache;
+	public AnalysisCache cache;
 	
 	public WalaAnalysisStart() {
 		

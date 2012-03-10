@@ -12,7 +12,7 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 
 @RunWith(classOf[JUnitRunner])
-class TestParticle extends RaceTest {
+class TestParticle extends RaceTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/Particle") {
   
   testNoRaces("vacuouslyNoRace")
   
@@ -243,8 +243,8 @@ java.util.HashSet.<init>(HashSet.java:86)
  .frontCache
    (a)  java.util.HashMap.resize(HashMap.java:504) [3]
    (b)  java.util.HashMap.resize(HashMap.java:504)
-        java.util.HashMap.put(HashMap.java:401)
         java.util.HashMap.resize(HashMap.java:503)
+        java.util.HashMap.put(HashMap.java:401)
 java.util.HashMap.addEntry(HashMap.java:808)
  .next
    (a)  java.util.HashMap.transfer(HashMap.java:524) [4]
