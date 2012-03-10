@@ -76,6 +76,9 @@ object WALAConversions {
       n.getIR().getInstructions().map(i => S(n, i).valuesForVariableName(name).toSet).reduce(_ ++ _)
     }
     def getV(name: String): V = valuesForVariableName(name).head
+    def variableNames(value: V): Set[String] = {
+      n.getIR().getInstructions().map(i => S(n, i).variableNames(value).toSet).reduce(_ ++ _)
+    }
   }
   implicit def nWithIR(n: N) = new {
     def ir(): IR = {
@@ -182,7 +185,8 @@ object WALAConversions {
     }
 
     def variableNames(v: Int): Iterable[String] = {
-      n.getIR().getLocalNames(irNo, v)
+      val names = n.getIR().getLocalNames(irNo, v)
+      if(names != null) names else Iterable()
     }
   }
 
