@@ -26,7 +26,7 @@ import com.ibm.wala.ssa.IR
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.IntSetAction
 
-object WALAConversions {
+object conversions {
   trait Named {
     def name(): String
   }
@@ -58,10 +58,8 @@ object WALAConversions {
       n.getMethod().prettyPrint
     }
   }
-  implicit def n2iterable(n: CGNode) = new Traversable[SSAInstruction] {
-    override def foreach[U](f: SSAInstruction => U) {
-    	n.getIR().getInstructions().foreach(f)
-    }
+  implicit def n2iterable(n: CGNode) = new {
+    def instructions = n.getIR().getInstructions()
   }
 
   implicit def m2prettyprintable(m: IMethod): PrettyPrintable = new PrettyPrintable {
@@ -136,12 +134,12 @@ object WALAConversions {
   }
   implicit def pToVariableNames(p: P) = new {
     def names(): Iterable[String] = {
-      (p.n.getIR().iterateAllInstructions().toIterable).map(i => S(p.n, i).variableNames(p.v)).filter(s => s != null).flatten.toSet
+      (p.n.getIR().iterateAllInstructions().toIterable).map(i => S(p.n, i).variableNames(p.v)).flatten.toSet
     }
   }
   implicit def p2prettyprintable(p: P): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = {
-      p.n.prettyPrint() + "v"+ p.v+"=" + (if(!p.names().isEmpty) p.names.reduce(_+","+_) else "")
+      p.n.prettyPrint() + " v"+ p.v+"(" + (if(!p.names().isEmpty) p.names.reduce(_+","+_) else "")+")"
     }
   }
 
@@ -174,7 +172,7 @@ object WALAConversions {
     def printCodeLocation(): String = {
       val m = n.getMethod().asInstanceOf[ShrikeBTMethod]
       val bytecodeIndex = m.getBytecodeIndex(irNo)
-      WALAConversions.printCodeLocation(m, bytecodeIndex)
+      conversions.printCodeLocation(m, bytecodeIndex)
     }
  
     def irNo = n.getIR().getInstructions().findIndexOf(ii => i == ii)
@@ -191,9 +189,12 @@ object WALAConversions {
     }
 
     def variableNames(v: Int): Iterable[String] = {
+      if(irNo == -1) return Iterable()
       val names = n.getIR().getLocalNames(irNo, v)
-      if(names != null) names else Iterable()
+      if(names != null) names.filter(_ != null) else Iterable()
     }
+    
+    override def toString = "S("+n+","+i+")"
   }
 
   object O {

@@ -8,7 +8,6 @@ object memoize {
     import scala.collection.mutable
     private[this] val vals = mutable.Map.empty[A, B]
     def apply(x: A): B = {
-      println(vals)
       vals.getOrElseUpdate(x, f(x))
     }
   }

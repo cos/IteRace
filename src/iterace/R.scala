@@ -1,5 +1,5 @@
 package iterace
-import WALAConversions._
+import conversions._
 import scala.collection.mutable.HashSet
 
 case class R(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
