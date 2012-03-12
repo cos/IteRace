@@ -19,7 +19,16 @@ class IteRace(startClass: String, startMethod: String, dependencies: List[String
   val helpers = new Helpers(pa)
   import pa._
 
-  val races = new StagePossibleRaces(pa, helpers).races
+  
+  val stagePossibleRaces = new StagePossibleRaces(pa, helpers) 
+  val races = stagePossibleRaces.races
+
+  val stageLockSet = new StageLockSet(pa)
+  
+  for ((l, r) <- races) {
+  	val locks = stageLockSet.getLocks(l)
+  	
+  }
 }
 
 trait HasLoops 

@@ -47,13 +47,20 @@ class StageLockSet(pa: PointerAnalysis) {
     }) filter {_ != null} toSet
   }
 
-  /**
-   * get the lockset for any instruction in the program
-   */
+  type LockDomain = TabulationDomain[Lock, SS]
+  
   def getLockSet(l: Loop): S[I] => Set[Lock] = {
     val locksDomain = new UnorderedDomain[Lock, SS]()
     locksDomain.add(null); // so that we have a 0 value
     getLocks(l).foreach({locksDomain.add(_)})
+    
+    getLockSet(l, locksDomain)
+  }
+  
+  /**
+   * get the lockset for any instruction in the program
+   */
+  def getLockSet(l: Loop, locksDomain: LockDomain): S[I] => Set[Lock] = {
 
     object flowFunctions extends IFlowFunctionMap[SS] {
       override def getCallFlowFunction(src: SS, dest: SS, ret: SS) = IdentityFlowFunction.identity();
@@ -99,7 +106,7 @@ class StageLockSet(pa: PointerAnalysis) {
       val bbic = new BasicBlockInContext(s.n, explodedBasicBlock)
       val intSet = solver.getResult(bbic)
       val notHeldLocks = intSet.map({locksDomain.getMappedObject(_)}).toSet
-      locksDomain.getObjects().toSet.&~(notHeldLocks).&~(Set(null)) // have to figure out why it doesn't propagate 0 here
+      locksDomain.elements.toSet.&~(notHeldLocks).&~(Set(null)) // have to figure out why it doesn't propagate 0 here
     }
     return funct _
   }
