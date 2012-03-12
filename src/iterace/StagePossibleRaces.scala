@@ -12,30 +12,9 @@ import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 
-class StagePossibleRaces (pa: PointerAnalysis) {
+class StagePossibleRaces (pa: PointerAnalysis, helpers: Helpers) {
   import pa._
-  
-  def firstIteration(n: N): Boolean = {
-    n.getContext() match {
-      case LoopContext(_, true) => true
-      case _ => false
-    }
-  }
-
-  def inLoop(n: N): Boolean = {
-    n.getContext() match {
-      case LoopContext(_, _) => true
-      case _ => false
-    }
-  }
-
-  def inParallel(n: N): Boolean = {
-    val seqPattern = ".*Seq.*".r
-    n.getContext() match {
-      case LoopContext(N(_, M(_, seqPattern())), _) => false
-      case _ => true
-    }
-  }
+  import helpers._
   
   val icfg = ExplodedInterproceduralCFG.make(callGraph)
   

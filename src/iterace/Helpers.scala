@@ -30,4 +30,26 @@ class Helpers(pa: PointerAnalysis) {
       callGraph.getSuccNodes(l.n).filter(n => !n.getContext().get(LoopIteration).asInstanceOf[LoopIteration].alpha)
     }
   }
+  
+    def firstIteration(n: N): Boolean = {
+    n.getContext() match {
+      case LoopContext(_, true) => true
+      case _ => false
+    }
+  }
+
+  def inLoop(n: N): Boolean = {
+    n.getContext() match {
+      case LoopContext(_, _) => true
+      case _ => false
+    }
+  }
+
+  def inParallel(n: N): Boolean = {
+    val seqPattern = ".*Seq.*".r
+    n.getContext() match {
+      case LoopContext(N(_, M(_, seqPattern())), _) => false
+      case _ => true
+    }
+  }
 }

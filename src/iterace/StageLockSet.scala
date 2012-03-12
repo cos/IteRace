@@ -47,6 +47,9 @@ class StageLockSet(pa: PointerAnalysis) {
     }) filter {_ != null} toSet
   }
 
+  /**
+   * get the lockset for any instruction in the program
+   */
   def getLockSet(l: Loop): S[I] => Set[Lock] = {
     val locksDomain = new UnorderedDomain[Lock, SS]()
     locksDomain.add(null); // so that we have a 0 value

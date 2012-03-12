@@ -16,9 +16,10 @@ import com.ibm.wala.ipa.callgraph.ContextItem
 
 class IteRace(startClass: String, startMethod: String, dependencies: List[String]) {
   val pa = new PointerAnalysis(startClass, startMethod, dependencies)
+  val helpers = new Helpers(pa)
   import pa._
 
-  val races = new StagePossibleRaces(pa).races
+  val races = new StagePossibleRaces(pa, helpers).races
 }
 
 trait HasLoops 
