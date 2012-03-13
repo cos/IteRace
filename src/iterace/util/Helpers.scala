@@ -31,7 +31,7 @@ class Helpers(pa: PointerAnalysis) {
     }
   }
   
-    def firstIteration(n: N): Boolean = {
+  def firstIteration(n: N): Boolean = {
     n.getContext() match {
       case LoopContext(_, true) => true
       case _ => false

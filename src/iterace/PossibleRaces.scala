@@ -20,7 +20,7 @@ class PossibleRaces (pa: PointerAnalysis, helpers: Helpers) {
   
   val races: Map[Loop, Map[O, Map[F, RSet]]] = Map.empty[Loop, Map[O, Map[F, RSet]]]
   
-  //TODO: transform this to visit: first x second iteration of each loop
+  // TODO: transform this to visit: first x second iteration of each loop
   // not: everything x everything of everything
   for (
     S(n1: N, i1: SSAPutInstruction) <- icfg if firstIteration(n1) && inParallel(n1);
@@ -53,21 +53,6 @@ class PossibleRaces (pa: PointerAnalysis, helpers: Helpers) {
       }
     }
   }
-  
-    //  val loopHeaders = DFS.iterateDiscoverTime(callGraph).filter(
-  //    n => n match {
-  //      case N(LoopContext(n1, _), _) if n1 == n => true
-  //      case _ => false
-  //    })
-
-//  for(n <- callGraph) { println(n) }
-
-  // for each loop in the program
-  // for each instruction the alpha iteration
-  // if the instruction is a write
-  // for each instruction in the beta iteration
-  // if it writes to the same object and field
-  // create a new race and add it to .races
 }
 
 case class R(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
@@ -86,6 +71,7 @@ class RSet extends mutable.HashSet[R] with PrettyPrintable {
     "   (a)  " + aAccesses + "\n   (b)  " + bAccesses
   }
 }
+
 object RSet {
   def apply() = {
     new RSet()
