@@ -67,8 +67,8 @@ class RSet extends mutable.HashSet[R] with PrettyPrintable {
   def prettyPrint(): String = {
     def printSameSet(p: (String, mutable.HashSet[R])) = p._1 + (if(p._2.size > 1) " [" + p._2.size + "]" else "")
     
-    val aAccesses = this.groupBy(r => r.a.prettyPrint()).map(printSameSet).reduce(_ + "\n        " + _)
-    val bAccesses = this.groupBy(r => r.b.prettyPrint()).map(printSameSet).reduce(_ + "\n        " + _)
+    val aAccesses = this.groupBy(r => r.a.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
+    val bAccesses = this.groupBy(r => r.b.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
     "   (a)  " + aAccesses + "\n   (b)  " + bAccesses
   }
 }

@@ -1,11 +1,13 @@
 package iterace
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
-
 import iterace.conversions._
 import iterace.LoopContextSelector.LoopCallSiteContext
 import org.junit.Assert._
 import scala.collection._
+import scala.collection.immutable.TreeSet
+import scala.collection.immutable.TreeMap
+import iterace.util._
 
 abstract class RaceTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter  {
   def analyze(method: String) = new IteRace(startClass, method, dependencies)
@@ -13,11 +15,12 @@ abstract class RaceTest(dependencies: List[String], startClass: String) extends 
   def printRaces(races: Map[Loop, Map[O, Map[F, RSet]]]): String = {
     val s = new StringBuilder
     s ++= "\n"
-    for ((l, lr) <- races) {
+    
+    for ((l, lr) <- races.toStringSorted ) {
       s ++= "Loop: "+l.n.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint() + "\n\n"
-      for ((o, fr) <- lr) {
+      for ((o, fr) <- lr.toStringSorted ) {
         s ++= o.prettyPrint() + "\n"
-        for ((f, rr) <- fr) {
+        for ((f, rr) <- fr.toStringSorted ) {
           s ++= " ." + f.getName() + "\n"
           s ++= rr.prettyPrint() +"\n"
         }

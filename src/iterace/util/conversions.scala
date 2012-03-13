@@ -128,7 +128,7 @@ object conversions {
      * Gets all uses of this pointer that write to a field of it
      */
     def getPuts(): Iterable[SSAPutInstruction] = {
-      (for(i <- getUses() if i.isInstanceOf[SSAPutInstruction] && i.asInstanceOf[SSAPutInstruction].getRef() == p.v) 
+      (for (i <- getUses() if i.isInstanceOf[SSAPutInstruction] && i.asInstanceOf[SSAPutInstruction].getRef() == p.v)
         yield i.asInstanceOf[SSAPutInstruction])
     }
   }
@@ -139,7 +139,7 @@ object conversions {
   }
   implicit def p2prettyprintable(p: P): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = {
-      p.n.prettyPrint() + " v"+ p.v+"(" + (if(!p.names().isEmpty) p.names.reduce(_+","+_) else "")+")"
+      p.n.prettyPrint() + " v" + p.v + "(" + (if (!p.names().isEmpty) p.names.reduce(_ + "," + _) else "") + ")"
     }
   }
 
@@ -170,11 +170,13 @@ object conversions {
       printCodeLocation()
     }
     def printCodeLocation(): String = {
-      val m = n.getMethod().asInstanceOf[ShrikeBTMethod]
-      val bytecodeIndex = m.getBytecodeIndex(irNo)
-      conversions.printCodeLocation(m, bytecodeIndex)
+      if (irNo > 0) {
+        val m = n.getMethod().asInstanceOf[ShrikeBTMethod]
+        val bytecodeIndex = m.getBytecodeIndex(irNo)
+        conversions.printCodeLocation(m, bytecodeIndex)
+      } else "IRNo-1"
     }
- 
+
     def irNo = n.getIR().getInstructions().findIndexOf(ii => i == ii)
 
     def valuesForVariableName(name: String): Iterable[V] = {
@@ -189,12 +191,12 @@ object conversions {
     }
 
     def variableNames(v: Int): Iterable[String] = {
-      if(irNo == -1) return Iterable()
+      if (irNo == -1) return Iterable()
       val names = n.getIR().getLocalNames(irNo, v)
-      if(names != null) names.filter(_ != null) else Iterable()
+      if (names != null) names.filter(_ != null) else Iterable()
     }
-    
-    override def toString = "S("+n+","+i+")"
+
+    override def toString = "S(" + n + "," + i + ")"
   }
 
   object O {
@@ -205,11 +207,11 @@ object conversions {
       }
     }
   }
-  
-  implicit def intsetTraversable(s: IntSet) = new Traversable[Int]{
-    def foreach[U](f : Int => U) = {
+
+  implicit def intsetTraversable(s: IntSet) = new Traversable[Int] {
+    def foreach[U](f: Int => U) = {
       s.foreach(new IntSetAction() {
-        override def act(x:Int) = f(x)
+        override def act(x: Int) = f(x)
       })
     }
   }
