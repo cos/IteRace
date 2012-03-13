@@ -13,21 +13,26 @@ import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
+import com.ibm.wala.dataflow.IFDS.PathEdge
 
 class IteRace(startClass: String, startMethod: String, dependencies: List[String]) {
   val pa = new PointerAnalysis(startClass, startMethod, dependencies)
   val helpers = new Helpers(pa)
   import pa._
 
-  
-  val stagePossibleRaces = new StagePossibleRaces(pa, helpers) 
+  val stagePossibleRaces = new StagePossibleRaces(pa, helpers)
   val races = stagePossibleRaces.races
 
   val stageLockSet = new StageLockSet(pa)
-  
+
   for ((l, r) <- races) {
-  	val locks = stageLockSet.getLocks(l)
-  	
+    val locks = stageLockSet.getLocks(l)
+    val locksWithUniqueAbstractObjects = locks.filter({ pointsToUniqueAbstractObject(_) })
+    stageLockSet.getLockSetMapping(l, locksWithUniqueAbstractObjects)
+  }
+
+  def pointsToUniqueAbstractObject(l: Lock): Boolean = {
+    l.p.pt.size == 1
   }
 }
 
