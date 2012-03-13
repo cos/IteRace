@@ -15,19 +15,21 @@ import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ssa.SSAPutInstruction
 
 case object Loop extends ContextKey
-case class Loop(n: N) extends ContextItem 
+case class Loop(n: N) extends ContextItem
 case object LoopIteration extends ContextKey
 case class LoopIteration(alpha: Boolean) extends ContextItem
 // this is the context for all the nodes in the loop iterations
 case class LoopContext(l: CGNode, alphaIteration: Boolean) extends Context {
-	def loop = Loop(l)
-			def get(key: ContextKey): ContextItem = {
-		key match {
-		case Loop => Loop(l)
-		case LoopIteration => LoopIteration(alphaIteration)
-		case _ => null
-		}
-	}
+  def loop = Loop(l)
+  def iteration = LoopIteration(alphaIteration)
+  
+  def get(key: ContextKey): ContextItem = {
+    key match {
+      case Loop => Loop(l)
+      case LoopIteration => LoopIteration(alphaIteration)
+      case _ => null
+    }
+  }
 }
 
 object LoopContextSelector extends ContextSelector {
