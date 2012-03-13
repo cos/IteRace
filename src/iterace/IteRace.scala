@@ -36,4 +36,6 @@ class IteRace(startClass: String, startMethod: String, dependencies: List[String
   }
 }
 
-trait HasLoops 
+class AnalysisException(m: String) extends Throwable {
+
+}
