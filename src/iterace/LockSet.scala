@@ -28,11 +28,11 @@ case class Lock(p: P) {
   def prettyPrint = "L: "+p.prettyPrint
 }
 
-object StageLockSet {
+object LockSet {
 	type LockDomain = TabulationDomain[Lock, SS]  
 }
 
-class StageLockSet(pa: PointerAnalysis) {
+class LockSet(pa: PointerAnalysis) {
   import pa._
 
   val supergraph = ICFGSupergraph.make(pa.callGraph, pa.analysisCache)
@@ -66,7 +66,7 @@ class StageLockSet(pa: PointerAnalysis) {
   /**
    * get the lockset for any instruction in the program
    */
-  def getLockSetMapping(l: Loop, locksDomain: StageLockSet.LockDomain): S[I] => Set[Lock] = {
+  def getLockSetMapping(l: Loop, locksDomain: LockSet.LockDomain): S[I] => Set[Lock] = {
 
     object flowFunctions extends IFlowFunctionMap[SS] {
       override def getCallFlowFunction(src: SS, dest: SS, ret: SS) = IdentityFlowFunction.identity();

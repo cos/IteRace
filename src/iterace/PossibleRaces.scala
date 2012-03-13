@@ -12,7 +12,7 @@ import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 
-class StagePossibleRaces (pa: PointerAnalysis, helpers: Helpers) {
+class PossibleRaces (pa: PointerAnalysis, helpers: Helpers) {
   import pa._
   import helpers._
   

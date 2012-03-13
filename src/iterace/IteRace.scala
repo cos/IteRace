@@ -20,10 +20,10 @@ class IteRace(startClass: String, startMethod: String, dependencies: List[String
   val helpers = new Helpers(pa)
   import pa._
 
-  val stagePossibleRaces = new StagePossibleRaces(pa, helpers)
+  val stagePossibleRaces = new PossibleRaces(pa, helpers)
   val races = stagePossibleRaces.races
 
-  val stageLockSet = new StageLockSet(pa)
+  val stageLockSet = new LockSet(pa)
 
   for ((l, r) <- races) {
     val locks = stageLockSet.getLocks(l)
