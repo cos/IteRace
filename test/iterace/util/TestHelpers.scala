@@ -21,7 +21,7 @@ class TestHelpersForWALA extends Spec with BeforeAndAfter with MustMatchers {
     
     def getReachableFrom(method: String) = {
       val pa = analyze(method+"()V")
-      val h = new Helpers(pa)
+      val h = new PAHelpers(pa)
       val n = pa.findNode(method).get
       h.statementsReachableFrom(n)
     }

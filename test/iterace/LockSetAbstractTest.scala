@@ -10,7 +10,7 @@ import scala.collection._
 abstract class LockSetTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter  {
   def analyze(method: String) = {
     val pa = new PointerAnalysis(startClass, method, dependencies)
-    (new LockSet(pa), new Helpers(pa))
+    (new LockSet(pa), new PAHelpers(pa))
   }
   
   def testGetLocks(method: String, result: String) = {

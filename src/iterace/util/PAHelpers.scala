@@ -3,7 +3,7 @@ import scala.collection.JavaConversions._
 import iterace.conversions._
 import scala.collection._
 
-class Helpers(pa: PointerAnalysis) {
+class PAHelpers(pa: PointerAnalysis) {
   import pa._
   import iterace.memoizeRec
   

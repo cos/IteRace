@@ -11,8 +11,9 @@ import com.ibm.wala.ssa.SSAPutInstruction
 import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
+import util._
 
-class PossibleRaces (pa: PointerAnalysis, helpers: Helpers) {
+class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
   import pa._
   import helpers._
   

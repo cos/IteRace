@@ -17,7 +17,7 @@ import com.ibm.wala.dataflow.IFDS.PathEdge
 
 class IteRace(startClass: String, startMethod: String, dependencies: List[String]) {
   val pa = new PointerAnalysis(startClass, startMethod, dependencies)
-  val helpers = new Helpers(pa)
+  val helpers = new PAHelpers(pa)
   import pa._
 
   val stagePossibleRaces = new PossibleRaces(pa, helpers)
