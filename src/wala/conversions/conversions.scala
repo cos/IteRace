@@ -165,19 +165,22 @@ object conversions {
     }
     def apply[T <: I](n: N, i: T) = new S(n, i)
   }
-  class S[T <: I](val n: N, val i: T) extends PrettyPrintable {
+  class S[J <: I](val n: N, val i: J) extends PrettyPrintable {
     def prettyPrint() = {
       printCodeLocation()
     }
     def printCodeLocation(): String = {
-      if (irNo > 0) {
+      if (irNo >= 0) {
         val m = n.getMethod().asInstanceOf[ShrikeBTMethod]
         val bytecodeIndex = m.getBytecodeIndex(irNo)
         conversions.printCodeLocation(m, bytecodeIndex)
-      } else "IRNo-1"
+      } else {
+        val index = n.instructions collect {case i if i != null => i.toString} findIndexOf {_ == i.toString}
+        "IRNo-1 " + index + " ---- " + i
+      }
     }
 
-    def irNo = n.getIR().getInstructions().findIndexOf(ii => i == ii)
+    def irNo = n.getIR().getInstructions().findIndexOf(ii => i.equals(ii))
 
     def valuesForVariableName(name: String): Iterable[V] = {
       val maxValue = n.getIR().getSymbolTable().getMaxValueNumber();
