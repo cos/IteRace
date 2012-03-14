@@ -7,7 +7,18 @@ public class ParticleWithLocks {
 	public double xyz, y, m;
 	ParticleWithLocks origin, origin1;
 
-	public void noLocks() {
+	public void vacuouslyNoRace() {
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
+				ParallelArray.defaultExecutor());
+
+		particles.apply(new Ops.Procedure<Particle>() {
+			@Override
+			public void op(Particle b) {
+			}
+		});
+	}
+	
+	public void simpleRaceNoLocks() {
 		ParallelArray<ParticleWithLocks> particles = ParallelArray.createUsingHandoff(new ParticleWithLocks[10],
 				ParallelArray.defaultExecutor());
 
@@ -21,6 +32,7 @@ public class ParticleWithLocks {
 			}
 		});
 	}
+	
 	public void oneSimpleLock() {
 		ParallelArray<ParticleWithLocks> particles = ParallelArray.createUsingHandoff(new ParticleWithLocks[10],
 				ParallelArray.defaultExecutor());
@@ -32,6 +44,23 @@ public class ParticleWithLocks {
 			public ParticleWithLocks op() {
 				Object x = new Object();
 				synchronized(x) {
+					shared.xyz = 10;
+					return new ParticleWithLocks();
+				}
+			}
+		});
+	}
+	
+	public void oneSimpleSafeLock() {
+		ParallelArray<ParticleWithLocks> particles = ParallelArray.createUsingHandoff(new ParticleWithLocks[10],
+				ParallelArray.defaultExecutor());
+
+		final ParticleWithLocks shared = new ParticleWithLocks();
+
+		particles.replaceWithGeneratedValue(new Ops.Generator<ParticleWithLocks>() {
+			@Override
+			public ParticleWithLocks op() {
+				synchronized(shared) {
 					shared.xyz = 10;
 					return new ParticleWithLocks();
 				}

@@ -30,8 +30,9 @@ abstract class LockSetTest(dependencies: List[String], startClass: String) exten
       import helpers._
       val theLoop = helpers.getLoops().head
       val lockSets = locksetsolver.getLockSetMapping(theLoop)
-      val s = statementsReachableFrom(theLoop.n).find(x => {x!= null && x.toString().contains(hint)})
-      val theLockSet = lockSets(s.get)
+      import iterace.util._
+      val s = statementsReachableFrom(theLoop.n).toStringSorted.find(x => {x!= null && x.toString().contains(hint)})
+      val theLockSet = lockSets(s.get).toStringSorted
       assertEquals(result, prettyPrint(theLockSet))
     }
   }

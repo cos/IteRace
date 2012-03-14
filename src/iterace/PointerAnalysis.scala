@@ -26,7 +26,7 @@ class PointerAnalysis(startClass: String, startMethod: String, dependencies: Lis
    * p.pt is the set of abstract objects pointed by p
    */
   implicit def pWithPointerObjects(p: P) = new {
-    def pt:Iterable[O] = (for(o <- heap.getSuccNodes(p)) yield o.asInstanceOf[O]).toIterable
+    def pt:Set[O] = (for(o <- heap.getSuccNodes(p)) yield o.asInstanceOf[O]).toSet
   }
   
   /**

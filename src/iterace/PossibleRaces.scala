@@ -28,6 +28,9 @@ class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
     S(n2: N, i2: SSAFieldAccessInstruction) <- icfg if inLoop(n2) && !firstIteration(n2) &&
       i1.getDeclaredField() == i2.getDeclaredField()
   ) {
+    if(S(n1,i1).irNo == -1) println("HERE")
+    if(S(n2,i2).irNo == -1) println("HERE")
+    
     val oS1 = P(n1, i1.getRef()).pt.toSet
     val oS2 = P(n2, i2.getRef()).pt.toSet
 

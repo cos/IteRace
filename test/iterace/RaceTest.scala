@@ -8,9 +8,12 @@ import scala.collection._
 import scala.collection.immutable.TreeSet
 import scala.collection.immutable.TreeMap
 import iterace.util._
+import scala.collection.JavaConversions._
 
 abstract class RaceTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter  {
-  def analyze(method: String) = new IteRace(startClass, method, dependencies)
+  def analyze(method: String) = {
+    new IteRace(startClass, method,  dependencies)
+  }
 
   def printRaces(races: Map[Loop, Map[O, Map[F, RSet]]]): String = {
     val s = new StringBuilder
@@ -32,7 +35,7 @@ abstract class RaceTest(dependencies: List[String], startClass: String) extends 
   def testResult(method: String, result: String) = {
     test(method) {
       val iterace = analyze(method+"()V")
-      assertEquals(result, printRaces(iterace.races))
+      assertEquals(result, printRaces(iterace.races.asInstanceOf[Map[Loop, Map[O, Map[F, RSet]]]]))
     }
   }
   

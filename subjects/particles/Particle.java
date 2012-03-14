@@ -444,6 +444,7 @@ public class Particle {
 			@Override
 			public Particle op() {
 				Particle p = new Particle();
+				@SuppressWarnings("unused")
 				String bla = "tralala" + p;
 				bla += "";
 				return p;
@@ -513,6 +514,7 @@ public class Particle {
 			@Override
 			public void op(Particle p) {
 				p.x = 10;
+				@SuppressWarnings("unused")
 				double y = p.origin.x;
 				y++;
 			}

@@ -15,22 +15,43 @@ import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
 import com.ibm.wala.dataflow.IFDS.PathEdge
 
-class IteRace(startClass: String, startMethod: String, dependencies: List[String]) {
-  val pa = new PointerAnalysis(startClass, startMethod, dependencies)
+class IteRace(startClass: String, startMethod: String, dependencies: java.util.List[String]) {
+  val pa = new PointerAnalysis(startClass, startMethod, dependencies.toList)
   val helpers = new PAHelpers(pa)
   import pa._
 
   val stagePossibleRaces = new PossibleRaces(pa, helpers)
-  val races = stagePossibleRaces.races
+  val possibleRaces = stagePossibleRaces.races
 
   val stageLockSet = new LockSet(pa)
 
-  for ((l, r) <- races) {
-    val locks = stageLockSet.getLocks(l)
-    val locksWithUniqueAbstractObjects = locks.filter({ pointsToUniqueAbstractObject(_) })
-    stageLockSet.getLockSetMapping(l, locksWithUniqueAbstractObjects)
-  }
+  val races = possibleRaces collect {
+    case (loop, races) => {
+      val locks = stageLockSet.getLocks(loop)
+      val locksWithUniqueAbstractObjects = locks.filter({ pointsToUniqueAbstractObject(_) })
+      val lockMap = stageLockSet.getLockSetMapping(loop, locksWithUniqueAbstractObjects)
 
+      def filterSafe(rs: RSet) = {
+        val newRS = new RSet()
+        rs filter { ! isSafe(_) } foreach { newRS.add(_) }
+        if(newRS isEmpty) None else Option(newRS)
+      }
+
+      def isSafe(r: R) = {
+        val lockObjectsA = lockMap(r.a) map {_.p.pt} flatten
+        val lockObjectsB = lockMap(r.b) map {_.p.pt} flatten
+
+        lockObjectsA.size == 1 && lockObjectsB.size == 1 && (lockObjectsA & lockObjectsB).size == 1 
+      }
+
+      (loop, races collect {
+        case (o, races) => (o, races map {
+          case (f, rset) => (f, filterSafe(rset))
+        } collect {case (ff, Some(ss)) => (ff, ss)} toMap ) 
+      } filter {case (o, races) => !races.isEmpty} )
+    }
+  }
+  
   def pointsToUniqueAbstractObject(l: Lock): Boolean = {
     l.p.pt.size == 1
   }
