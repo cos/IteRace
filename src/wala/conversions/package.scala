@@ -26,7 +26,7 @@ import com.ibm.wala.ssa.IR
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.IntSetAction
 
-object conversions {
+package object conversions {
   trait Named {
     def name(): String
   }
@@ -44,6 +44,7 @@ object conversions {
   trait PrettyPrintable {
     def prettyPrint(): String
   }
+  
   implicit def o2prettyprintable(o: O): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = {
       o match {
