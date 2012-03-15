@@ -4,7 +4,7 @@ import org.junit.runner.RunWith
 import org.scalatest.{ Spec, BeforeAndAfter }
 import org.scalatest.junit.JUnitRunner
 import scala.collection.JavaConversions._
-import iterace.WALAConversions._
+import iterace.util.WALAConversions._
 import org.junit.Assert._
 import org.scalatest.FunSuite
 import org.scalatest.matchers.MustMatchers

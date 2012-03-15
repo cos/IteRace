@@ -1,7 +1,7 @@
 package iterace
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
-import iterace.WALAConversions._
+import iterace.util.WALAConversions._
 import iterace.LoopContextSelector.LoopCallSiteContext
 import org.junit.Assert._
 import scala.collection._

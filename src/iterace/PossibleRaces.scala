@@ -4,7 +4,7 @@ import scala.collection.mutable.Map
 import scala.collection.mutable.Set
 import scala.collection._
 import scala.collection.JavaConversions._
-import WALAConversions._
+import iterace.util.WALAConversions._
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.ipa.cfg.ExplodedInterproceduralCFG
 import com.ibm.wala.ssa.SSAPutInstruction

@@ -1,4 +1,5 @@
-package iterace
+package iterace.util
+
 import com.ibm.wala.classLoader.IMethod
 import com.ibm.wala.ipa.callgraph.CGNode
 import com.ibm.wala.classLoader.IField
@@ -27,8 +28,6 @@ import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.IntSetAction
 import iterace.util.TypeAliases
 
-object WALAConversions extends WALAConversions
-
 class WALAConversions extends TypeAliases {
   trait Named {
     def name(): String
@@ -37,9 +36,7 @@ class WALAConversions extends TypeAliases {
   implicit def imethod2named(m: IMethod): Named = new Named {
     def name() = m.getSelector().getName().toString()
   }
-  implicit def n(n: CGNode): Named = new Named {
-    def name() = n.getMethod().name
-  }
+
   implicit def c2named(c: IClass): Named = new Named {
     def name() = c.getName().getClassName().toString()
   }
@@ -251,3 +248,5 @@ class WALAConversions extends TypeAliases {
   //    }
   //  }
 }
+
+object WALAConversions extends WALAConversions

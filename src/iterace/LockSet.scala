@@ -1,6 +1,6 @@
 package iterace
 import scala.collection.JavaConversions._
-import WALAConversions._
+import iterace.util.WALAConversions._
 import com.ibm.wala.dataflow.IFDS.PartiallyBalancedTabulationProblem
 import com.ibm.wala.dataflow.IFDS.UnorderedDomain
 import com.ibm.wala.dataflow.IFDS.ICFGSupergraph

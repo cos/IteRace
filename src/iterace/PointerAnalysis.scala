@@ -3,7 +3,7 @@ package iterace
 import iterace.oldjava.WalaAnalysisStart;
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._
-import WALAConversions._
+import iterace.util.WALAConversions._
 
 class PointerAnalysis(startClass: String, startMethod: String, dependencies: List[String]) {
   private var walaAnalysis = new WalaAnalysisStart;
