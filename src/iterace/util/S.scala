@@ -12,6 +12,7 @@ object S {
 }
 
 class S[J <: I](val n: N, val i: J) extends PrettyPrintable {
+  
   def prettyPrint() = {
     printCodeLocation()
   }
@@ -26,6 +27,10 @@ class S[J <: I](val n: N, val i: J) extends PrettyPrintable {
     }
   }
 
+  def m = n.m
+  
+  def lineNo = m.getLineNumber(irNo)
+    
   def irNo = n.getIR().getInstructions().findIndexOf(ii => i.equals(ii))
 
   def valuesForVariableName(name: String): Iterable[V] = {

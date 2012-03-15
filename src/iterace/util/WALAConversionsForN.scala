@@ -30,5 +30,8 @@ trait WALAConversionsForN { self: WALAConversions =>
       
     def ir: IR = 
       n.getIR()
+      
+    def m: M = 
+      n.getMethod()
   }
 }

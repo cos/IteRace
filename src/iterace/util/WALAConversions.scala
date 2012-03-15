@@ -77,10 +77,14 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
   def printCodeLocation(n: N, bytecodeIndex: Int): String = {
     printCodeLocation(n.getMethod(), bytecodeIndex)
   }
+  
+  implicit def mWithLineNo(m: M) = new {
+    def lineNoFromBytecodeIndex(bytecodeIndex: Int) = m.asInstanceOf[ShrikeBTMethod].getLineNumber(bytecodeIndex)
+    def lineNoFromIRNo(irNo: Int) = lineNoFromBytecodeIndex(m.asInstanceOf[ShrikeBTMethod].getBytecodeIndex(irNo))
+  }
 
   def printCodeLocation(m: IMethod, bytecodeIndex: Int): String = {
-    val sm = m.asInstanceOf[ShrikeBTMethod]
-    val lineNo = sm.getLineNumber(bytecodeIndex)
+    val lineNo = m.lineNoFromBytecodeIndex(bytecodeIndex)
     val className = m.getDeclaringClass().getName().getClassName().toString()
     "" + m.prettyPrint + "(" + className + ".java:" + lineNo + ")"
   }
