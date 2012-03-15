@@ -23,6 +23,7 @@ import com.ibm.wala.dataflow.IFDS.IFlowFunctionMap
 import com.ibm.wala.dataflow.IFDS.TabulationSolver
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.dataflow.IFDS.IMergeFunction
+import iterace.util.S
 
 case class Lock(p: P) {
   def prettyPrint = "L: " + p.prettyPrint

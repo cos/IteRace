@@ -13,17 +13,22 @@ trait WALAConversionsForN { self: WALAConversions =>
   }
 
   implicit def enhanceN(n: N) = new {
-    def prettyPrint(): String = 
+    def prettyPrint: String = 
       n.getMethod().prettyPrint
+      
     def instructions = 
       n.getIR().getInstructions()
+      
     def getV(name: String): V = 
       valuesForVariableName(name).head
+      
     def valuesForVariableName(name: String): Iterable[V] = 
       instructions.map(i => S(n, i).valuesForVariableName(name).toSet).reduce(_ ++ _)
+      
     def variableNames(value: V): Set[String] = 
       instructions.map(i => S(n, i).variableNames(value).toSet).reduce(_ ++ _)
-    def ir(): IR = 
+      
+    def ir: IR = 
       n.getIR()
   }
 }

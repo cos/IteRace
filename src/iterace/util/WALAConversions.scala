@@ -27,7 +27,7 @@ import com.ibm.wala.ssa.IR
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.IntSetAction
 
-class WALAConversions extends TypeAliases with WALAConversionsForN {
+class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConversionsForP {
   trait Named {
     def name(): String
   }
@@ -74,45 +74,6 @@ class WALAConversions extends TypeAliases with WALAConversionsForN {
     }
   }
 
-  // "Pointer Local" - equivalent of LocalPointerKey
-  object P {
-    def apply(n: N, v: Int) = {
-      new P(n, v)
-    }
-    def unapply(p: P): Option[(CGNode, Int)] = {
-      Some(p.getNode(), p.getValueNumber())
-    }
-  }
-  implicit def p2nv(p: P) = new {
-    def n = p.getNode()
-    def v = p.getValueNumber()
-  }
-  implicit def p2def(p: P) = new {
-    def getDef() = p.n.getDU().getDef(p.v)
-  }
-  implicit def pWithUses(p: P) = new {
-    def getUses(): Iterable[I] = {
-      p.n.getDU().getUses(p.v).toIterable
-    }
-    /**
-     * Gets all uses of this pointer that write to a field of it
-     */
-    def getPuts(): Iterable[SSAPutInstruction] = {
-      (for (i <- getUses() if i.isInstanceOf[SSAPutInstruction] && i.asInstanceOf[SSAPutInstruction].getRef() == p.v)
-        yield i.asInstanceOf[SSAPutInstruction])
-    }
-  }
-  implicit def pToVariableNames(p: P) = new {
-    def names(): Iterable[String] = {
-      (p.n.getIR().iterateAllInstructions().toIterable).map(i => S(p.n, i).variableNames(p.v)).flatten.toSet
-    }
-  }
-  implicit def p2prettyprintable(p: P): PrettyPrintable = new PrettyPrintable {
-    def prettyPrint(): String = {
-      p.n.prettyPrint() + " v" + p.v + "(" + (if (!p.names().isEmpty) p.names.reduce(_ + "," + _) else "") + ")"
-    }
-  }
-
   def printCodeLocation(n: N, bytecodeIndex: Int): String = {
     printCodeLocation(n.getMethod(), bytecodeIndex)
   }
@@ -126,50 +87,6 @@ class WALAConversions extends TypeAliases with WALAConversionsForN {
 
   implicit def iWithEasyUses(i: I) = new {
     def uses: Iterable[V] = Stream.range(0, i.getNumberOfUses()).map(index => { i.getUse(index) })
-  }
-
-  // statement
-  object S {
-    def unapply(b: BasicBlockInContext[IExplodedBasicBlock]): Option[(N, I)] = {
-      Some(b.getNode(), b.getDelegate().getInstruction())
-    }
-    def apply[T <: I](n: N, i: T) = new S(n, i)
-  }
-  class S[J <: I](val n: N, val i: J) extends PrettyPrintable {
-    def prettyPrint() = {
-      printCodeLocation()
-    }
-    def printCodeLocation(): String = {
-      if (irNo >= 0) {
-        val m = n.getMethod().asInstanceOf[ShrikeBTMethod]
-        val bytecodeIndex = m.getBytecodeIndex(irNo)
-        WALAConversions.printCodeLocation(m, bytecodeIndex)
-      } else {
-        val index = n.instructions collect { case i if i != null => i.toString } findIndexOf { _ == i.toString }
-        "IRNo-1 " + index + " ---- " + i
-      }
-    }
-
-    def irNo = n.getIR().getInstructions().findIndexOf(ii => i.equals(ii))
-
-    def valuesForVariableName(name: String): Iterable[V] = {
-      val maxValue = n.getIR().getSymbolTable().getMaxValueNumber();
-      Stream.range(1, maxValue + 1).filter(v => {
-        val names = n.getIR().getLocalNames(irNo, v)
-        if (names != null) {
-          names.contains(name)
-        } else
-          false
-      })
-    }
-
-    def variableNames(v: Int): Iterable[String] = {
-      if (irNo == -1) return Iterable()
-      val names = n.getIR().getLocalNames(irNo, v)
-      if (names != null) names.filter(_ != null) else Iterable()
-    }
-
-    override def toString = "S(" + n + "," + i + ")"
   }
 
   object O {

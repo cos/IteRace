@@ -2,6 +2,7 @@ package iterace
 import scala.collection.JavaConversions._
 import iterace.util.WALAConversions._
 import scala.collection._
+import iterace.util.S
 
 class PAHelpers(pa: PointerAnalysis) {
   import pa._
