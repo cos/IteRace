@@ -1,6 +1,6 @@
 package iterace
 import scala.collection.JavaConversions._
-import iterace.conversions._
+import iterace.WALAConversions._
 import scala.collection._
 
 class PAHelpers(pa: PointerAnalysis) {

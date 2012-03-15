@@ -9,7 +9,7 @@ import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.EmptyIntSet
 import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
-import iterace.conversions._
+import iterace.WALAConversions._
 import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ssa.SSAPutInstruction

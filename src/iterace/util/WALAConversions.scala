@@ -26,7 +26,7 @@ import com.ibm.wala.ssa.IR
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.IntSetAction
 
-package object conversions {
+object WALAConversions {
   trait Named {
     def name(): String
   }
@@ -174,7 +174,7 @@ package object conversions {
       if (irNo >= 0) {
         val m = n.getMethod().asInstanceOf[ShrikeBTMethod]
         val bytecodeIndex = m.getBytecodeIndex(irNo)
-        conversions.printCodeLocation(m, bytecodeIndex)
+        WALAConversions.printCodeLocation(m, bytecodeIndex)
       } else {
         val index = n.instructions collect {case i if i != null => i.toString} findIndexOf {_ == i.toString}
         "IRNo-1 " + index + " ---- " + i
