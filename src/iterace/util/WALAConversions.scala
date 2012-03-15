@@ -26,9 +26,8 @@ import com.ibm.wala.ssa.SSAPhiInstruction
 import com.ibm.wala.ssa.IR
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.IntSetAction
-import iterace.util.TypeAliases
 
-class WALAConversions extends TypeAliases {
+class WALAConversions extends TypeAliases with WALAConversionsForN {
   trait Named {
     def name(): String
   }
@@ -38,13 +37,13 @@ class WALAConversions extends TypeAliases {
   }
 
   implicit def c2named(c: IClass): Named = new Named {
-    def name() = c.getName().getClassName().toString()
+    def name = c.getName().getClassName().toString()
   }
 
   trait PrettyPrintable {
     def prettyPrint(): String
   }
-  
+
   implicit def o2prettyprintable(o: O): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = {
       o match {
@@ -54,40 +53,10 @@ class WALAConversions extends TypeAliases {
     }
   }
 
-  implicit def n2prettyprintable(n: CGNode): PrettyPrintable = new PrettyPrintable {
-    def prettyPrint(): String = {
-      n.getMethod().prettyPrint
-    }
-  }
-  implicit def n2iterable(n: CGNode) = new {
-    def instructions = n.getIR().getInstructions()
-  }
-
   implicit def m2prettyprintable(m: IMethod): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = {
       val packageName = m.getDeclaringClass().getName().getPackage().toString().replace('/', '.')
       packageName + "." + m.getDeclaringClass().name + "." + m.name
-    }
-  }
-
-  // call graph node
-  object N {
-    def unapply(n: N): Option[(Context, M)] = {
-      Some(n.getContext(), n.getMethod())
-    }
-  }
-  implicit def nWithValuesForVariableNames(n: N) = new {
-    def valuesForVariableName(name: String): Iterable[V] = {
-      n.getIR().getInstructions().map(i => S(n, i).valuesForVariableName(name).toSet).reduce(_ ++ _)
-    }
-    def getV(name: String): V = valuesForVariableName(name).head
-    def variableNames(value: V): Set[String] = {
-      n.getIR().getInstructions().map(i => S(n, i).variableNames(value).toSet).reduce(_ ++ _)
-    }
-  }
-  implicit def nWithIR(n: N) = new {
-    def ir(): IR = {
-      n.getIR()
     }
   }
 
@@ -176,7 +145,7 @@ class WALAConversions extends TypeAliases {
         val bytecodeIndex = m.getBytecodeIndex(irNo)
         WALAConversions.printCodeLocation(m, bytecodeIndex)
       } else {
-        val index = n.instructions collect {case i if i != null => i.toString} findIndexOf {_ == i.toString}
+        val index = n.instructions collect { case i if i != null => i.toString } findIndexOf { _ == i.toString }
         "IRNo-1 " + index + " ---- " + i
       }
     }
