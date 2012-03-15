@@ -25,8 +25,11 @@ import com.ibm.wala.ssa.SSAPhiInstruction
 import com.ibm.wala.ssa.IR
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.IntSetAction
+import iterace.util.TypeAliases
 
-object WALAConversions {
+object WALAConversions extends WALAConversions
+
+class WALAConversions extends TypeAliases {
   trait Named {
     def name(): String
   }
@@ -219,17 +222,6 @@ object WALAConversions {
       })
     }
   }
-
-  type SS = BasicBlockInContext[IExplodedBasicBlock]
-  type V = Int
-  type N = CGNode
-  type P = LocalPointerKey
-  type O = InstanceKey
-  type F = FieldReference
-  type I = SSAInstruction
-  type G = CallGraph
-  type C = IClass
-  type M = IMethod
 
   //  	public static String variableName(Integer v, CGNode cgNode,
   //			int ssaInstructionNo) {
