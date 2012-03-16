@@ -19,7 +19,7 @@ class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
   
   val icfg = ExplodedInterproceduralCFG.make(callGraph)
   
-  val races: Map[Loop, LoopRaceSet] = Map.empty[Loop, LoopRaceSet]
+  val races: ProgramRaceSet = ProgramRaceSet()
   
   // TODO: transform this to visit: first x second iteration of each loop
   // not: everything x everything of everything
@@ -101,4 +101,12 @@ class LoopRaceSet(val l:Loop) extends mutable.HashMap[O, ObjectRaceSet] with Rac
 
 object LoopRaceSet {
   def apply(l: Loop) = new LoopRaceSet(l)
+}
+
+class ProgramRaceSet extends mutable.HashMap[Loop, LoopRaceSet] with RaceSet {
+	override def accesses: immutable.Set[S[I]] = this.values map {_.accesses} reduce {_ & _} toSet
+}
+
+object ProgramRaceSet {
+  def apply() = new ProgramRaceSet()
 }
