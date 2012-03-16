@@ -19,7 +19,7 @@ class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
   
   val icfg = ExplodedInterproceduralCFG.make(callGraph)
   
-  val races: Map[Loop, Map[O, Map[F, RSet]]] = Map.empty[Loop, Map[O, Map[F, RSet]]]
+  val races: Map[Loop, Map[O, ObjectRaceSet]] = Map.empty[Loop, Map[O, ObjectRaceSet]]
   
   // TODO: transform this to visit: first x second iteration of each loop
   // not: everything x everything of everything
@@ -40,7 +40,7 @@ class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
       // we have races here
 
       def l = Loop(n1.getContext().asInstanceOf[LoopContext].l)
-      def racesInLoop = races.getOrElseUpdate(l, Map.empty[O, Map[F, RSet]])
+      def racesInLoop = races.getOrElseUpdate(l, Map.empty[O, ObjectRaceSet])
       def f = i1.getDeclaredField()
       for (oBla <- oS) {
         val o = oBla.asInstanceOf[O]
@@ -50,8 +50,8 @@ class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
           case O(n, i) => !inLoop(n) || firstIteration(n)
           case _ => true
         }) {
-          val racesInLoopOnObject = racesInLoop.getOrElseUpdate(o, Map.empty[F, RSet])
-          val theRaceSet = racesInLoopOnObject.getOrElseUpdate(f, RSet())
+          val racesInLoopOnObject = racesInLoop.getOrElseUpdate(o, ObjectRaceSet(o))
+          val theRaceSet = racesInLoopOnObject.getOrElseUpdate(f, FieldRaceSet())
           theRaceSet += Race(l, o, f, S(n1, i1), S(n2, i2))
         }
       }
@@ -66,7 +66,12 @@ case class Race(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
       " (b)  " + b.prettyPrint() + "\n"
   }
 }
-class RSet extends mutable.HashSet[Race] with PrettyPrintable {
+
+trait RaceSet {
+  def accesses: immutable.Set[S[I]]
+}
+
+class FieldRaceSet extends mutable.HashSet[Race] with RaceSet with PrettyPrintable {
   def prettyPrint(): String = {
     def printSameSet(p: (String, mutable.HashSet[Race])) = p._1 + (if(p._2.size > 1) " [" + p._2.size + "]" else "")
     
@@ -74,10 +79,22 @@ class RSet extends mutable.HashSet[Race] with PrettyPrintable {
     val bAccesses = this.groupBy(r => r.b.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
     "   (a)  " + aAccesses + "\n   (b)  " + bAccesses
   }
+  
+  def accesses: immutable.Set[S[I]] = this.map (race => Set(race.a, race.b)) reduce {_ & _} toSet
 }
 
-object RSet {
+object FieldRaceSet {
   def apply() = {
-    new RSet()
+    new FieldRaceSet()
   }
-} 
+}
+
+class ObjectRaceSet(val o: O) extends mutable.HashMap[F, FieldRaceSet] with RaceSet {
+  override def accesses: immutable.Set[S[I]] = this.values map {_.accesses} reduce {_ & _} toSet
+}
+
+object ObjectRaceSet {
+  def apply(o: O) = {
+    new ObjectRaceSet(o)
+  }
+}

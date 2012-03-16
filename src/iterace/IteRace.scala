@@ -31,8 +31,8 @@ class IteRace(startClass: String, startMethod: String, dependencies: java.util.L
       val locksWithUniqueAbstractObjects = locks.filter({ pointsToUniqueAbstractObject(_) })
       val lockMap = stageLockSet.getLockSetMapping(loop, locksWithUniqueAbstractObjects)
 
-      def filterSafe(rs: RSet) = {
-        val newRS = new RSet()
+      def filterSafe(rs: FieldRaceSet) = {
+        val newRS = new FieldRaceSet()
         rs filter { ! isSafe(_) } foreach { newRS.add(_) }
         if(newRS isEmpty) None else Option(newRS)
       }

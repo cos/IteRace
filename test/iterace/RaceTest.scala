@@ -15,7 +15,7 @@ abstract class RaceTest(dependencies: List[String], startClass: String) extends 
     new IteRace(startClass, method,  dependencies)
   }
 
-  def printRaces(races: Map[Loop, Map[O, Map[F, RSet]]]): String = {
+  def printRaces(races: Map[Loop, Map[O, Map[F, FieldRaceSet]]]): String = {
     val s = new StringBuilder
     s ++= "\n"
     
@@ -35,7 +35,7 @@ abstract class RaceTest(dependencies: List[String], startClass: String) extends 
   def testResult(method: String, result: String) = {
     test(method) {
       val iterace = analyze(method+"()V")
-      assertEquals(result, printRaces(iterace.races.asInstanceOf[Map[Loop, Map[O, Map[F, RSet]]]]))
+      assertEquals(result, printRaces(iterace.races.asInstanceOf[Map[Loop, Map[O, Map[F, FieldRaceSet]]]]))
     }
   }
   
