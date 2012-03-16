@@ -52,23 +52,23 @@ class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
         }) {
           val racesInLoopOnObject = racesInLoop.getOrElseUpdate(o, Map.empty[F, RSet])
           val theRaceSet = racesInLoopOnObject.getOrElseUpdate(f, RSet())
-          theRaceSet += R(l, o, f, S(n1, i1), S(n2, i2))
+          theRaceSet += Race(l, o, f, S(n1, i1), S(n2, i2))
         }
       }
     }
   }
 }
 
-case class R(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
+case class Race(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
   def prettyPrint() = {
     o.prettyPrint() + "   " + f.getName() + "\n" +
       " (a)  " + a.prettyPrint() + "\n" +
       " (b)  " + b.prettyPrint() + "\n"
   }
 }
-class RSet extends mutable.HashSet[R] with PrettyPrintable {
+class RSet extends mutable.HashSet[Race] with PrettyPrintable {
   def prettyPrint(): String = {
-    def printSameSet(p: (String, mutable.HashSet[R])) = p._1 + (if(p._2.size > 1) " [" + p._2.size + "]" else "")
+    def printSameSet(p: (String, mutable.HashSet[Race])) = p._1 + (if(p._2.size > 1) " [" + p._2.size + "]" else "")
     
     val aAccesses = this.groupBy(r => r.a.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
     val bAccesses = this.groupBy(r => r.b.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)

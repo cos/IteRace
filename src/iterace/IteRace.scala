@@ -37,7 +37,7 @@ class IteRace(startClass: String, startMethod: String, dependencies: java.util.L
         if(newRS isEmpty) None else Option(newRS)
       }
 
-      def isSafe(r: R) = {
+      def isSafe(r: Race) = {
         val lockObjectsA = lockMap(r.a) map {_.p.pt} flatten
         val lockObjectsB = lockMap(r.b) map {_.p.pt} flatten
 
