@@ -32,7 +32,7 @@ class IteRace(startClass: String, startMethod: String, dependencies: java.util.L
       val lockMap = stageLockSet.getLockSetMapping(loop, locksWithUniqueAbstractObjects)
 
       def filterSafe(rs: FieldRaceSet) = {
-        val newRS = new FieldRaceSet()
+        val newRS = new FieldRaceSet(rs.f)
         rs filter { ! isSafe(_) } foreach { newRS.add(_) }
         if(newRS isEmpty) None else Option(newRS)
       }

@@ -51,7 +51,7 @@ class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
           case _ => true
         }) {
           val racesInLoopOnObject = racesInLoop.getOrElseUpdate(o, ObjectRaceSet(o))
-          val theRaceSet = racesInLoopOnObject.getOrElseUpdate(f, FieldRaceSet())
+          val theRaceSet = racesInLoopOnObject.getOrElseUpdate(f, FieldRaceSet(f))
           theRaceSet += Race(l, o, f, S(n1, i1), S(n2, i2))
         }
       }
@@ -71,7 +71,7 @@ trait RaceSet {
   def accesses: immutable.Set[S[I]]
 }
 
-class FieldRaceSet extends mutable.HashSet[Race] with RaceSet with PrettyPrintable {
+class FieldRaceSet(val f: F) extends mutable.HashSet[Race] with RaceSet with PrettyPrintable {
   def prettyPrint(): String = {
     def printSameSet(p: (String, mutable.HashSet[Race])) = p._1 + (if(p._2.size > 1) " [" + p._2.size + "]" else "")
     
@@ -84,8 +84,8 @@ class FieldRaceSet extends mutable.HashSet[Race] with RaceSet with PrettyPrintab
 }
 
 object FieldRaceSet {
-  def apply() = {
-    new FieldRaceSet()
+  def apply(f: F) = {
+    new FieldRaceSet(f)
   }
 }
 
