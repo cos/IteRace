@@ -12,34 +12,24 @@ trait WALAConversionsForP { self: WALAConversions =>
       Some((p.getNode(), p.getValueNumber()))
     }
   }
-  
-    implicit def p2nv(p: P) = new {
+
+  implicit def enhanceP(p: P) = new {
     def n = p.getNode()
     def v = p.getValueNumber()
-  }
-  implicit def p2def(p: P) = new {
-    def getDef() = p.n.getDU().getDef(p.v)
-  }
-  implicit def pWithUses(p: P) = new {
-    def getUses(): Iterable[I] = {
-      p.n.getDU().getUses(p.v).toIterable
-    }
+    def getDef() = n.getDU().getDef(v)
+    def getUses(): Iterable[I] = n.getDU().getUses(v).toIterable
+
     /**
      * Gets all uses of this pointer that write to a field of it
      */
-    def getPuts(): Iterable[SSAPutInstruction] = {
-      (for (i <- getUses() if i.isInstanceOf[SSAPutInstruction] && i.asInstanceOf[SSAPutInstruction].getRef() == p.v)
+    def getPuts(): Iterable[SSAPutInstruction] =
+      (for (i <- getUses() if i.isInstanceOf[PutI] && i.asInstanceOf[PutI].getRef() == v)
         yield i.asInstanceOf[SSAPutInstruction])
-    }
-  }
-  implicit def pToVariableNames(p: P) = new {
-    def names(): Iterable[String] = {
-      (p.n.instructions.toIterable).map(i => S(p.n, i).variableNames(p.v)).flatten.toSet
-    }
-  }
-  implicit def p2prettyprintable(p: P): PrettyPrintable = new PrettyPrintable {
-    def prettyPrint(): String = {
-      p.n.prettyPrint + " v" + p.v + "(" + (if (!p.names().isEmpty) p.names.reduce(_ + "," + _) else "") + ")"
-    }
+
+    def variableNames(): Iterable[String] =
+      n.instructions.toIterable.map(i => S(n, i).variableNames(v)).flatten.toSet
+
+    def prettyPrint(): String =
+      n.prettyPrint + " v" + v + "(" + (if (!variableNames().isEmpty) variableNames.reduce(_ + "," + _) else "") + ")"
   }
 }
