@@ -14,6 +14,8 @@ import org.junit.Rule
 @RunWith(classOf[JUnitRunner])
 class TestRaces extends RaceTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/ParticleWithLocks") {
   
+  override def result(iteRace: IteRace) = iteRace.races
+  
   testNoRaces("vacuouslyNoRace")
   
   testResult("simpleRaceNoLocks", 
@@ -36,8 +38,5 @@ particles.ParticleWithLocks.oneSimpleLock(ParticleWithLocks.java:40)
    (b)  particles.ParticleWithLocks$3.op(ParticleWithLocks$3.java:47)
 """)  
 
-	testResult("oneSimpleSafeLock","""
-Loop: particles.ParticleWithLocks.oneSimpleSafeLock(ParticleWithLocks.java:60)
-
-""")
+	testNoRaces("oneSimpleSafeLock")
 }

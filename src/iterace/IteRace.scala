@@ -25,33 +25,23 @@ class IteRace(startClass: String, startMethod: String, dependencies: java.util.L
 
   val stageLockSet = new LockSet(pa)
 
-  val races = possibleRaces collect {
-    case (loop, races) => {
+  val races = (possibleRaces groupBy {_.l} collect {
+    case (loop, potentialRaceSet) => {
       val locks = stageLockSet.getLocks(loop)
       val locksWithUniqueAbstractObjects = locks.filter({ pointsToUniqueAbstractObject(_) })
       val lockMap = stageLockSet.getLockSetMapping(loop, locksWithUniqueAbstractObjects)
 
-      def filterSafe(rs: FieldRaceSet) = {
-        val newRS = new FieldRaceSet(rs.f)
-        rs filter { ! isSafe(_) } foreach { newRS.add(_) }
-        if(newRS isEmpty) None else Option(newRS)
+      def isSafe(r: Race):Boolean = {
+        val lockObjectsA = lockMap(r.a) map { _.p.pt } flatten
+        val lockObjectsB = lockMap(r.b) map { _.p.pt } flatten
+
+        lockObjectsA.size == 1 && lockObjectsB.size == 1 && (lockObjectsA & lockObjectsB).size == 1
       }
-
-      def isSafe(r: Race) = {
-        val lockObjectsA = lockMap(r.a) map {_.p.pt} flatten
-        val lockObjectsB = lockMap(r.b) map {_.p.pt} flatten
-
-        lockObjectsA.size == 1 && lockObjectsB.size == 1 && (lockObjectsA & lockObjectsB).size == 1 
-      }
-
-      (loop, races collect {
-        case (o, races) => (o, races map {
-          case (f, rset) => (f, filterSafe(rset))
-        } collect {case (ff, Some(ss)) => (ff, ss)} toMap ) 
-      } filter {case (o, races) => !races.isEmpty} )
+      
+      potentialRaceSet filter {!isSafe(_)}
     }
-  }
-  
+  } flatten ) toSet
+
   def pointsToUniqueAbstractObject(l: Lock): Boolean = {
     l.p.pt.size == 1
   }

@@ -3,7 +3,7 @@ import com.ibm.wala.analysis.pointers.HeapGraph
 import scala.collection.mutable.Map
 import scala.collection.mutable.Set
 import scala.collection._
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import iterace.util.WALAConversions._
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.ipa.cfg.ExplodedInterproceduralCFG
@@ -13,24 +13,24 @@ import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 import util._
 
-class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
+class PossibleRaces(pa: PointerAnalysis, helpers: PAHelpers) {
   import pa._
   import helpers._
-  
+
   val icfg = ExplodedInterproceduralCFG.make(callGraph)
-  
-  val races: ProgramRaceSet = ProgramRaceSet()
-  
+
+  var races: immutable.Set[Race] = immutable.Set[Race]()
+
   // TODO: transform this to visit: first x second iteration of each loop
   // not: everything x everything of everything
   for (
-    S(n1: N, i1: SSAPutInstruction) <- icfg if firstIteration(n1) && inParallel(n1);
-    S(n2: N, i2: SSAFieldAccessInstruction) <- icfg if inLoop(n2) && !firstIteration(n2) &&
+    S(n1: N, i1: SSAPutInstruction) <- icfg.asScala if firstIteration(n1) && inParallel(n1);
+    S(n2: N, i2: SSAFieldAccessInstruction) <- icfg.asScala if inLoop(n2) && !firstIteration(n2) &&
       i1.getDeclaredField() == i2.getDeclaredField()
   ) {
-    if(S(n1,i1).irNo == -1) println("HERE")
-    if(S(n2,i2).irNo == -1) println("HERE")
-    
+    if (S(n1, i1).irNo == -1) println("HERE")
+    if (S(n2, i2).irNo == -1) println("HERE")
+
     val oS1 = P(n1, i1.getRef()).pt.toSet
     val oS2 = P(n2, i2.getRef()).pt.toSet
 
@@ -40,7 +40,6 @@ class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
       // we have races here
 
       def l = Loop(n1.getContext().asInstanceOf[LoopContext].l)
-      def racesInLoop = races.getOrElseUpdate(l, LoopRaceSet(l))
       def f = i1.getDeclaredField()
       for (oBla <- oS) {
         val o = oBla.asInstanceOf[O]
@@ -50,9 +49,7 @@ class PossibleRaces (pa: PointerAnalysis, helpers: PAHelpers) {
           case O(n, i) => !inLoop(n) || firstIteration(n)
           case _ => true
         }) {
-          val racesInLoopOnObject = racesInLoop.getOrElseUpdate(o, ObjectRaceSet(o))
-          val theRaceSet = racesInLoopOnObject.getOrElseUpdate(f, FieldRaceSet(f))
-          theRaceSet += Race(l, o, f, S(n1, i1), S(n2, i2))
+          races = races + Race(l, o, f, S(n1, i1), S(n2, i2))
         }
       }
     }
@@ -67,46 +64,64 @@ case class Race(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
   }
 }
 
-trait RaceSet {
-  def accesses: immutable.Set[S[I]]
-}
-
-class FieldRaceSet(val f: F) extends mutable.HashSet[Race] with RaceSet with PrettyPrintable {
-  def prettyPrint(): String = {
-    def printSameSet(p: (String, mutable.HashSet[Race])) = p._1 + (if(p._2.size > 1) " [" + p._2.size + "]" else "")
-    
-    val aAccesses = this.groupBy(r => r.a.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
-    val bAccesses = this.groupBy(r => r.b.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
-    "   (a)  " + aAccesses + "\n   (b)  " + bAccesses
-  }
-  
-  def accesses: immutable.Set[S[I]] = this.map (race => Set(race.a, race.b)) reduce {_ & _} toSet
-}
-
-object FieldRaceSet {
-  def apply(f: F) = new FieldRaceSet(f)
-}
-
-class ObjectRaceSet(val o: O) extends mutable.HashMap[F, FieldRaceSet] with RaceSet {
-  override def accesses: immutable.Set[S[I]] = this.values map {_.accesses} reduce {_ & _} toSet
-}
-
-object ObjectRaceSet {
-  def apply(o: O) = new ObjectRaceSet(o) 
-}
-
-class LoopRaceSet(val l:Loop) extends mutable.HashMap[O, ObjectRaceSet] with RaceSet {
-  override def accesses: immutable.Set[S[I]] = this.values map {_.accesses} reduce {_ & _} toSet
-}
-
-object LoopRaceSet {
-  def apply(l: Loop) = new LoopRaceSet(l)
-}
-
-class ProgramRaceSet extends mutable.HashMap[Loop, LoopRaceSet] with RaceSet {
-	override def accesses: immutable.Set[S[I]] = this.values map {_.accesses} reduce {_ & _} toSet
-}
-
-object ProgramRaceSet {
-  def apply() = new ProgramRaceSet()
-}
+//
+//trait RaceSet {
+//  def accesses: immutable.Set[S[I]]
+//
+//  def races: immutable.Set[Race]
+//}
+//
+//class FieldRaceSet(val f: F) extends mutable.HashSet[Race] with RaceSet with PrettyPrintable {
+//  def prettyPrint(): String = {
+//    def printSameSet(p: (String, mutable.HashSet[Race])) = p._1 + (if (p._2.size > 1) " [" + p._2.size + "]" else "")
+//
+//    val aAccesses = this.groupBy(r => r.a.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
+//    val bAccesses = this.groupBy(r => r.b.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
+//    "   (a)  " + aAccesses + "\n   (b)  " + bAccesses
+//  }
+//
+//  def accesses: immutable.Set[S[I]] = this.map(race => Set(race.a, race.b)) reduce { _ & _ } toSet
+//
+//  override def races = toSet
+//}
+//
+//object FieldRaceSet {
+//  def apply(f: F) = new FieldRaceSet(f)
+//}
+//
+//class ObjectRaceSet(val o: O) extends mutable.HashMap[F, FieldRaceSet] with RaceSet {
+//  override def accesses: immutable.Set[S[I]] = this.values map { _.accesses } reduce { _ & _ } toSet
+//
+//  def addRace(r: Race):this.type = this += ((r.f, getOrElse(r.f, FieldRaceSet(r.f)) += r))
+//
+//  def races = values map { _.races } reduce { _ & _ }
+//}
+//
+//object ObjectRaceSet {
+//  def apply(o: O) = new ObjectRaceSet(o)
+//}
+//
+//class LoopRaceSet(val l: Loop) extends mutable.HashMap[O, ObjectRaceSet] with RaceSet {
+//  override def accesses: immutable.Set[S[I]] = this.values map { _.accesses } reduce { _ & _ } toSet
+//
+//  def addRace(r: Race):this.type = this += ((r.o, getOrElse(r.o, ObjectRaceSet(r.o)).addRace(r)))
+//
+//  def races = values map { _.races } reduce { _ & _ }
+//}
+//
+//object LoopRaceSet {
+//  def apply(l: Loop) = new LoopRaceSet(l)
+//  def apply(l: Loop, races: Map[O, ObjectRaceSet]) = { new LoopRaceSet(l) ++ races }
+//}
+//
+//class ProgramRaceSet extends mutable.HashMap[Loop, LoopRaceSet] with RaceSet {
+//  override def accesses: immutable.Set[S[I]] = this.values map { _.accesses } reduce { _ & _ } toSet
+//
+//  def addRace(r: Race):this.type = this += ((r.l, getOrElse(r.l, LoopRaceSet(r.l)).addRace(r)))
+//
+//  def races = values map { _.races } reduce { _ & _ }
+//}
+//
+//object ProgramRaceSet {
+//  def apply() = new ProgramRaceSet()
+//}

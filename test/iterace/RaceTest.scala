@@ -15,27 +15,37 @@ abstract class RaceTest(dependencies: List[String], startClass: String) extends 
     new IteRace(startClass, method,  dependencies)
   }
 
-  def printRaces(races: Map[Loop, Map[O, Map[F, FieldRaceSet]]]): String = {
+  def prettyPrint(races: Set[Race]): String = {
+    def printSameSet(p: (String, Set[Race])) = p._1 + (if (p._2.size > 1) " [" + p._2.size + "]" else "")
+
+    val aAccesses = races.groupBy(r => r.a.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
+    val bAccesses = races.groupBy(r => r.b.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
+    "   (a)  " + aAccesses + "\n   (b)  " + bAccesses
+  }
+  
+  def printRaces(races: Set[Race]): String = {
     val s = new StringBuilder
     s ++= "\n"
     
-    for ((l, lr) <- races.toStringSorted ) {
+    for ((l, lr) <- races.groupBy {_.l} toStringSorted ) {
       s ++= "Loop: "+l.n.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint() + "\n\n"
-      for ((o, fr) <- lr.toStringSorted ) {
+      for ((o, fr) <- races.groupBy {_.o} toStringSorted ) {
         s ++= o.prettyPrint() + "\n"
-        for ((f, rr) <- fr.toStringSorted ) {
+        for ((f, rr) <- races.groupBy {_.f} toStringSorted ) {
           s ++= " ." + f.getName() + "\n"
-          s ++= rr.prettyPrint() +"\n"
+          s ++= prettyPrint(rr) +"\n"
         }
       }
     }
     s.toString()
   }
   
-  def testResult(method: String, result: String) = {
+  def result(iteRace: IteRace):Set[Race]
+  
+  def testResult(method: String, expectedResult: String) = {
     test(method) {
       val iterace = analyze(method+"()V")
-      assertEquals(result, printRaces(iterace.races.asInstanceOf[Map[Loop, Map[O, Map[F, FieldRaceSet]]]]))
+      assertEquals(expectedResult, printRaces(result(iterace)))
     }
   }
   

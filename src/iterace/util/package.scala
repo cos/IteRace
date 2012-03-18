@@ -1,8 +1,8 @@
 package iterace
 
 import scala.collection.immutable.TreeMap
-import scala.collection._
 import scala.collection.immutable.TreeSet
+import scala.collection._
 
 package object util {
   def toStringOrdering[K] = Ordering.by[K, String] { _.toString() }

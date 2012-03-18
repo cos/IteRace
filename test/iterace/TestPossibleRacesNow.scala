@@ -4,6 +4,8 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class TestNow extends RaceTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/Particle") {
+  override def result(iteRace: IteRace) = iteRace.possibleRaces
+  
   testResult("raceInLibrary","""
 Loop: particles.Particle.raceInLibrary(Particle.java:428)
 
