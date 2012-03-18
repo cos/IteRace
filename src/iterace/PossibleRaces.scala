@@ -13,13 +13,16 @@ import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 import util._
 
-class PossibleRaces(pa: PointerAnalysis, helpers: PAHelpers) {
+class PossibleRaces(pa: PointerAnalysis, helpers: PAHelpers) extends Function0[immutable.Set[Race]] {
+
+  override def apply():immutable.Set[Race] = races
+  
   import pa._
   import helpers._
+  
+  private val icfg = ExplodedInterproceduralCFG.make(callGraph)
 
-  val icfg = ExplodedInterproceduralCFG.make(callGraph)
-
-  var races: immutable.Set[Race] = immutable.Set[Race]()
+  private var races: immutable.Set[Race] = immutable.Set[Race]()
 
   // TODO: transform this to visit: first x second iteration of each loop
   // not: everything x everything of everything

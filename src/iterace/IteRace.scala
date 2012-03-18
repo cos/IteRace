@@ -19,32 +19,12 @@ class IteRace(startClass: String, startMethod: String, dependencies: java.util.L
   val pa = new PointerAnalysis(startClass, startMethod, dependencies.toList)
   val helpers = new PAHelpers(pa)
   import pa._
+  
+  val possibleRaces = new PossibleRaces(pa, helpers)()
 
-  val stagePossibleRaces = new PossibleRaces(pa, helpers)
-  val possibleRaces = stagePossibleRaces.races
+  private val lockSet = new LockSet(pa)
 
-  val stageLockSet = new LockSet(pa)
-
-  val races = (possibleRaces groupBy {_.l} collect {
-    case (loop, potentialRaceSet) => {
-      val locks = stageLockSet.getLocks(loop)
-      val locksWithUniqueAbstractObjects = locks.filter({ pointsToUniqueAbstractObject(_) })
-      val lockMap = stageLockSet.getLockSetMapping(loop, locksWithUniqueAbstractObjects)
-
-      def isSafe(r: Race):Boolean = {
-        val lockObjectsA = lockMap(r.a) map { _.p.pt } flatten
-        val lockObjectsB = lockMap(r.b) map { _.p.pt } flatten
-
-        lockObjectsA.size == 1 && lockObjectsB.size == 1 && (lockObjectsA & lockObjectsB).size == 1
-      }
-      
-      potentialRaceSet filter {!isSafe(_)}
-    }
-  } flatten ) toSet
-
-  def pointsToUniqueAbstractObject(l: Lock): Boolean = {
-    l.p.pt.size == 1
-  }
+  val races = new FilterByMayAlias(pa, helpers, lockSet)(possibleRaces)
 }
 
 class AnalysisException(m: String) extends Throwable {
