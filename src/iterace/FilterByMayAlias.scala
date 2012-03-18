@@ -1,8 +1,7 @@
 package iterace
 
-class FilterByMayAlias(pa: PointerAnalysis, helpers: PAHelpers, lockSet:LockSet) extends Function1[Set[Race], Set[Race]] {
+class FilterByMayAlias(pa: RacePointerAnalysis, lockSet:LockSet) extends Function1[Set[Race], Set[Race]] {
   import pa._
-  import helpers._
   
   def apply(possibleRaces: Set[Race]):Set[Race] = {
     (possibleRaces groupBy { _.l } collect {

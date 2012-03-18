@@ -16,15 +16,14 @@ import com.ibm.wala.ipa.callgraph.ContextItem
 import com.ibm.wala.dataflow.IFDS.PathEdge
 
 class IteRace(startClass: String, startMethod: String, dependencies: java.util.List[String]) {
-  val pa = new PointerAnalysis(startClass, startMethod, dependencies.toList)
-  val helpers = new PAHelpers(pa)
+  val pa = new RacePointerAnalysis(startClass, startMethod, dependencies.toList)
   import pa._
   
-  val possibleRaces = new PossibleRaces(pa, helpers)()
+  val possibleRaces = new PossibleRaces(pa)()
 
   private val lockSet = new LockSet(pa)
 
-  val races = new FilterByMayAlias(pa, helpers, lockSet)(possibleRaces)
+  val races = new FilterByMayAlias(pa, lockSet)(possibleRaces)
 }
 
 class AnalysisException(m: String) extends Throwable {

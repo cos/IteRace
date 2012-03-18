@@ -1,4 +1,4 @@
-package iterace;
+package iterace.util;
 
 import org.junit.runner.RunWith
 import org.scalatest.{ Spec, BeforeAndAfter }
@@ -8,22 +8,21 @@ import iterace.util.WALAConversions._
 import org.junit.Assert._
 import org.scalatest.FunSuite
 import org.scalatest.matchers.MustMatchers
+import iterace.RacePointerAnalysis
 
 @RunWith(classOf[JUnitRunner])
-class TestHelpersForWALA extends Spec with BeforeAndAfter with MustMatchers {
+class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers {
 
   val dependencies = List("kingdom")
   val startClass = "Lkingdom/Dog"
 
-  def analyze(method: String) = new PointerAnalysis(startClass, method, dependencies)
   
   describe("instructionsReachableFrom") {
     
     def getReachableFrom(method: String) = {
-      val pa = analyze(method+"()V")
-      val h = new PAHelpers(pa)
+      val pa = new RacePointerAnalysis(startClass, method+"()V", dependencies)
       val n = pa.findNode(method).get
-      h.statementsReachableFrom(n)
+      pa.statementsReachableFrom(n)
     }
     
     it("must return only the 'return' instruction when given an empty method"){

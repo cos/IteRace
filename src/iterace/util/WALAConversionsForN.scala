@@ -3,6 +3,7 @@ import com.ibm.wala.classLoader.IClass
 import com.ibm.wala.ipa.callgraph.Context
 import com.ibm.wala.ssa.IR
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 trait WALAConversionsForN { self: WALAConversions =>
 
@@ -17,7 +18,10 @@ trait WALAConversionsForN { self: WALAConversions =>
       n.getMethod().prettyPrint
       
     def instructions = 
-      n.getIR().getInstructions()
+      normalInstructions
+    
+    def normalInstructions =
+      ir.iterateNormalInstructions.asScala
       
     def getV(name: String): V = 
       valuesForVariableName(name).head

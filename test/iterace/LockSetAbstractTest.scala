@@ -9,15 +9,16 @@ import scala.collection._
 
 abstract class LockSetTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter  {
   def analyze(method: String) = {
-    val pa = new PointerAnalysis(startClass, method, dependencies)
-    (new LockSet(pa), new PAHelpers(pa))
+    val pa = new RacePointerAnalysis(startClass, method, dependencies)
+    (new LockSet(pa), pa)
   }
   
   def testGetLocks(method: String, result: String) = {
     test(method) {
-      val (locksetsolver, helpers) = analyze(method+"()V")
-      val theLoop = helpers.getLoops().head
-      val theLocks = locksetsolver.getLocks(theLoop)
+      val (lockSet, pa) = analyze(method+"()V")
+      import pa._
+      val theLoop = getLoops().head
+      val theLocks = lockSet.getLocks(theLoop)
       assertEquals(result, prettyPrint(theLocks))
     }
   }
@@ -26,9 +27,9 @@ abstract class LockSetTest(dependencies: List[String], startClass: String) exten
   
   def testGetLockSet(method: String, hint: String, result: String) = {
     test(method+" lockset") {
-      val (locksetsolver, helpers) = analyze(method+"()V")
-      import helpers._
-      val theLoop = helpers.getLoops().head
+      val (locksetsolver, pa) = analyze(method+"()V")
+      import pa._
+      val theLoop = getLoops().head
       val lockSets = locksetsolver.getLockSetMapping(theLoop)
       import iterace.util._
       val s = statementsReachableFrom(theLoop.n).toStringSorted.find(x => {x!= null && x.toString().contains(hint)})

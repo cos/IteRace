@@ -13,12 +13,11 @@ import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 import util._
 
-class PossibleRaces(pa: PointerAnalysis, helpers: PAHelpers) extends Function0[immutable.Set[Race]] {
+class PossibleRaces(pa: RacePointerAnalysis) extends Function0[immutable.Set[Race]] {
 
   override def apply():immutable.Set[Race] = races
   
   import pa._
-  import helpers._
   
   private val icfg = ExplodedInterproceduralCFG.make(callGraph)
 
