@@ -9,18 +9,21 @@ import org.junit.Assert._
 import org.scalatest.FunSuite
 import org.scalatest.matchers.MustMatchers
 import iterace.RacePointerAnalysis
+import iterace.oldjava.AnalysisScopeBuilder
 
 @RunWith(classOf[JUnitRunner])
 class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers {
 
-  val dependencies = List("kingdom")
   val startClass = "Lkingdom/Dog"
 
   
   describe("instructionsReachableFrom") {
     
     def getReachableFrom(method: String) = {
-      val pa = new RacePointerAnalysis(startClass, method+"()V", dependencies)
+      var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
+      analysisScope.addBinaryDependency("kingdom");
+      
+      val pa = new RacePointerAnalysis(startClass, method+"()V", analysisScope)
       val n = pa.findNode(method).get
       pa.statementsReachableFrom(n)
     }

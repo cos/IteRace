@@ -14,9 +14,11 @@ import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
 import com.ibm.wala.dataflow.IFDS.PathEdge
+import com.ibm.wala.properties.WalaProperties
+import iterace.oldjava.AnalysisScopeBuilder
 
-class IteRace(startClass: String, startMethod: String, dependencies: java.util.List[String]) {
-  val pa = new RacePointerAnalysis(startClass, startMethod, dependencies.toList)
+class IteRace(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder) {
+  val pa = new RacePointerAnalysis(startClass, startMethod, analysisScope)
   import pa._
   
   val possibleRaces = new PossibleRaces(pa)()
@@ -24,6 +26,8 @@ class IteRace(startClass: String, startMethod: String, dependencies: java.util.L
   private val lockSet = new LockSet(pa)
 
   val races = new FilterByMayAlias(pa, lockSet)(possibleRaces)
+  
+  def racesAsRaceSet = new ProgramRaceSet(races)
 }
 
 class AnalysisException(m: String) extends Throwable {

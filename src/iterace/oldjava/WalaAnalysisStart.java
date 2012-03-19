@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
 
@@ -31,7 +30,6 @@ import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
-import com.ibm.wala.properties.WalaProperties;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeName;
 import com.ibm.wala.types.TypeReference;
@@ -42,19 +40,18 @@ import com.ibm.wala.util.io.FileProvider;
 public class WalaAnalysisStart {
 
 	public final static String MAIN_METHOD = "main([Ljava/lang/String;)V";
-	public Entrypoint entrypoint;
 	public PointerAnalysis pointerAnalysis;
 	public CallGraph callGraph;
-	public String entryClass;
-	public String entryMethod;
-	public final List<String> binaryDependencies = new ArrayList<String>();
-	public final List<String> jarDependencies = new ArrayList<String>();
-	public final List<String> extensionBinaryDependencies = new ArrayList<String>();
 	public PropagationCallGraphBuilder builder = null;
 	public AnalysisCache cache;
 	
-	public WalaAnalysisStart() {
-		
+	public final AnalysisScopeBuilder analysisScopeBuilder;
+	public String entryMethod;
+	public String entryClass;
+	public Entrypoint entrypoint;
+
+	public WalaAnalysisStart(AnalysisScopeBuilder analysisOptions) {
+		this.analysisScopeBuilder = analysisOptions;
 	}
 
 	public static SSAPropagationCallGraphBuilder makeCFABuilder(AnalysisOptions options, AnalysisCache cache,
@@ -74,55 +71,17 @@ public class WalaAnalysisStart {
 		// ZeroXInstanceKeys.SMUSH_THROWABLES |
 	}
 
-	public void addBinaryDependency(String path) {
-		this.binaryDependencies.add(path);
-	}
-
-	public void addExtensionBinaryDependency(String path) {
-		this.extensionBinaryDependencies.add(path);
-	}
-	
-	public void addJarFolderDependency(String path) {
-	  File dir = new File(path);
-	  String delim;
-	  
-	  if (path.endsWith("/"))
-	    delim = "";
-	  else
-	    delim = "/";
-	  
-	  if (!dir.isDirectory())
-	    return;
-	  
-	  String[] files = dir.list();
-	  if (files == null)
-	    return;
-	  
-	  for (String fileName : files) {
-      if (fileName.endsWith(".jar"))
-        addJarDependency(path + delim + fileName);
-      else {
-        File file = new File(fileName);
-        if (file.isDirectory())
-          addJarFolderDependency(file.getAbsolutePath());
-      }
-    }
-	}
-
-	public void addJarDependency(String file) {
-		this.jarDependencies.add(file);
-	}
-
 	public void setup(String entryClass, String entryMethod) throws ClassHierarchyException, IllegalArgumentException,
 	    CancelException, IOException {
 		this.entryClass = entryClass;
 		this.entryMethod = entryMethod;
-		AnalysisScope scope = getAnalysisScope();
-		scope.setExclusions(FileOfClasses.createFileOfClasses(new File("walaExclusions.txt")));
-
-		IClassHierarchy cha = ClassHierarchy.make(scope);
-
+		
+		analysisScopeBuilder.setExclusionsFile("walaExclusions.txt");
+		AnalysisScope scope = analysisScopeBuilder.getAnalysisScope();
 		Set<Entrypoint> entrypoints = new HashSet<Entrypoint>();
+		AnalysisOptions options = new AnalysisOptions(scope, entrypoints);
+		
+		IClassHierarchy cha = ClassHierarchy.make(scope);
 		TypeReference typeReference = TypeReference.findOrCreate(scope.getLoader(AnalysisScope.APPLICATION),
 		    TypeName.string2TypeName(entryClass));
 		MethodReference methodReference = MethodReference.findOrCreate(typeReference,
@@ -131,7 +90,6 @@ public class WalaAnalysisStart {
 		entrypoint = new DefaultEntrypoint(methodReference, cha);
 		entrypoints.add(entrypoint);
 
-		AnalysisOptions options = new AnalysisOptions(scope, entrypoints);
 		cache = new AnalysisCache();
 		builder = makeCFABuilder(options, cache, cha, scope);
 
@@ -153,33 +111,4 @@ public class WalaAnalysisStart {
 			}
 		}
   }
-
-	private AnalysisScope getAnalysisScope() throws IOException {
-		AnalysisScope scope = AnalysisScope.createJavaAnalysisScope();
-		ClassLoader loader = WalaAnalysisStart.class.getClassLoader();
-
-		// Add the the j2se jar files
-		String[] stdlibs = WalaProperties.getJ2SEJarFiles();
-		for (int i = 0; i < stdlibs.length; i++) {
-			scope.addToScope(scope.getLoader(AnalysisScope.PRIMORDIAL), new JarFile(stdlibs[i]));
-		}
-
-		for (String directory : binaryDependencies) {
-			File sd = FileProvider.getFile(directory, loader);
-			assert sd.isDirectory();
-			scope.addToScope(scope.getLoader(AnalysisScope.APPLICATION), new BinaryDirectoryTreeModule(sd));
-		}
-		for (String directory : extensionBinaryDependencies) {
-			File sd = FileProvider.getFile(directory, loader);
-			assert sd.isDirectory();
-			scope.addToScope(scope.getLoader(AnalysisScope.EXTENSION), new BinaryDirectoryTreeModule(sd));
-		}
-
-		for (String path : jarDependencies) {
-			Module M = FileProvider.getJarFileModule(path, loader);
-			scope.addToScope(scope.getLoader(AnalysisScope.APPLICATION), M);
-		}
-
-		return scope;
-	}
 }

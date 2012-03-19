@@ -1,15 +1,18 @@
 package iterace
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
-
 import iterace.util.WALAConversions._
 import iterace.LoopContextSelector.LoopCallSiteContext
 import org.junit.Assert._
 import scala.collection._
+import iterace.oldjava.AnalysisScopeBuilder
 
 abstract class LockSetTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter  {
   def analyze(method: String) = {
-    val pa = new RacePointerAnalysis(startClass, method, dependencies)
+    var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
+    for (d <- dependencies) { analysisScope.addBinaryDependency(d); }
+    
+    val pa = new RacePointerAnalysis(startClass, method, analysisScope)
     (new LockSet(pa), pa)
   }
   

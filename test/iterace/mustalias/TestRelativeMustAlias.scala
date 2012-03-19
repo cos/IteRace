@@ -11,16 +11,18 @@ import scala.collection.mutable._
 import org.scalatest.FunSuite
 import org.junit.rules.TestName
 import org.junit.Rule
+import iterace.oldjava.AnalysisScopeBuilder
 
 @RunWith(classOf[JUnitRunner])
 class TestRelativeMustAlias extends FunSuite with BeforeAndAfter {
 
   @Rule val testName = new TestName();
-
-  val dependencies = List("kingdom")
   val startClass = "Lkingdom/Animals"
 
-  def analyze(method: String) = new PointerAnalysis(startClass, method, dependencies)
+  var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
+  analysisScope.addBinaryDependency("kingdom");
+
+  def analyze(method: String) = new PointerAnalysis(startClass, method, analysisScope)
   val pa = analyze("live()V")
 
   def testMA(expected: Boolean)(message: String, relativeTo: String, p1: (String, String), p2: (String, String)): Unit = {
@@ -36,7 +38,7 @@ class TestRelativeMustAlias extends FunSuite with BeforeAndAfter {
       assertEquals(expected, result)
     }
   }
-  
+
   val test = testMA(true) _
   val testN = testMA(false) _
   def test(message: String, method: String, variable1: String, variable2: String): Unit =

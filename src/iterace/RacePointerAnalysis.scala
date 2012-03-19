@@ -7,9 +7,11 @@ import iterace.util.WALAConversions._
 import scala.collection._
 import iterace.util.S
 import com.ibm.wala.util.graph.traverse.DFS
+import com.ibm.wala.properties.WalaProperties
+import iterace.oldjava.AnalysisScopeBuilder
 
-class RacePointerAnalysis(startClass: String, startMethod: String, dependencies: List[String]) 
-	extends PointerAnalysis(startClass, startMethod, dependencies) {
+class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder) 
+	extends PointerAnalysis(startClass, startMethod, analysisScope) {
 
   def allInstructions = {
     callGraph.map(n => n.getIR().iterateAllInstructions().map(i => (n, i))).flatten.toSet

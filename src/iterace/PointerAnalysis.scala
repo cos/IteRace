@@ -1,13 +1,14 @@
 package iterace
 
-import iterace.oldjava.WalaAnalysisStart;
+import iterace.oldjava.WalaAnalysisStart
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._
 import iterace.util.WALAConversions._
+import com.ibm.wala.properties.WalaProperties
+import iterace.oldjava.AnalysisScopeBuilder
 
-class PointerAnalysis(startClass: String, startMethod: String, dependencies: List[String]) {
-  private var walaAnalysis = new WalaAnalysisStart;
-  for (d <- dependencies) { walaAnalysis.addBinaryDependency(d); }
+class PointerAnalysis(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder) {
+  private var walaAnalysis = new WalaAnalysisStart(analysisScope);
   walaAnalysis.setup(startClass, startMethod)
 
   val callGraph = walaAnalysis.callGraph

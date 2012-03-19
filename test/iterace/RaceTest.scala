@@ -9,10 +9,15 @@ import scala.collection.immutable.TreeSet
 import scala.collection.immutable.TreeMap
 import iterace.util._
 import scala.collection.JavaConversions._
+import com.ibm.wala.properties.WalaProperties
+import iterace.oldjava.AnalysisScopeBuilder
 
 abstract class RaceTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter  {
   def analyze(method: String) = {
-    new IteRace(startClass, method,  dependencies)
+    var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
+    for (d <- dependencies) { analysisScope.addBinaryDependency(d); }
+    
+    new IteRace(startClass, method,  analysisScope)
   }
 
   def prettyPrint(races: Set[Race]): String = {

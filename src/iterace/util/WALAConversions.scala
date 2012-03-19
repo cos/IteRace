@@ -44,15 +44,6 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
     def prettyPrint(): String
   }
 
-  implicit def o2prettyprintable(o: O): PrettyPrintable = new PrettyPrintable {
-    def prettyPrint(): String = {
-      o match {
-        case o: AllocationSiteInNode => printCodeLocation(o.getNode(), o.getSite().getProgramCounter())
-        case _ => o.toString()
-      }
-    }
-  }
-
   implicit def m2prettyprintable(m: IMethod): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = {
       val packageName = m.getDeclaringClass().getName().getPackage().toString().replace('/', '.')
@@ -77,7 +68,7 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
   def printCodeLocation(n: N, bytecodeIndex: Int): String = {
     printCodeLocation(n.getMethod(), bytecodeIndex)
   }
-  
+
   implicit def mWithLineNo(m: M) = new {
     def lineNoFromBytecodeIndex(bytecodeIndex: Int) = m.asInstanceOf[ShrikeBTMethod].getLineNumber(bytecodeIndex)
     def lineNoFromIRNo(irNo: Int) = lineNoFromBytecodeIndex(m.asInstanceOf[ShrikeBTMethod].getBytecodeIndex(irNo))
@@ -93,13 +84,8 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
     def uses: Iterable[V] = Stream.range(0, i.getNumberOfUses()).map(index => { i.getUse(index) })
   }
 
-  object O {
-    def unapply(o: O): Option[(N, I)] = {
-      o match {
-        case o: AllocationSiteInNode => Some(o.getNode(), o.getNode().getIR().getNew(o.getSite()))
-        case _ => None
-      }
-    }
+  implicit def o2prettyprintable(o: O): PrettyPrintable = new PrettyPrintable {
+    def prettyPrint(): String = O.prettyPrint(o)
   }
 
   implicit def intsetTraversable(s: IntSet) = new Traversable[Int] {

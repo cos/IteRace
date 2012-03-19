@@ -15,7 +15,9 @@ import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ssa.SSAPutInstruction
 
 case object Loop extends ContextKey
-case class Loop(n: N) extends ContextItem
+case class Loop(n: N) extends ContextItem {
+  def prettyPrint = toString
+}
 case object LoopIteration extends ContextKey
 case class LoopIteration(alpha: Boolean) extends ContextItem
 // this is the context for all the nodes in the loop iterations

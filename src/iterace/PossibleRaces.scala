@@ -1,7 +1,5 @@
 package iterace
 import com.ibm.wala.analysis.pointers.HeapGraph
-import scala.collection.mutable.Map
-import scala.collection.mutable.Set
 import scala.collection._
 import scala.collection.JavaConverters._
 import iterace.util.WALAConversions._
@@ -58,10 +56,35 @@ class PossibleRaces(pa: RacePointerAnalysis) extends Function0[immutable.Set[Rac
   }
 }
 
-case class Race(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
+case class Race(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable{
   def prettyPrint() = {
     o.prettyPrint() + "   " + f.getName() + "\n" +
       " (a)  " + a.prettyPrint() + "\n" +
       " (b)  " + b.prettyPrint() + "\n"
   }
+}
+
+abstract class RaceSet(races: Set[Race]) extends java.lang.Iterable[Race] {
+  override def iterator = races.iterator.asJava
+}
+abstract trait MetaRaceSet {
+  def children():Array[_ <: RaceSet]
+}
+
+case class RacingAccess(s: S[I],race: Race,alpha:Boolean)
+
+case class FieldRaceSet(val f:F, races:Set[Race]) extends RaceSet(races) {
+  def alphaAccesses() = races.map(r => new RacingAccess(r.a, r, true))
+  def betaAccesses() = races.map(r => new RacingAccess(r.b, r, false))
+  
+  def children() = (alphaAccesses & betaAccesses) toArray
+}
+case class ObjectRaceSet(val o:O, races:Set[Race]) extends RaceSet(races) with MetaRaceSet {
+  override def children() = {val groups = races.groupBy {_.f}; groups.keys map (f => new FieldRaceSet(f,groups(f)))} toArray
+}
+case class LoopRaceSet(val l:Loop, races:Set[Race]) extends RaceSet(races) with MetaRaceSet  {
+  override def children() = {val groups = races.groupBy {_.o}; groups.keys map (o => new ObjectRaceSet(o,groups(o)))} toArray
+}
+case class ProgramRaceSet(races:Set[Race]) extends RaceSet(races) with MetaRaceSet  {
+  override def children() = {val groups = races.groupBy {_.l}; groups.keys map (l => new LoopRaceSet(l,groups(l)))} toArray
 }
