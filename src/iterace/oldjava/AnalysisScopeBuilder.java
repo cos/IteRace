@@ -23,6 +23,7 @@ public class AnalysisScopeBuilder {
 	}
 
 	public void addBinaryDependency(String directory) throws IOException {
+		System.out.println("Binary: "+directory);
 		File sd = FileProvider.getFile(directory, getLoader());
 		assert sd.isDirectory();
 		scope.addToScope(scope.getLoader(AnalysisScope.APPLICATION), new BinaryDirectoryTreeModule(sd));
@@ -33,12 +34,14 @@ public class AnalysisScopeBuilder {
 	}
 	
 	public void addExtensionBinaryDependency(String directory) throws IOException {
+		System.out.println("Binary extension: "+directory);
 		File sd = FileProvider.getFile(directory, getLoader());
 		assert sd.isDirectory();
 		scope.addToScope(scope.getLoader(AnalysisScope.EXTENSION), new BinaryDirectoryTreeModule(sd));
 	}
 	
 	public void addJarFolderDependency(String path) throws IOException {
+		System.out.println("Jar folder: "+path);
 	  File dir = new File(path);
 	  String delim;
 	  
@@ -66,6 +69,7 @@ public class AnalysisScopeBuilder {
 	}
 
 	public void addJarDependency(String file) throws IOException {
+		System.out.println("Jar: "+file);
 		Module M = FileProvider.getJarFileModule(file, getLoader());
 		scope.addToScope(scope.getLoader(AnalysisScope.APPLICATION), M);
 	}
