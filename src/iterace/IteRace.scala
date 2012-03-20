@@ -25,7 +25,8 @@ class IteRace(startClass: String, startMethod: String, analysisScope: AnalysisSc
 
   private val lockSet = new LockSet(pa)
 
-  val races = new FilterByMayAlias(pa, lockSet)(possibleRaces)
+  private val lockset = new FilterByMayAlias(pa, lockSet)
+  val races = lockset(possibleRaces)
   
   def racesAsRaceSet = new ProgramRaceSet(races)
 }
