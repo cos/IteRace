@@ -21,7 +21,7 @@ trait WALAConversionsForN { self: WALAConversions =>
       normalInstructions
     
     def normalInstructions =
-      ir.iterateNormalInstructions.asScala
+      (ir.map {_.iterateNormalInstructions.asScala}).getOrElse(Iterator())
       
     def getV(name: String): V = 
       valuesForVariableName(name).head
@@ -32,8 +32,8 @@ trait WALAConversionsForN { self: WALAConversions =>
     def variableNames(value: V): Set[String] = 
       instructions.map(i => S(n, i).variableNames(value).toSet).reduce(_ ++ _)
       
-    def ir: IR = 
-      n.getIR()
+    def ir: Option[IR] = 
+      Option(n.getIR())
       
     def m: M = 
       n.getMethod()
