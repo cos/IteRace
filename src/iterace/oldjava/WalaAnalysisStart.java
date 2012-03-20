@@ -76,7 +76,6 @@ public class WalaAnalysisStart {
 		this.entryClass = entryClass;
 		this.entryMethod = entryMethod;
 		
-		analysisScopeBuilder.setExclusionsFile("walaExclusions.txt");
 		AnalysisScope scope = analysisScopeBuilder.getAnalysisScope();
 		Set<Entrypoint> entrypoints = new HashSet<Entrypoint>();
 		AnalysisOptions options = new AnalysisOptions(scope, entrypoints);

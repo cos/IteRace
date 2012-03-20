@@ -15,6 +15,7 @@ import iterace.oldjava.AnalysisScopeBuilder
 abstract class RaceTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter  {
   def analyze(method: String) = {
     var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
+    analysisScope.setExclusionsFile("walaExclusions.txt");
     for (d <- dependencies) { analysisScope.addBinaryDependency(d); }
     
     new IteRace(startClass, method,  analysisScope)
