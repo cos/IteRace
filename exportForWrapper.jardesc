@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="MacRoman" standalone="no"?>
+<jardesc>
+    <jar path="IteRaceWrapper/iterace.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/IteRace/exportForWrapper.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <folder path="/IteRace/lib"/>
+        <file path="/IteRace/src/.DS_Store"/>
+        <file path="/IteRace/build.properties"/>
+        <file path="/IteRace/walaExclusions.txt"/>
+        <file path="/IteRace/IteRace.iml"/>
+        <file path="/IteRace/.gitignore"/>
+        <javaElement handleIdentifier="=IteRace/src&lt;iterace.oldjava"/>
+        <javaElement handleIdentifier="=IteRace/src&lt;iterace"/>
+        <javaElement handleIdentifier="=IteRace/src&lt;iterace.util"/>
+        <file path="/IteRace/.classpath"/>
+        <file path="/IteRace/.project"/>
+        <folder path="/IteRace/META-INF"/>
+    </selectedElements>
+</jardesc>
