@@ -13,6 +13,8 @@ import iterace.util.WALAConversions._
 import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ssa.SSAPutInstruction
+import com.ibm.wala.ipa.callgraph.propagation.ContainerUtil
+import com.ibm.wala.ipa.callgraph.impl.Everywhere
 
 case object Loop extends ContextKey
 case class Loop(n: N) extends ContextItem {
@@ -59,6 +61,8 @@ object LoopContextSelector extends ContextSelector {
 
   // Describes how contexts are chosen
   def getCalleeTarget(caller: CGNode, site: CallSiteReference, callee: IMethod, actualParameters: Array[InstanceKey]): Context = {
+//    if(!isInterestingForUs(callee))
+//      Everywhere.EVERYWHERE
     val opsPattern = ".*Ops.*".r
     caller.getContext() match {
       case LoopCallSiteContext(_, _) => {
@@ -95,4 +99,6 @@ object LoopContextSelector extends ContextSelector {
   def getRelevantParameters(caller: CGNode, site: CallSiteReference): IntSet = {
     EmptyIntSet.instance
   }
+  def isInterestingForUs(callee: M) = 
+    ContainerUtil.isContainer(callee.getDeclaringClass()) || callee.toString().contains("DateFormat");
 }
