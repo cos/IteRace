@@ -18,19 +18,25 @@ class PossibleRaces(pa: RacePointerAnalysis) extends Function0[immutable.Set[Rac
   import pa._
   
   private val icfg = ExplodedInterproceduralCFG.make(callGraph)
+  
+  println("after having icfg");
+  Thread.sleep(10);
 
   private var races: immutable.Set[Race] = immutable.Set[Race]()
 
+  var count = 0;
   // TODO: transform this to visit: first x second iteration of each loop
   // not: everything x everything of everything
   for (
-    S(n1: N, i1: SSAPutInstruction) <- icfg.asScala if firstIteration(n1) && inParallel(n1);
-    S(n2: N, i2: SSAFieldAccessInstruction) <- icfg.asScala if inLoop(n2) && !firstIteration(n2) &&
+    S(n1: N, i1: SSAPutInstruction) <- icfg.asScala if firstIteration(n1) && inParallel(n1) && !i1.isStatic();
+    S(n2: N, i2: SSAFieldAccessInstruction) <- icfg.asScala if inLoop(n2) && !firstIteration(n2) && !i2.isStatic() &&
       i1.getDeclaredField() == i2.getDeclaredField()
   ) {
+    count+=1
+    println(count);
     if (S(n1, i1).irNo == -1) println("HERE")
     if (S(n2, i2).irNo == -1) println("HERE")
-
+      
     val oS1 = P(n1, i1.getRef()).pt.toSet
     val oS2 = P(n2, i2.getRef()).pt.toSet
 
