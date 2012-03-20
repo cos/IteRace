@@ -70,7 +70,10 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
   }
 
   implicit def mWithLineNo(m: M) = new {
-    def lineNoFromBytecodeIndex(bytecodeIndex: Int) = m.asInstanceOf[ShrikeBTMethod].getLineNumber(bytecodeIndex)
+    def lineNoFromBytecodeIndex(bytecodeIndex: Int) = m match {
+      case m:ShrikeBTMethod => m.getLineNumber(bytecodeIndex)
+      case _ => -1
+    }
     def lineNoFromIRNo(irNo: Int) = lineNoFromBytecodeIndex(m.asInstanceOf[ShrikeBTMethod].getBytecodeIndex(irNo))
   }
 
