@@ -8,10 +8,10 @@ object S {
   def unapply(b: BasicBlockInContext[IExplodedBasicBlock]): Option[(N, I)] = {
     Some(b.getNode(), b.getDelegate().getInstruction())
   }
-  def apply[T <: I](n: N, i: T) = new S(n, i)
+  def apply(n: N, i: I) = new S(n, i)
 }
 
-class S[J <: I](val n: N, val i: J) extends PrettyPrintable {
+class S[+J <: I](val n: N, val i: J) extends PrettyPrintable {
   
   def prettyPrint() = {
     printCodeLocation()

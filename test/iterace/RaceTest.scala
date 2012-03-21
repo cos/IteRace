@@ -20,14 +20,6 @@ abstract class RaceTest(dependencies: List[String], startClass: String) extends 
     
     new IteRace(startClass, method,  analysisScope)
   }
-
-  def prettyPrint(races: Set[Race]): String = {
-    def printSameSet(p: (String, Set[Race])) = p._1 + (if (p._2.size > 1) " [" + p._2.size + "]" else "")
-
-    val aAccesses = races.groupBy(r => r.a.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
-    val bAccesses = races.groupBy(r => r.b.prettyPrint()).toStringSorted.map(printSameSet).toStringSorted.reduce(_ + "\n        " + _)
-    "   (a)  " + aAccesses + "\n   (b)  " + bAccesses
-  }
   
   def printRaces(races: Set[Race]): String = {
     val s = new StringBuilder
@@ -38,8 +30,7 @@ abstract class RaceTest(dependencies: List[String], startClass: String) extends 
       for ((o, fr) <- races.groupBy {_.o} toStringSorted ) {
         s ++= o.prettyPrint() + "\n"
         for ((f, rr) <- races.groupBy {_.f} toStringSorted ) {
-          s ++= " ." + f.getName() + "\n"
-          s ++= prettyPrint(rr) +"\n"
+          s ++= ((new FieldRaceSet(f, rr)).prettyPrint ) + "\n"
         }
       }
     }

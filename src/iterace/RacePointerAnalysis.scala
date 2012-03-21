@@ -13,25 +13,32 @@ import iterace.oldjava.AnalysisScopeBuilder
 class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder) 
 	extends PointerAnalysis(startClass, startMethod, analysisScope) {
 
-  def allInstructions = {
+  lazy val allInstructions = {
     callGraph.map(n => n.getIR().iterateAllInstructions().map(i => (n, i))).flatten.toSet
   }
 
   def statementsReachableFrom(n: N): Set[S[I]] = 
-    DFS.getReachableNodes(callGraph, Set(n)) map (nn => nn.instructions.map({S(nn,_)}).toSet) flatten 
+    DFS.getReachableNodes(callGraph, Set(n)) map (nn => nn.instructions.map( i => S(nn,i)).toSet) flatten 
   
-  def getLoops(): immutable.Set[Loop] = {
+  lazy val loops: immutable.Set[Loop] = {
     callGraph collect
       { case n: N if n.getContext().isInstanceOf[LoopContext] => n.getContext().asInstanceOf[LoopContext].loop } toSet
   }
   
+  lazy val parLoops = loops filter {! _.n.m.toString().contains("Seq")}
+  lazy val seqLoops = loops filter {_.n.m.toString().contains("Seq")}
+  
   implicit def loopWithIterations(l: Loop) = new {
     lazy val alphaIterationN = {
-      callGraph.getSuccNodes(l.n).filter(n => n.getContext().get(LoopIteration).asInstanceOf[LoopIteration].alpha)
+      callGraph.getSuccNodes(l.n).find(n => n.getContext().get(LoopIteration).asInstanceOf[LoopIteration].alpha).get
     }
     lazy val betaIterationN = {
-      callGraph.getSuccNodes(l.n).filter(n => !n.getContext().get(LoopIteration).asInstanceOf[LoopIteration].alpha)
+      callGraph.getSuccNodes(l.n).find(n => !n.getContext().get(LoopIteration).asInstanceOf[LoopIteration].alpha).get
     }
+  }
+  
+  implicit def accessIWithReferencePointer[T <: AccessI](s :S[T]) = new {
+    lazy val refP: P = P(s.n, s.i.getRef())
   }
   
   def firstIteration(n: N): Boolean = {

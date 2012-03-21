@@ -21,7 +21,7 @@ abstract class LockSetTest(dependencies: List[String], startClass: String) exten
     test(method) {
       val (lockSet, pa) = analyze(method+"()V")
       import pa._
-      val theLoop = getLoops().head
+      val theLoop = loops.head
       val theLocks = lockSet.getLocks(theLoop)
       assertEquals(result, prettyPrint(theLocks))
     }
@@ -33,7 +33,7 @@ abstract class LockSetTest(dependencies: List[String], startClass: String) exten
     test(method+" lockset") {
       val (locksetsolver, pa) = analyze(method+"()V")
       import pa._
-      val theLoop = getLoops().head
+      val theLoop = loops.head
       val lockSets = locksetsolver.getLockSetMapping(theLoop)
       import iterace.util._
       val s = statementsReachableFrom(theLoop.n).toStringSorted.find(x => {x!= null && x.toString().contains(hint)})

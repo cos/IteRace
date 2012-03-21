@@ -202,7 +202,7 @@ particles.Particle.<clinit>(Particle.java:392)
    (a)  particles.Particle$30.op(Particle$30.java:416)
    (b)  particles.Particle$30.op(Particle$30.java:416)
 """)
-
+/*
   testResult("raceInLibrary", """
 Loop: particles.Particle.raceInLibrary(Particle.java:428)
 
@@ -516,5 +516,5 @@ java.util.HashSet.<init>(HashSet.java:86)
    (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
         java.util.HashMap.resize(HashMap.java:492) [2]
         java.util.HashMap.resize(HashMap.java:508) [2]
-""")
+""")*/
 }

@@ -10,6 +10,7 @@ import com.ibm.wala.classLoader.IClass
 import com.ibm.wala.classLoader.IMethod
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
 import com.ibm.wala.ssa.SSAPutInstruction
+import com.ibm.wala.ssa.SSAFieldAccessInstruction
 
 trait TypeAliases {
   type SS = BasicBlockInContext[IExplodedBasicBlock]
@@ -21,6 +22,7 @@ trait TypeAliases {
   
   type I = SSAInstruction
   type PutI = SSAPutInstruction
+  type AccessI = SSAFieldAccessInstruction
   
   type G = CallGraph
   type C = IClass
