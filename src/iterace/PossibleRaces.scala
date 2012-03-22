@@ -34,7 +34,10 @@ class PossibleRaces(pa: RacePointerAnalysis) extends Function0[immutable.Set[Rac
         val sharedObjects = s1.refP.pt & s2.refP.pt
         // it is enough to consider object created outside and in the the first iteration
         // so, filter out the objects created in the second iteration. they are duplicates of the first iteration      	
-        val relevantObjects = sharedObjects filter { case O(n, i) => !inLoop(n) || firstIteration(n) }
+        val relevantObjects = sharedObjects filter {
+          case O(n, i) => !inLoop(n) || firstIteration(n);
+          case _ => true
+        }
 
         val f = s1.i.getDeclaredField();
 
