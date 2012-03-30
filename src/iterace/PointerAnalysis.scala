@@ -14,6 +14,7 @@ class PointerAnalysis(startClass: String, startMethod: String, analysisScope: An
   val callGraph = walaAnalysis.callGraph
   val heap = walaAnalysis.pointerAnalysis.getHeapGraph()
   val analysisCache = walaAnalysis.cache
+  val cha = walaAnalysis.cha;
 
   /**
    * find a call graph node that matches .*pattern.*

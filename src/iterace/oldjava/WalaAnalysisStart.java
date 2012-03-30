@@ -49,6 +49,7 @@ public class WalaAnalysisStart {
 	public String entryMethod;
 	public String entryClass;
 	public Entrypoint entrypoint;
+	public IClassHierarchy cha;
 
 	public WalaAnalysisStart(AnalysisScopeBuilder analysisOptions) {
 		this.analysisScopeBuilder = analysisOptions;
@@ -80,7 +81,7 @@ public class WalaAnalysisStart {
 		Set<Entrypoint> entrypoints = new HashSet<Entrypoint>();
 		AnalysisOptions options = new AnalysisOptions(scope, entrypoints);
 		
-		IClassHierarchy cha = ClassHierarchy.make(scope);
+		cha = ClassHierarchy.make(scope);
 		TypeReference typeReference = TypeReference.findOrCreate(scope.getLoader(AnalysisScope.APPLICATION),
 		    TypeName.string2TypeName(entryClass));
 		MethodReference methodReference = MethodReference.findOrCreate(typeReference,
