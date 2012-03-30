@@ -6,9 +6,9 @@ import com.ibm.wala.types.TypeReference;
 
 public class StaticClassObject implements InstanceKey {
 	
-	private final TypeReference klass;
+	private final IClass klass;
 
-	public StaticClassObject(TypeReference klass) {
+	public StaticClassObject(IClass klass) {
 		this.klass = klass;
 	}
 
@@ -17,7 +17,7 @@ public class StaticClassObject implements InstanceKey {
 		return null;
 	}
 
-	public TypeReference getKlass() {
+	public IClass getKlass() {
 		return klass;
 	}
 	
