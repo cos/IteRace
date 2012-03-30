@@ -38,7 +38,9 @@ class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope
   }
   
   implicit def accessIWithReferencePointer[T <: AccessI](s :S[T]) = new {
-    lazy val refP: P = P(s.n, s.i.getRef())
+    lazy val refP: Option[P] = if(s.i isStatic) None else Some(P(s.n, s.i.getRef()))
+    
+    lazy val isStatic: Boolean = s.i isStatic
   }
   
   def firstIteration(n: N): Boolean = {

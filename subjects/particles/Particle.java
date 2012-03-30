@@ -392,7 +392,7 @@ public class Particle {
 	final static Particle staticShared = new Particle();
 	protected static double df = 1.2;
 
-	public void verySimpleRaceToStatic() {
+	public void verySimpleRaceToStaticObject() {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
 
@@ -650,5 +650,20 @@ public class Particle {
 
 	private static void thisisstatic() {
 		staticShared.forceX ++;
+	}
+	
+	static int staticX;
+	
+	public void verySimpleRaceOnStaticField() {
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
+				ParallelArray.defaultExecutor());
+
+		particles.replaceWithMappedIndex(new Ops.IntToObject<Particle>() {
+			@Override
+			public Particle op(int i) {
+				staticX = 100;
+				return new Particle();
+			}
+		});
 	}
 }

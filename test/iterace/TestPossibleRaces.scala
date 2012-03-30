@@ -185,8 +185,8 @@ particles.Particle.verySimpleRaceWithIndex(Particle.java:381)
    (b)  particles.Particle$28.op(Particle$28.java:386)
 """)
 
-  testResult("verySimpleRaceToStatic", """
-Loop: particles.Particle.verySimpleRaceToStatic(Particle.java:399)
+  testResult("verySimpleRaceToStaticObject", """
+Loop: particles.Particle.verySimpleRaceToStaticObject(Particle.java:399)
 
 particles.Particle.<clinit>(Particle.java:392)
  .x
@@ -202,319 +202,27 @@ particles.Particle.<clinit>(Particle.java:392)
    (a)  particles.Particle$30.op(Particle$30.java:416)
    (b)  particles.Particle$30.op(Particle$30.java:416)
 """)
+
+	testResult("staticMethod","""
+Loop: particles.Particle.staticMethod(Particle.java:642)
+
+particles.Particle.<clinit>(Particle.java:392)
+ .forceX
+   (a)  particles.Particle.thisisstatic(Particle.java:652) [2]
+   (b)  particles.Particle.thisisstatic(Particle.java:652) [2]
+""");
+
+    testResult("verySimpleRaceOnStaticField", """
+Loop: particles.Particle.verySimpleRaceOnStaticField(Particle.java:661)
+
+Static: particles.Particle
+ .staticX
+   (a)  particles.Particle$48.op(Particle$48.java:664)
+   (b)  particles.Particle$48.op(Particle$48.java:664)
+""")
+
 /*
   testResult("raceInLibrary", """
-Loop: particles.Particle.raceInLibrary(Particle.java:428)
-
-java.util.HashMap.addEntry(HashMap.java:808)
- .hash
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:739) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.transfer(HashMap.java:523)
- .key
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:738) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.putForNullKey(HashMap.java:425)
- .next
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:737) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [12]
-   (b)  java.util.HashMap.put(HashMap.java:405) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:424) [4]
-        java.util.HashMap.transfer(HashMap.java:522) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [4]
- .value
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:736) [4]
-        java.util.HashMap.put(HashMap.java:409) [12]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [12]
-   (b)  java.util.HashMap.put(HashMap.java:408) [7]
-        java.util.HashMap.put(HashMap.java:409) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:426) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [7]
- .bitMask
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1064)
-   (b)  java.util.HashMap$FrontCache.inRange(HashMap$FrontCache.java:1090)
- .cache
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1063) [3]
-   (b)  java.util.HashMap$FrontCache.put(HashMap$FrontCache.java:1113)
-        java.util.HashMap$FrontCache.transfer(HashMap$FrontCache.java:1145) [2]
- .frontCache
-   (a)  java.util.HashMap.resize(HashMap.java:504) [3]
-   (b)  java.util.HashMap.put(HashMap.java:401)
-        java.util.HashMap.resize(HashMap.java:503)
-        java.util.HashMap.resize(HashMap.java:504)
- .modCount
-   (a)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
-   (b)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
- .size
-   (a)  java.util.HashMap.addEntry(HashMap.java:809) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.size(HashMap.java:288)
- .table
-   (a)  java.util.HashMap.resize(HashMap.java:507) [9]
-   (b)  java.util.HashMap.addEntry(HashMap.java:807)
-        java.util.HashMap.addEntry(HashMap.java:808)
-        java.util.HashMap.addEntry(HashMap.java:810)
-        java.util.HashMap.put(HashMap.java:404)
-        java.util.HashMap.put(HashMap.java:405)
-        java.util.HashMap.putForNullKey(HashMap.java:424)
-        java.util.HashMap.resize(HashMap.java:489)
-        java.util.HashMap.resize(HashMap.java:507)
-        java.util.HashMap.transfer(HashMap.java:515)
- .threshold
-   (a)  java.util.HashMap.resize(HashMap.java:492) [3]
-        java.util.HashMap.resize(HashMap.java:508) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.resize(HashMap.java:492) [2]
-        java.util.HashMap.resize(HashMap.java:508) [2]
-java.util.HashMap.addEntry(HashMap.java:808)
- .hash
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:739) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.transfer(HashMap.java:523)
- .key
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:738) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.putForNullKey(HashMap.java:425)
- .next
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:737) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [12]
-   (b)  java.util.HashMap.put(HashMap.java:405) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:424) [4]
-        java.util.HashMap.transfer(HashMap.java:522) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [4]
- .value
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:736) [4]
-        java.util.HashMap.put(HashMap.java:409) [12]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [12]
-   (b)  java.util.HashMap.put(HashMap.java:408) [7]
-        java.util.HashMap.put(HashMap.java:409) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:426) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [7]
- .bitMask
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1064)
-   (b)  java.util.HashMap$FrontCache.inRange(HashMap$FrontCache.java:1090)
- .cache
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1063) [3]
-   (b)  java.util.HashMap$FrontCache.put(HashMap$FrontCache.java:1113)
-        java.util.HashMap$FrontCache.transfer(HashMap$FrontCache.java:1145) [2]
- .frontCache
-   (a)  java.util.HashMap.resize(HashMap.java:504) [3]
-   (b)  java.util.HashMap.put(HashMap.java:401)
-        java.util.HashMap.resize(HashMap.java:503)
-        java.util.HashMap.resize(HashMap.java:504)
- .modCount
-   (a)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
-   (b)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
- .size
-   (a)  java.util.HashMap.addEntry(HashMap.java:809) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.size(HashMap.java:288)
- .table
-   (a)  java.util.HashMap.resize(HashMap.java:507) [9]
-   (b)  java.util.HashMap.addEntry(HashMap.java:807)
-        java.util.HashMap.addEntry(HashMap.java:808)
-        java.util.HashMap.addEntry(HashMap.java:810)
-        java.util.HashMap.put(HashMap.java:404)
-        java.util.HashMap.put(HashMap.java:405)
-        java.util.HashMap.putForNullKey(HashMap.java:424)
-        java.util.HashMap.resize(HashMap.java:489)
-        java.util.HashMap.resize(HashMap.java:507)
-        java.util.HashMap.transfer(HashMap.java:515)
- .threshold
-   (a)  java.util.HashMap.resize(HashMap.java:492) [3]
-        java.util.HashMap.resize(HashMap.java:508) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.resize(HashMap.java:492) [2]
-        java.util.HashMap.resize(HashMap.java:508) [2]
-java.util.HashMap.createEntry(HashMap.java:823)
- .hash
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:739) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.transfer(HashMap.java:523)
- .key
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:738) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.putForNullKey(HashMap.java:425)
- .next
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:737) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [12]
-   (b)  java.util.HashMap.put(HashMap.java:405) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:424) [4]
-        java.util.HashMap.transfer(HashMap.java:522) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [4]
- .value
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:736) [4]
-        java.util.HashMap.put(HashMap.java:409) [12]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [12]
-   (b)  java.util.HashMap.put(HashMap.java:408) [7]
-        java.util.HashMap.put(HashMap.java:409) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:426) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [7]
- .bitMask
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1064)
-   (b)  java.util.HashMap$FrontCache.inRange(HashMap$FrontCache.java:1090)
- .cache
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1063) [3]
-   (b)  java.util.HashMap$FrontCache.put(HashMap$FrontCache.java:1113)
-        java.util.HashMap$FrontCache.transfer(HashMap$FrontCache.java:1145) [2]
- .frontCache
-   (a)  java.util.HashMap.resize(HashMap.java:504) [3]
-   (b)  java.util.HashMap.put(HashMap.java:401)
-        java.util.HashMap.resize(HashMap.java:503)
-        java.util.HashMap.resize(HashMap.java:504)
- .modCount
-   (a)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
-   (b)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
- .size
-   (a)  java.util.HashMap.addEntry(HashMap.java:809) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.size(HashMap.java:288)
- .table
-   (a)  java.util.HashMap.resize(HashMap.java:507) [9]
-   (b)  java.util.HashMap.addEntry(HashMap.java:807)
-        java.util.HashMap.addEntry(HashMap.java:808)
-        java.util.HashMap.addEntry(HashMap.java:810)
-        java.util.HashMap.put(HashMap.java:404)
-        java.util.HashMap.put(HashMap.java:405)
-        java.util.HashMap.putForNullKey(HashMap.java:424)
-        java.util.HashMap.resize(HashMap.java:489)
-        java.util.HashMap.resize(HashMap.java:507)
-        java.util.HashMap.transfer(HashMap.java:515)
- .threshold
-   (a)  java.util.HashMap.resize(HashMap.java:492) [3]
-        java.util.HashMap.resize(HashMap.java:508) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.resize(HashMap.java:492) [2]
-        java.util.HashMap.resize(HashMap.java:508) [2]
-java.util.HashMap.resize(HashMap.java:502)
- .hash
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:739) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.transfer(HashMap.java:523)
- .key
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:738) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.putForNullKey(HashMap.java:425)
- .next
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:737) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [12]
-   (b)  java.util.HashMap.put(HashMap.java:405) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:424) [4]
-        java.util.HashMap.transfer(HashMap.java:522) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [4]
- .value
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:736) [4]
-        java.util.HashMap.put(HashMap.java:409) [12]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [12]
-   (b)  java.util.HashMap.put(HashMap.java:408) [7]
-        java.util.HashMap.put(HashMap.java:409) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:426) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [7]
- .bitMask
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1064)
-   (b)  java.util.HashMap$FrontCache.inRange(HashMap$FrontCache.java:1090)
- .cache
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1063) [3]
-   (b)  java.util.HashMap$FrontCache.put(HashMap$FrontCache.java:1113)
-        java.util.HashMap$FrontCache.transfer(HashMap$FrontCache.java:1145) [2]
- .frontCache
-   (a)  java.util.HashMap.resize(HashMap.java:504) [3]
-   (b)  java.util.HashMap.put(HashMap.java:401)
-        java.util.HashMap.resize(HashMap.java:503)
-        java.util.HashMap.resize(HashMap.java:504)
- .modCount
-   (a)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
-   (b)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
- .size
-   (a)  java.util.HashMap.addEntry(HashMap.java:809) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.size(HashMap.java:288)
- .table
-   (a)  java.util.HashMap.resize(HashMap.java:507) [9]
-   (b)  java.util.HashMap.addEntry(HashMap.java:807)
-        java.util.HashMap.addEntry(HashMap.java:808)
-        java.util.HashMap.addEntry(HashMap.java:810)
-        java.util.HashMap.put(HashMap.java:404)
-        java.util.HashMap.put(HashMap.java:405)
-        java.util.HashMap.putForNullKey(HashMap.java:424)
-        java.util.HashMap.resize(HashMap.java:489)
-        java.util.HashMap.resize(HashMap.java:507)
-        java.util.HashMap.transfer(HashMap.java:515)
- .threshold
-   (a)  java.util.HashMap.resize(HashMap.java:492) [3]
-        java.util.HashMap.resize(HashMap.java:508) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.resize(HashMap.java:492) [2]
-        java.util.HashMap.resize(HashMap.java:508) [2]
-java.util.HashSet.<init>(HashSet.java:86)
- .hash
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:739) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.transfer(HashMap.java:523)
- .key
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:738) [2]
-   (b)  java.util.HashMap.put(HashMap.java:407)
-        java.util.HashMap.putForNullKey(HashMap.java:425)
- .next
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:737) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [12]
-   (b)  java.util.HashMap.put(HashMap.java:405) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:424) [4]
-        java.util.HashMap.transfer(HashMap.java:522) [4]
-        java.util.HashMap.transfer(HashMap.java:524) [4]
- .value
-   (a)  java.util.HashMap$Entry.<init>(HashMap$Entry.java:736) [4]
-        java.util.HashMap.put(HashMap.java:409) [12]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [12]
-   (b)  java.util.HashMap.put(HashMap.java:408) [7]
-        java.util.HashMap.put(HashMap.java:409) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:426) [7]
-        java.util.HashMap.putForNullKey(HashMap.java:427) [7]
- .bitMask
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1064)
-   (b)  java.util.HashMap$FrontCache.inRange(HashMap$FrontCache.java:1090)
- .cache
-   (a)  java.util.HashMap$FrontCache.<init>(HashMap$FrontCache.java:1063) [3]
-   (b)  java.util.HashMap$FrontCache.put(HashMap$FrontCache.java:1113)
-        java.util.HashMap$FrontCache.transfer(HashMap$FrontCache.java:1145) [2]
- .frontCache
-   (a)  java.util.HashMap.resize(HashMap.java:504) [3]
-   (b)  java.util.HashMap.put(HashMap.java:401)
-        java.util.HashMap.resize(HashMap.java:503)
-        java.util.HashMap.resize(HashMap.java:504)
- .modCount
-   (a)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
-   (b)  java.util.HashMap.put(HashMap.java:415) [4]
-        java.util.HashMap.putForNullKey(HashMap.java:432) [4]
- .size
-   (a)  java.util.HashMap.addEntry(HashMap.java:809) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.size(HashMap.java:288)
- .table
-   (a)  java.util.HashMap.resize(HashMap.java:507) [9]
-   (b)  java.util.HashMap.addEntry(HashMap.java:807)
-        java.util.HashMap.addEntry(HashMap.java:808)
-        java.util.HashMap.addEntry(HashMap.java:810)
-        java.util.HashMap.put(HashMap.java:404)
-        java.util.HashMap.put(HashMap.java:405)
-        java.util.HashMap.putForNullKey(HashMap.java:424)
-        java.util.HashMap.resize(HashMap.java:489)
-        java.util.HashMap.resize(HashMap.java:507)
-        java.util.HashMap.transfer(HashMap.java:515)
- .threshold
-   (a)  java.util.HashMap.resize(HashMap.java:492) [3]
-        java.util.HashMap.resize(HashMap.java:508) [3]
-   (b)  java.util.HashMap.addEntry(HashMap.java:809) [2]
-        java.util.HashMap.resize(HashMap.java:492) [2]
-        java.util.HashMap.resize(HashMap.java:508) [2]
+  ....
 """)*/
 }

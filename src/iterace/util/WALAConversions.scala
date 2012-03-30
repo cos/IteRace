@@ -26,6 +26,7 @@ import com.ibm.wala.ssa.SSAPhiInstruction
 import com.ibm.wala.ssa.IR
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.IntSetAction
+import com.ibm.wala.types.TypeReference
 
 class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConversionsForP {
   trait Named {
@@ -48,6 +49,13 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
     def prettyPrint(): String = {
       val packageName = m.getDeclaringClass().getName().getPackage().toString().replace('/', '.')
       packageName + "." + m.getDeclaringClass().name + "." + m.name
+    }
+  }
+  
+  implicit def type2prettyprintable(t: TypeReference): PrettyPrintable = new PrettyPrintable {
+    def prettyPrint(): String = {
+      val packageName = t.getName().getPackage().toString().replace('/', '.')
+      packageName + "." + t.getName().getClassName()
     }
   }
 

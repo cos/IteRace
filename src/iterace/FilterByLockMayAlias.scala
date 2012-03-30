@@ -1,10 +1,10 @@
 package iterace
 
-class FilterByMayAlias(pa: RacePointerAnalysis, lockSet:LockSet) extends Function1[Set[Race], Set[Race]] {
+class FilterByLockMayAlias(pa: RacePointerAnalysis, lockSet:LockSet) extends Function1[Set[Race], Set[Race]] {
   import pa._
   
-  def apply(possibleRaces: Set[Race]):Set[Race] = {
-    (possibleRaces groupBy { _.l } collect {
+  def apply(races: Set[Race]):Set[Race] = {
+    (races groupBy { _.l } collect {
       case (loop, potentialRaceSet) => {
         val locks = lockSet.getLocks(loop)
         val locksWithUniqueAbstractObjects = locks.filter({ pointsToUniqueAbstractObject(_) })

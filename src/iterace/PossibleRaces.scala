@@ -22,16 +22,23 @@ class PossibleRaces(pa: RacePointerAnalysis) extends Function0[immutable.Set[Rac
   Thread.sleep(10);
 
   private val races: immutable.Set[Race] = (parLoops map (l => {
+
     val alphaWrites = statementsReachableFrom(l.alphaIterationN) collect
       { case s: S[PutI] if s.i.isInstanceOf[PutI] => s }
+
     val betaAccesses = statementsReachableFrom(l.betaIterationN) collect
       { case s: S[AccessI] if s.i.isInstanceOf[AccessI] => s }
+
     val allPairs = crossProduct(alphaWrites, betaAccesses)
+
     val pairsOnSameField = allPairs filter { case (s1, s2) => s1.i.getDeclaredField() == s2.i.getDeclaredField() }
 
     pairsOnSameField.collect {
       case (s1, s2) =>
-        val sharedObjects = s1.refP.pt & s2.refP.pt
+        val sharedObjects = if (s1 isStatic)
+          Set(new StaticClassObject(s1.i.getDeclaredField().getDeclaringClass()))
+        else
+          s1.refP.get.pt & s2.refP.get.pt
         // it is enough to consider object created outside and in the the first iteration
         // so, filter out the objects created in the second iteration. they are duplicates of the first iteration      	
         val relevantObjects = sharedObjects filter {

@@ -21,12 +21,17 @@ class IteRace(startClass: String, startMethod: String, analysisScope: AnalysisSc
   val pa = new RacePointerAnalysis(startClass, startMethod, analysisScope)
   import pa._
   
+  // -------
+  // The analysis steps
   val possibleRaces = new PossibleRaces(pa)()
+  
+  private val filterByKnownThreadSafe = new FilterByKnownThreadSafe  
+  val filteredPossibleRaces = filterByKnownThreadSafe(possibleRaces)
 
   private val lockSet = new LockSet(pa)
-
-  private val lockset = new FilterByMayAlias(pa, lockSet)
-  val races = lockset(possibleRaces)
+  private val filterByLockMayAlias = new FilterByLockMayAlias(pa, lockSet)
+  val races = filterByLockMayAlias(filteredPossibleRaces)
+  // -------  
   
   def racesAsRaceSet = new ProgramRaceSet(races)
 }
