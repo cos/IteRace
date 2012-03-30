@@ -221,6 +221,15 @@ Static: particles.Particle
    (b)  particles.Particle$48.op(Particle$48.java:664)
 """)
 
+    testResult("raceOnArray", """
+Loop: particles.Particle.raceOnArray(Particle.java:491)
+
+particles.Particle.raceOnArray(Particle.java:489)
+ .[*]
+   (a)  particles.Particle$35.op(Particle$35.java:494)
+   (b)  particles.Particle$35.op(Particle$35.java:494)
+""")
+
 /*
   testResult("raceInLibrary", """
   ....

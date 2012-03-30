@@ -23,37 +23,36 @@ class PossibleRaces(pa: RacePointerAnalysis) extends Function0[immutable.Set[Rac
 
   private val races: immutable.Set[Race] = (parLoops map (l => {
 
-    val alphaWrites = statementsReachableFrom(l.alphaIterationN) collect
-      { case s: S[PutI] if s.i.isInstanceOf[PutI] => s }
+    val alphaWrites = statementsReachableFrom(l.alphaIterationN) filter
+      (s => s.i.isInstanceOf[PutI] || s.i.isInstanceOf[ArrayStoreI])
 
-    val betaAccesses = statementsReachableFrom(l.betaIterationN) collect
-      { case s: S[AccessI] if s.i.isInstanceOf[AccessI] => s }
+    val betaAccesses = statementsReachableFrom(l.betaIterationN) filter
+      (s => s.i.isInstanceOf[AccessI] || s.i.isInstanceOf[ArrayReferenceI])
 
     val allPairs = crossProduct(alphaWrites, betaAccesses)
 
-    val pairsOnSameField = allPairs filter { case (s1, s2) => s1.i.getDeclaredField() == s2.i.getDeclaredField() }
+    val pairsOnSameField = allPairs filter { case (s1, s2) => s1.i.f == s2.i.f }
 
     pairsOnSameField.collect {
-      case (s1, s2) =>
-        val sharedObjects = if (s1 isStatic)
-          Set(new StaticClassObject(s1.i.getDeclaredField().getDeclaringClass()))
-        else
-          s1.refP.get.pt & s2.refP.get.pt
+      case (s1: S[I], s2: S[I])  =>
+        val sharedObjects = s1.i match { 
+          case i: AccessI if i.isStatic => Set(new StaticClassObject(s1.i.f.get.getDeclaringClass()))
+          case _ => s1.refP.get.pt & s2.refP.get.pt 
+        }
+
         // it is enough to consider object created outside and in the the first iteration
         // so, filter out the objects created in the second iteration. they are duplicates of the first iteration      	
         val relevantObjects = sharedObjects filter {
           case O(n, i) => !inLoop(n) || firstIteration(n);
           case _ => true
         }
-
-        val f = s1.i.getDeclaredField();
-
-        relevantObjects map { Race(l, _, f, s1, s2) }
+        
+        relevantObjects map { Race(l, _, s1.i.f.get, s1, s2) }
     } flatten
   })) flatten
 }
 
-case class Race(l: Loop, o: O, f: F, a: S[PutI], b: S[AccessI]) extends PrettyPrintable {
+case class Race(l: Loop, o: O, f: F, a: S[I], b: S[I]) extends PrettyPrintable {
   def prettyPrint() = {
     o.prettyPrint() + "   " + f.getName() + "\n" +
       " (a)  " + a.prettyPrint() + "\n" +
@@ -68,7 +67,7 @@ abstract trait MetaRaceSet {
   def children(): Array[_ <: RaceSet]
 }
 
-case class RacingAccess(s: S[AccessI], race: Race, alpha: Boolean)
+case class RacingAccess(s: S[I], race: Race, alpha: Boolean)
 
 case class FieldRaceSet(val f: F, races: Set[Race]) extends RaceSet(races) {
   def alphaAccesses() = races.map(r => new RacingAccess(r.a, r, true))
