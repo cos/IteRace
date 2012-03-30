@@ -15,6 +15,7 @@ import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ssa.SSAPutInstruction
 import com.ibm.wala.ipa.callgraph.propagation.ContainerUtil
 import com.ibm.wala.ipa.callgraph.impl.Everywhere
+import com.ibm.wala.ipa.callgraph.propagation.cfa.CallerSiteContextPair
 
 case object Loop extends ContextKey
 case class Loop(n: N) extends ContextItem {
@@ -64,6 +65,7 @@ object LoopContextSelector extends ContextSelector {
 //    if(!isInterestingForUs(callee))
 //      Everywhere.EVERYWHERE
     val opsPattern = ".*Ops.*".r
+    val parallelArrayPattern = ".*ParallelArray.*".r
     caller.getContext() match {
       case LoopCallSiteContext(_, _) => {
         val invocations = caller.getIR().getCalls(site);
@@ -91,6 +93,7 @@ object LoopContextSelector extends ContextSelector {
       case _ => {
         callee match {
           case M(C(_, "ParallelArray"), opsPattern()) => LoopCallSiteContext(caller, site)
+          case M(_,parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
           case _ => caller.getContext()
         }
       }
