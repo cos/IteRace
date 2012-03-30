@@ -58,6 +58,13 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
       packageName + "." + t.getName().getClassName()
     }
   }
+  
+  implicit def iclass2prettyprintable(t: IClass): PrettyPrintable = new PrettyPrintable {
+    def prettyPrint(): String = {
+      val packageName = t.getName().getPackage().toString().replace('/', '.')
+      packageName + "." + t.getName().getClassName()
+    }
+  }
 
   // method
   object M {
