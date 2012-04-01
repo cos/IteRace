@@ -13,6 +13,7 @@ class FilterByKnownThreadSafe extends Function1[Set[Race], Set[Race]] {
     "java/io/StringReader, ",
     "java/util/Vector, ",
     "java/lang/Integer, ",
+    "java/lang/Long, ",
     "java/lang/Throwable, ",
     "java/security/AccessControlContext, getDebug", // not relevant
     "java/util/Random, <init>", "java/lang/Integer, <init>",
