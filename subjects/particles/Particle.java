@@ -1,6 +1,6 @@
 package particles;
 
-
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import extra166y.Ops;
@@ -662,6 +662,21 @@ public class Particle {
 			@Override
 			public Particle op(int i) {
 				staticX = 100;
+				return new Particle();
+			}
+		});
+	}
+	
+	public void raceOnArrayList() {
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
+				ParallelArray.defaultExecutor());
+		
+		final ArrayList<Integer> someList = new ArrayList<Integer>();
+
+		particles.replaceWithMappedIndex(new Ops.IntToObject<Particle>() {
+			@Override
+			public Particle op(int i) {
+				someList.add(i);
 				return new Particle();
 			}
 		});

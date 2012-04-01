@@ -93,10 +93,6 @@ particles.Particle.disambiguateFalseRace(Particle.java:186)
 Loop: particles.Particle.raceBecauseOfOutsideInterference(Particle.java:232)
 
 particles.Particle$15.op(Particle$15.java:235)
- .origin
-   (a)  particles.Particle$15.op(Particle$15.java:235) [2]
-   (b)  particles.Particle$15.op(Particle$15.java:235)
-        particles.Particle$15.op(Particle$15.java:236)
  .x
    (a)  particles.Particle$15.op(Particle$15.java:236)
    (b)  particles.Particle$15.op(Particle$15.java:236)
@@ -105,9 +101,6 @@ particles.Particle.raceBecauseOfOutsideInterference(Particle.java:229)
    (a)  particles.Particle$15.op(Particle$15.java:235) [2]
    (b)  particles.Particle$15.op(Particle$15.java:235)
         particles.Particle$15.op(Particle$15.java:236)
- .x
-   (a)  particles.Particle$15.op(Particle$15.java:236)
-   (b)  particles.Particle$15.op(Particle$15.java:236)
 """)
 
   testResult("raceOnSharedObjectCarriedByArray", """
@@ -127,12 +120,12 @@ Loop: particles.Particle.raceBecauseOfDirectArrayLoad(Particle.java:274)
 
 particles.Particle$18.op(Particle$18.java:279)
  .x
-   (a)  particles.Particle$18.op(Particle$18.java:278) [2]
-   (b)  particles.Particle$18.op(Particle$18.java:278) [2]
+   (a)  particles.Particle$18.op(Particle$18.java:278)
+   (b)  particles.Particle$18.op(Particle$18.java:278)
 particles.Particle.raceBecauseOfDirectArrayLoad(Particle.java:271)
  .x
-   (a)  particles.Particle$18.op(Particle$18.java:278) [2]
-   (b)  particles.Particle$18.op(Particle$18.java:278) [2]
+   (a)  particles.Particle$18.op(Particle$18.java:278)
+   (b)  particles.Particle$18.op(Particle$18.java:278)
 """)
 
   testResult("raceOnSharedReturnValue", """
@@ -159,10 +152,6 @@ particles.Particle$20.op(Particle$20.java:306)
 Loop: particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:367)
 
 particles.Particle$27.op(Particle$27.java:371)
- .origin
-   (a)  particles.Particle$27.op(Particle$27.java:371) [2]
-   (b)  particles.Particle$27.op(Particle$27.java:371)
-        particles.Particle$27.op(Particle$27.java:372)
  .x
    (a)  particles.Particle$27.op(Particle$27.java:370)
    (b)  particles.Particle$27.op(Particle$27.java:370)
@@ -171,9 +160,6 @@ particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:365)
    (a)  particles.Particle$27.op(Particle$27.java:371) [2]
    (b)  particles.Particle$27.op(Particle$27.java:371)
         particles.Particle$27.op(Particle$27.java:372)
- .x
-   (a)  particles.Particle$27.op(Particle$27.java:370)
-   (b)  particles.Particle$27.op(Particle$27.java:370)
 """)
 
   testResult("verySimpleRaceWithIndex", """

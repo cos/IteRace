@@ -14,9 +14,17 @@ import iterace.RaceTest
 import iterace.IteRace
 
 @RunWith(classOf[JUnitRunner])
-class TestMonteCarlo extends RaceTest(List("../evaluation/montecarlo/bin", "../lib/parallelArray.mock"), "Lmontecarlo/parallel/JGFMonteCarloBench") {
-  
-  override def result(iteRace: IteRace) = iteRace.possibleRaces
-  
-  testNoRaces("JGFrun(I)V")
+class TestMonteCarlo extends RaceTest(List("../evaluation/montecarlo/bin", "../lib/parallelArray.mock"),
+  "Lmontecarlo/parallel/JGFMonteCarloBench") {
+
+  override def result(iteRace: IteRace) = iteRace.races
+
+  testResult("JGFrun(I)V","""
+Loop: montecarlo.parallel.AppDemo.runParallel(AppDemo.java:178)
+
+Static: montecarlo.parallel.Universal
+ .UNIVERSAL_DEBUG
+   (a)  montecarlo.parallel.Universal.<init>(Universal.java:63)
+   (b)  montecarlo.parallel.Universal.<init>(Universal.java:63)
+""")
 }

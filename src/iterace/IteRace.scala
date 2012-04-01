@@ -31,7 +31,10 @@ class IteRace(startClass: String, startMethod: String, analysisScope: AnalysisSc
   private val lockSet = new LockSet(pa)
   private val filterByLockMayAlias = new FilterByLockMayAlias(pa, lockSet)
   val races = filterByLockMayAlias(filteredPossibleRaces)
-  // -------  
+  // -------
+  
+  private val bubbleUp = new BubbleUpToAppLevel(pa)
+  val shallowRaces = bubbleUp(races)
   
   def racesAsRaceSet = new ProgramRaceSet(races)
 }

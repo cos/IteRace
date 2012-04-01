@@ -12,7 +12,7 @@ object S {
 }
 
 class S[+J <: I](val n: N, val i: J) extends PrettyPrintable {
-  
+
   def prettyPrint() = {
     printCodeLocation()
   }
@@ -27,11 +27,11 @@ class S[+J <: I](val n: N, val i: J) extends PrettyPrintable {
     }
   }
 
-  def m = n.m
-  
-  def lineNo = m.getLineNumber(irNo)
-    
-  def irNo = n.getIR().getInstructions().findIndexOf(ii => i.equals(ii))
+  lazy val m = n.m
+
+  lazy val lineNo = m.getLineNumber(irNo)
+
+  lazy val irNo = n.getIR().getInstructions().findIndexOf(ii => i.equals(ii))
 
   def valuesForVariableName(name: String): Iterable[V] = {
     val maxValue = n.getIR().getSymbolTable().getMaxValueNumber();
@@ -42,6 +42,12 @@ class S[+J <: I](val n: N, val i: J) extends PrettyPrintable {
       } else
         false
     })
+  }
+
+  lazy val isStatic: Boolean = i match {
+    case i: AccessI => i.isStatic
+    case i: InvokeI => i.isStatic
+    case _ => false
   }
 
   def variableNames(v: Int): Iterable[String] = {

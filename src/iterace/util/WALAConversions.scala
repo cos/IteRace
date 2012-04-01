@@ -27,6 +27,8 @@ import com.ibm.wala.ssa.IR
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.IntSetAction
 import com.ibm.wala.types.TypeReference
+import com.ibm.wala.classLoader.IClassLoader
+import com.ibm.wala.types.ClassLoaderReference
 
 class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConversionsForP {
   trait Named {
@@ -51,14 +53,14 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
       packageName + "." + m.getDeclaringClass().name + "." + m.name
     }
   }
-  
+
   implicit def type2prettyprintable(t: TypeReference): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = {
       val packageName = t.getName().getPackage().toString().replace('/', '.')
       packageName + "." + t.getName().getClassName()
     }
   }
-  
+
   implicit def iclass2prettyprintable(t: IClass): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = {
       val packageName = t.getName().getPackage().toString().replace('/', '.')
@@ -86,7 +88,7 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
 
   implicit def mWithLineNo(m: M) = new {
     def lineNoFromBytecodeIndex(bytecodeIndex: Int) = m match {
-      case m:ShrikeBTMethod => m.getLineNumber(bytecodeIndex)
+      case m: ShrikeBTMethod => m.getLineNumber(bytecodeIndex)
       case _ => -1
     }
     def lineNoFromIRNo(irNo: Int) = lineNoFromBytecodeIndex(m.asInstanceOf[ShrikeBTMethod].getBytecodeIndex(irNo))
@@ -112,6 +114,23 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
         override def act(x: Int) = f(x)
       })
     }
+  }
+
+  def inApplicationScope(n: N):Boolean = inApplicationScope(n.m)
+  def inApplicationScope(m: M):Boolean = {
+    val classLoader = m.getDeclaringClass().getClassLoader();
+    classLoader.getReference() == ClassLoaderReference.Application;
+  }
+
+  def inPrimordialScope(n: N):Boolean = inPrimordialScope(n.m)
+  def inPrimordialScope(m: M) = {
+    val classLoader = m.getDeclaringClass().getClassLoader();
+    classLoader.getReference() == ClassLoaderReference.Primordial;
+  }
+  
+  object unknownO extends O {
+    override def getConcreteType() = null
+    override def toString = "UNKOWN object"
   }
 
   //  	public static String variableName(Integer v, CGNode cgNode,
