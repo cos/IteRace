@@ -6,7 +6,6 @@ import org.scalatest.junit.JUnitRunner
 import scala.collection.JavaConversions._
 import iterace.util.WALAConversions._
 import org.junit.Assert._
-import iterace.LoopContextSelector.LoopCallSiteContext
 import scala.collection.mutable._
 import org.scalatest.FunSuite
 import org.junit.rules.TestName

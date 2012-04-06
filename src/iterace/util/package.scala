@@ -13,7 +13,11 @@ package object util {
   def toStringSortedSet[V](m: Iterable[V]) = TreeSet.empty(toStringOrdering[V]) ++ m
   implicit def setWithToStringSoring[V](m: Iterable[V]) = new { def toStringSorted(): Set[V] = util.toStringSortedSet(m) }
   
-  def crossProduct[U,V](a: Set[U], b:Set[V]) = {
+  def crossProduct[U,V](a: Traversable[U], b:Traversable[V]) = {
     a map (e => b.map {(e,_)}) flatten
+  }
+  
+  def crossProduct[U,V](a: Set[U], b:Set[V]) = {
+     a map (e => b.map {(e,_)}) flatten
   }
 }

@@ -2,7 +2,6 @@ package iterace
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
 import iterace.util.WALAConversions._
-import iterace.LoopContextSelector.LoopCallSiteContext
 import org.junit.Assert._
 import scala.collection._
 import scala.collection.immutable.TreeSet
@@ -12,39 +11,37 @@ import scala.collection.JavaConversions._
 import com.ibm.wala.properties.WalaProperties
 import iterace.oldjava.AnalysisScopeBuilder
 
-abstract class RaceTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter {
+abstract class RaceTest(startClass: String) extends FunSuite with BeforeAndAfter {
+	val analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
+	analysisScope.setExclusionsFile("walaExclusions.txt");
+	analysisScope.addBinaryDependency("../lib/parallelArray.mock");
+	
   def analyze(method: String) = {
-    var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
-    analysisScope.setExclusionsFile("walaExclusions.txt");
-    for (d <- dependencies) { analysisScope.addBinaryDependency(d); }
-
+  	log("test: "+method)
     new IteRace(startClass, method, analysisScope)
   }
 
-  def printRaces(races: Set[Race]): String = {
-    val s = new StringBuilder
-    s ++= "\n"
+  def printRaces(races: ProgramRaceSet): String = "\n" + races.prettyPrint + "\n"
+ 
+      
+//    for ((l, lRaces) <- races.groupBy { _.l } toStringSorted) {
+//      s ++= "Loop: " + l.n.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint() + "\n\n"
+//      for ((o, oRaces) <- lRaces.groupBy { _.o } toStringSorted) {
+//        s ++= o.prettyPrint() + "\n"
+//        val racesOnFields = oRaces collect { case r: RaceOnField => r }
+//        for ((f, fRaces) <- racesOnFields.groupBy { _.f } toStringSorted) {
+//          s ++= ((new FieldRaceSet(f, fRaces)).prettyPrint) + "\n"
+//        }
+//
+//        val shallowRaces = oRaces collect {case r: ShallowRace => r}
+//        if(!shallowRaces.isEmpty)
+//        s ++= " on object: \n" + new ShallowRaceSet(shallowRaces).prettyPrint() + "\n"
+//        
+//      }
+//    }
 
-    for ((l, lRaces) <- races.groupBy { _.l } toStringSorted) {
-      s ++= "Loop: " + l.n.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint() + "\n\n"
-      for ((o, oRaces) <- lRaces.groupBy { _.o } toStringSorted) {
-        s ++= o.prettyPrint() + "\n"
-        val racesOnFields = oRaces collect { case r: RaceOnField => r }
-        for ((f, fRaces) <- racesOnFields.groupBy { _.f } toStringSorted) {
-          s ++= ((new FieldRaceSet(f, fRaces)).prettyPrint) + "\n"
-        }
-
-        val shallowRaces = oRaces collect {case r: ShallowRace => r}
-        if(!shallowRaces.isEmpty)
-        s ++= " on object: \n" + new ShallowRaceSet(shallowRaces).prettyPrint() + "\n"
-        
-      }
-    }
-    s.toString()
-  }
-
-  def result(iteRace: IteRace): Set[Race]
-
+  def result(iteRace: IteRace): ProgramRaceSet
+ 
   def testResult(method: String, expectedResult: String) = {
     test(method) {
       val iterace = analyze(method + "()V")
@@ -52,5 +49,5 @@ abstract class RaceTest(dependencies: List[String], startClass: String) extends 
     }
   }
 
-  def testNoRaces(method: String) = testResult(method, "\n")
+  def testNoRaces(method: String) = testResult(method, "\n\n")
 }

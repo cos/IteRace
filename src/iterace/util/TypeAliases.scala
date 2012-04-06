@@ -24,6 +24,9 @@ trait TypeAliases {
   type O = InstanceKey
   type F = IField
   
+  type WithReference = {def ref: V}
+  type ReferenceI = I with WithReference
+  
   type I = SSAInstruction
   type PutI = SSAPutInstruction
   type AccessI = SSAFieldAccessInstruction

@@ -67,9 +67,9 @@ public class WalaAnalysisStart {
 		DefaultContextSelector appContextSelector = new DefaultContextSelector(options, cha);
 		
 		return new MyCGBuilder(cha, options, cache, appContextSelector, new DefaultSSAInterpreter(options, cache),
-		    ZeroXInstanceKeys.SMUSH_STRINGS | ZeroXInstanceKeys.ALLOCATIONS);
+		    ZeroXInstanceKeys.SMUSH_STRINGS | ZeroXInstanceKeys.ALLOCATIONS | 
+		 ZeroXInstanceKeys.SMUSH_THROWABLES );
 		// ZeroXInstanceKeys.SMUSH_MANY |
-		// ZeroXInstanceKeys.SMUSH_THROWABLES |
 	}
 
 	public void setup(String entryClass, String entryMethod) throws ClassHierarchyException, IllegalArgumentException,

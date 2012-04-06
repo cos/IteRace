@@ -29,6 +29,8 @@ import com.ibm.wala.util.intset.IntSetAction
 import com.ibm.wala.types.TypeReference
 import com.ibm.wala.classLoader.IClassLoader
 import com.ibm.wala.types.ClassLoaderReference
+import iterace.Loop
+import iterace.LoopContext
 
 class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConversionsForP {
   trait Named {
@@ -107,6 +109,10 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
   implicit def o2prettyprintable(o: O): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = O.prettyPrint(o)
   }
+  
+  implicit def f2prettyprintable(f: F): PrettyPrintable = new PrettyPrintable {
+    def prettyPrint(): String = f.getName().toString()
+  }
 
   implicit def intsetTraversable(s: IntSet) = new Traversable[Int] {
     def foreach[U](f: Int => U) = {
@@ -160,6 +166,16 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
   //      }
   //    }
   //  }
+  
+  // should move these at some point
+  def getLoopFor(n: N): Option[Loop] = n.getContext() match {
+    case LoopContext(nl, _) => Some(Loop(nl))
+    case _ => None
+  }
+  
+  implicit def statementWithLoop(s: S[_]) = new {
+    lazy val l:Option[Loop] = getLoopFor(s.n)
+  }
 }
 
 object WALAConversions extends WALAConversions

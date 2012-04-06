@@ -6,13 +6,18 @@ import org.scalatest.junit.JUnitRunner
 import scala.collection.JavaConversions._
 import iterace.util.WALAConversions._
 import org.junit.Assert._
-import iterace.LoopContextSelector.LoopCallSiteContext
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
+import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
-class TestPossibleRaces extends RaceTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/Particle") {
+class TestPossibleRaces extends RaceTest("Lparticles/Particle") {
+  
+  log.activeConsole = true
+  log.activeTimer = true
+  
+  analysisScope.addBinaryDependency("particles");
   
   override def result(iteRace: IteRace) = iteRace.possibleRaces
 
@@ -98,7 +103,7 @@ particles.Particle$15.op(Particle$15.java:235)
    (b)  particles.Particle$15.op(Particle$15.java:236)
 particles.Particle.raceBecauseOfOutsideInterference(Particle.java:229)
  .origin
-   (a)  particles.Particle$15.op(Particle$15.java:235) [2]
+   (a)  particles.Particle$15.op(Particle$15.java:235)
    (b)  particles.Particle$15.op(Particle$15.java:235)
         particles.Particle$15.op(Particle$15.java:236)
 """)
@@ -157,7 +162,7 @@ particles.Particle$27.op(Particle$27.java:371)
    (b)  particles.Particle$27.op(Particle$27.java:370)
 particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:365)
  .origin
-   (a)  particles.Particle$27.op(Particle$27.java:371) [2]
+   (a)  particles.Particle$27.op(Particle$27.java:371)
    (b)  particles.Particle$27.op(Particle$27.java:371)
         particles.Particle$27.op(Particle$27.java:372)
 """)
@@ -194,8 +199,8 @@ Loop: particles.Particle.staticMethod(Particle.java:642)
 
 particles.Particle.<clinit>(Particle.java:392)
  .forceX
-   (a)  particles.Particle.thisisstatic(Particle.java:652) [2]
-   (b)  particles.Particle.thisisstatic(Particle.java:652) [2]
+   (a)  particles.Particle.thisisstatic(Particle.java:652)
+   (b)  particles.Particle.thisisstatic(Particle.java:652) [2x]
 """);
 
     testResult("verySimpleRaceOnStaticField", """

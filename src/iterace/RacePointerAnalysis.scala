@@ -3,6 +3,7 @@ package iterace
 import iterace.oldjava.WalaAnalysisStart
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import iterace.util.WALAConversions._
 import scala.collection._
 import iterace.util.S
@@ -10,6 +11,7 @@ import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.properties.WalaProperties
 import iterace.oldjava.AnalysisScopeBuilder
 import iterace.util.ArrayContents
+import com.ibm.wala.util.collections.Filter
 
 class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder)
   extends PointerAnalysis(startClass, startMethod, analysisScope) {
@@ -18,9 +20,16 @@ class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope
     callGraph.map(n => n.getIR().iterateAllInstructions().map(i => (n, i))).flatten.toSet
   }
 
-  def statementsReachableFrom(n: N): Set[S[I]] =
-    DFS.getReachableNodes(callGraph, Set(n)) map (nn => nn.instructions.map(i => S(nn, i)).toSet) flatten
+  def statementsReachableFrom(n: N, filter: N => Boolean = null): Set[S[I]] = {
+    val reachableNs = if(filter == null) 
+      DFS.getReachableNodes(callGraph, Set(n))
+    else
+      DFS.getReachableNodes(callGraph, Set(n), new Filter[N] { def accepts(n:N):Boolean = filter(n)})
+      
+     (reachableNs map (nn => nn.instructions.map(i => S(nn, i)).toSet)).toSet.flatten
+  }
 
+  // I think it is very inefficient 
   lazy val loops: immutable.Set[Loop] = {
     callGraph collect
       { case n: N if n.getContext().isInstanceOf[LoopContext] => n.getContext().asInstanceOf[LoopContext].loop } toSet
@@ -66,7 +75,7 @@ class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope
       case _ => false
     }
   }
-
+  
   def inLoop(n: N): Boolean = {
     n.getContext() match {
       case LoopContext(_, _) => true

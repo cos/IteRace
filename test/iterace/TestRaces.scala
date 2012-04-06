@@ -6,13 +6,14 @@ import org.scalatest.junit.JUnitRunner
 import scala.collection.JavaConversions._
 import iterace.util.WALAConversions._
 import org.junit.Assert._
-import iterace.LoopContextSelector.LoopCallSiteContext
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
 
 @RunWith(classOf[JUnitRunner])
-class TestRaces extends RaceTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/ParticleWithLocks") {
+class TestRaces extends RaceTest("Lparticles/ParticleWithLocks") {
+  
+  analysisScope.addBinaryDependency("particles");
   
   override def result(iteRace: IteRace) = iteRace.races
   

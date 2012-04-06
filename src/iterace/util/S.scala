@@ -18,9 +18,13 @@ class S[+J <: I](val n: N, val i: J) extends PrettyPrintable {
   }
   def printCodeLocation(): String = {
     if (irNo >= 0) {
-      val m = n.getMethod().asInstanceOf[ShrikeBTMethod]
-      val bytecodeIndex = m.getBytecodeIndex(irNo)
-      WALAConversions.printCodeLocation(m, bytecodeIndex)
+      n.getMethod() match {
+        case m: ShrikeBTMethod => {
+          val bytecodeIndex = m.getBytecodeIndex(irNo)
+          WALAConversions.printCodeLocation(m, bytecodeIndex)
+        }
+        case _ => m.toString()
+      }
     } else {
       val index = n.instructions collect { case i if i != null => i.toString } findIndexOf { _ == i.toString }
       "IRNo-1 " + index + " ---- " + i
@@ -57,4 +61,11 @@ class S[+J <: I](val n: N, val i: J) extends PrettyPrintable {
   }
 
   override def toString = "S(" + n + "," + i + ")"
+
+  override def equals(other: Any) = other match {
+    case that: S[_] => this.n == that.n && this.i == that.i
+    case _ => false
+  }
+
+  override def hashCode = n.hashCode * 41 + i.hashCode
 }

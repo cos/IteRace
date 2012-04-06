@@ -3,8 +3,11 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class TestFilteredByKnownThreadSafe extends RaceTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/Particle") {
-  override def result(iteRace: IteRace) = iteRace.filteredPossibleRaces
+class TestFilteredByKnownThreadSafe extends RaceTest("Lparticles/Particle") {
+  
+  analysisScope.addBinaryDependency("particles");
+  
+  override def result(iteRace: IteRace) = iteRace.shallowRaces
   
   testNoRaces("noRaceOnStringConcatenation")
   testResult("noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape","""

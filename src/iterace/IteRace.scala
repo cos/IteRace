@@ -16,27 +16,42 @@ import com.ibm.wala.ipa.callgraph.ContextItem
 import com.ibm.wala.dataflow.IFDS.PathEdge
 import com.ibm.wala.properties.WalaProperties
 import iterace.oldjava.AnalysisScopeBuilder
+import iterace.util.log
 
 class IteRace(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder) {
+  
+  log.startTimer("pointer analysis");
   val pa = new RacePointerAnalysis(startClass, startMethod, analysisScope)
   import pa._
+  log.endTimer
   
   // -------
   // The analysis steps
+  log.startTimer("possible races")
   val possibleRaces = new PossibleRaces(pa)()
+  log.endTimer
+  log(possibleRaces.size)
+  possibleRaces foreach ( r => println(r.prettyPrint))
   
-  private val filterByKnownThreadSafe = new FilterByKnownThreadSafe  
-  val filteredPossibleRaces = filterByKnownThreadSafe(possibleRaces)
+//  log.startTimer("filter known thread-safe")
+//  private val filterByKnownThreadSafe = new FilterByKnownThreadSafe  
+//  val filteredPossibleRaces = filterByKnownThreadSafe(possibleRaces).asInstanceOf[ProgramRaceSet]
+//  log.endTimer
+//  log(filteredPossibleRaces.size)
 
+  log.startTimer("filter by lock may-alias")
   private val lockSet = new LockSet(pa)
   private val filterByLockMayAlias = new FilterByLockMayAlias(pa, lockSet)
-  val races = filterByLockMayAlias(filteredPossibleRaces)
-  // -------
+  val races = filterByLockMayAlias(possibleRaces).asInstanceOf[ProgramRaceSet]
+  log.endTimer
+  log(races.size)
   
+  log.startTimer("bubble up")
   private val bubbleUp = new BubbleUpToAppLevel(pa)
-  val shallowRaces = bubbleUp(races)
+  val shallowRaces = bubbleUp(races).asInstanceOf[ProgramRaceSet]
+  log.endTimer
+  log(shallowRaces.size)
   
-  def racesAsRaceSet = new ProgramRaceSet(races)
 }
 
 class AnalysisException(m: String) extends Throwable {

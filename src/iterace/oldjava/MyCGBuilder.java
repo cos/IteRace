@@ -11,7 +11,8 @@
 
 package iterace.oldjava;
 
-import iterace.LoopContextSelector$;
+
+import iterace.LoopContextSelector;
 
 import com.ibm.wala.analysis.reflection.ReflectionContextInterpreter;
 import com.ibm.wala.ipa.callgraph.AnalysisCache;
@@ -45,7 +46,7 @@ public class MyCGBuilder extends SSAPropagationCallGraphBuilder {
     setContextInterpreter(contextInterpreter);
     
     ZeroXInstanceKeys zik = makeInstanceKeys(cha, options, contextInterpreter, instancePolicy);
-    setContextSelector(LoopContextSelector$.MODULE$);
+    setContextSelector(new LoopContextSelector(zik));
     
     
 //    setContextSelector(new CS(zik, options, cha));

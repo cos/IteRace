@@ -1,4 +1,6 @@
 package iterace
+
+import scala.collection._
 import scala.collection.JavaConversions._
 import iterace.util.WALAConversions._
 import com.ibm.wala.dataflow.IFDS.PartiallyBalancedTabulationProblem
@@ -37,20 +39,22 @@ class LockSet(pa: PointerAnalysis) {
   import pa._
 
   val supergraph = ICFGSupergraph.make(pa.callGraph, pa.analysisCache)
-  
+
   /**
    * Get all the locks that appear in the loop
    */
+  val locksForLoop: mutable.Map[Loop, Set[Lock]] = mutable.Map()
   def getLocks(l: Loop): Set[Lock] = {
-    (for (
-      n <- asScalaIterator(DFS.iterateDiscoverTime(callGraph, l.n));
-      i <- n.instructions
-    ) yield {
-      i match {
-        case i: SSAMonitorInstruction => Lock(P(n, i.getRef()))
-        case _ => null
-      }
-    }) filter { _ != null } toSet
+    locksForLoop.getOrElseUpdate(l,
+      (for (
+        n <- asScalaIterator(DFS.iterateDiscoverTime(callGraph, l.n));
+        i <- n.instructions
+      ) yield {
+        i match {
+          case i: SSAMonitorInstruction => Lock(P(n, i.getRef()))
+          case _ => null
+        }
+      }) filter { _ != null } toSet)
   }
 
   def getLockSetMapping(l: Loop): S[I] => Set[Lock] = getLockSetMapping(l, getLocks(l))

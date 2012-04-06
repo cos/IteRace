@@ -1,4 +1,4 @@
-package iterace;
+package iterace.evaluation;
 
 import org.junit.runner.RunWith
 import org.scalatest.{ Spec, BeforeAndAfter }
@@ -9,12 +9,18 @@ import org.junit.Assert._
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
-
-/**
- * Tests Particle.class (the same as TestPossibleRaces) but after the may-alias lock filter
- */
+import iterace.RaceTest
+import iterace.IteRace
 
 @RunWith(classOf[JUnitRunner])
-class TestRacesOnParticle extends TestPossibleRaces {
+class TestOldCoref extends RaceTest("LLBJ2/nlp/coref/ClusterMerger") {
+
+  analysisScope.addBinaryDependency("../evaluation/coref/bin");
+  analysisScope.addJarDependency("../evaluation/coref/java_cup_runtime.jar");
+  
   override def result(iteRace: IteRace) = iteRace.races
+
+  testResult("main([Ljava/lang/String;)V","""
+
+""")
 }

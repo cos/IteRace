@@ -1,4 +1,4 @@
-package iterace;
+package iterace.evaluation;
 
 import org.junit.runner.RunWith
 import org.scalatest.{ Spec, BeforeAndAfter }
@@ -9,12 +9,17 @@ import org.junit.Assert._
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
-
-/**
- * Tests Particle.class (the same as TestPossibleRaces) but after the may-alias lock filter
- */
+import iterace.RaceTest
+import iterace.IteRace
 
 @RunWith(classOf[JUnitRunner])
-class TestRacesOnParticle extends TestPossibleRaces {
-  override def result(iteRace: IteRace) = iteRace.races
+class TestjUnit extends RaceTest("Ljunit/tests/ParallelAllTests") {
+
+  analysisScope.addBinaryDependency("../evaluation/junit/bin");
+  
+  override def result(iteRace: IteRace) = iteRace.shallowRaces
+
+  testResult("main([Ljava/lang/String;)V","""
+
+""")
 }

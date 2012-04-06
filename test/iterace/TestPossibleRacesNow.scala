@@ -3,7 +3,9 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class TestPossibleRacesNow extends RaceTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/Particle") {
+class TestPossibleRacesNow extends RaceTest("Lparticles/Particle") {
+  
+  analysisScope.addBinaryDependency("particles");
   override def result(iteRace: IteRace) = iteRace.possibleRaces
   
 }
