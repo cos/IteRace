@@ -11,7 +11,7 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 
 @RunWith(classOf[JUnitRunner])
-class TestFilterByMayAlias extends RaceTest("Lparticles/ParticleWithLocks") {
+class TestFilterByMayAlias extends RaceAbstractTest("Lparticles/ParticleWithLocks") {
   
   analysisScope.addBinaryDependency("particles");
   

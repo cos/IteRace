@@ -9,12 +9,12 @@ import org.junit.Assert._
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
-import iterace.RaceTest
+import iterace.RaceAbstractTest
 import iterace.IteRace
 import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
-class TestjUnit extends RaceTest("Ljunit/tests/ParallelAllTests") {
+class TestjUnit extends RaceAbstractTest("Ljunit/tests/ParallelAllTests") {
   
   log.activate
 

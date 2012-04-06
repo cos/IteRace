@@ -3,7 +3,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class TestFilteredByKnownThreadSafe extends RaceTest("Lparticles/Particle") {
+class TestFilteredByKnownThreadSafe extends RaceAbstractTest("Lparticles/Particle") {
   
   analysisScope.addBinaryDependency("particles");
   

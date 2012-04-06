@@ -25,25 +25,14 @@ class PossibleRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
 
     val alphaWrites = statementsReachableFrom(l.alphaIterationN, {_.getContext() != THREAD_SAFE}) filter
       (s => s.i.isInstanceOf[PutI] || s.i.isInstanceOf[ArrayStoreI])
-      
-      log("alpha writes")
 
     val betaAccesses = statementsReachableFrom(l.betaIterationN, {_.getContext() != THREAD_SAFE}) filter
       (s => s.i.isInstanceOf[AccessI] || s.i.isInstanceOf[ArrayReferenceI])
-
-      log("beta accesses")
       
     val pairsOnSameField = crossProduct(alphaWrites groupBy {_.i.f.get}, betaAccesses groupBy {_.i.f.get}) .
-    				filter {case ((f1,_),(f2,_)) => f1 == f2} map {case ((f, accesses1),(_, accesses2)) => crossProduct(accesses1, accesses2)} flatten
+    				filter {case ((f1,_),(f2,_)) => f1 == f2} .
+    				map {case ((f, accesses1),(_, accesses2)) => crossProduct(accesses1, accesses2)} flatten
       
-//    val allPairs = crossProduct(alphaWrites, betaAccesses)
-    
-    log("allpairs")
-
-//    val pairsOnSameField = allPairs filter { case (s1, s2) => s1.i.f == s2.i.f }
-    
-    log("pairs on the same field")
-
     pairsOnSameField.collect {
       case (s1: S[I], s2: S[I]) =>
         val sharedObjects = s1.i match {

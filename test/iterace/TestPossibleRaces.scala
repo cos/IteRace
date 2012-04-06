@@ -12,7 +12,7 @@ import org.junit.Rule
 import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
-class TestPossibleRaces extends RaceTest("Lparticles/Particle") {
+class TestPossibleRaces extends RaceAbstractTest("Lparticles/Particle") {
   
   log.activeConsole = true
   log.activeTimer = true

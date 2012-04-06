@@ -9,12 +9,12 @@ import org.junit.Assert._
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
-import iterace.RaceTest
+import iterace.RaceAbstractTest
 import iterace.IteRace
 import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
-class TestWEKA extends RaceTest("Lweka/clusterers/EM") {
+class TestWEKA extends RaceAbstractTest("Lweka/clusterers/EM") {
 
   analysisScope.addJarDependency("../evaluation/weka/lib/java-cup.jar");
 	analysisScope.addJarDependency("../evaluation/weka/lib/JFlex.jar");

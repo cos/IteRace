@@ -11,7 +11,7 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 
 @RunWith(classOf[JUnitRunner])
-class TestBubbleUp extends RaceTest("Lparticles/Particle") {
+class TestBubbleUp extends RaceAbstractTest("Lparticles/Particle") {
   
   analysisScope.addBinaryDependency("particles");
   

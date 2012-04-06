@@ -9,11 +9,11 @@ import org.junit.Assert._
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
-import iterace.RaceTest
+import iterace.RaceAbstractTest
 import iterace.IteRace
 
 @RunWith(classOf[JUnitRunner])
-class TestOldCoref extends RaceTest("LLBJ2/nlp/coref/ClusterMerger") {
+class TestOldCoref extends RaceAbstractTest("LLBJ2/nlp/coref/ClusterMerger") {
 
   analysisScope.addBinaryDependency("../evaluation/coref/bin");
   analysisScope.addJarDependency("../evaluation/coref/java_cup_runtime.jar");
