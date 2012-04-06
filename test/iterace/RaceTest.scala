@@ -16,9 +16,11 @@ abstract class RaceTest(startClass: String) extends FunSuite with BeforeAndAfter
 	analysisScope.setExclusionsFile("walaExclusions.txt");
 	analysisScope.addBinaryDependency("../lib/parallelArray.mock");
 	
+	val stages: Seq[Stage] = Seq(FilterByLockMayAlias, BubbleUpToAppLevel, FilterByLockMayAlias);
+	
   def analyze(method: String) = {
   	log("test: "+method)
-    new IteRace(startClass, method, analysisScope)
+    IteRace(startClass, method, analysisScope, stages)
   }
 
   def printRaces(races: ProgramRaceSet): String = "\n" + races.prettyPrint + "\n"
@@ -40,7 +42,7 @@ abstract class RaceTest(startClass: String) extends FunSuite with BeforeAndAfter
 //      }
 //    }
 
-  def result(iteRace: IteRace): ProgramRaceSet
+  def result(iteRace: IteRace): ProgramRaceSet = iteRace.races
  
   def testResult(method: String, expectedResult: String) = {
     test(method) {

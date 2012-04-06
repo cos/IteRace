@@ -1,13 +1,13 @@
 package iterace
-import iterace.util.S
-import iterace.util.WALAConversions._
-import scala.collection.JavaConverters._
-import scala.collection._
-
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.util.graph.impl.GraphInverter
 import com.ibm.wala.util.collections.Filter
+import iterace.util.S
+import iterace.util.WALAConversions._
 import iterace.util.crossProduct
+import scala.collection.JavaConverters._
+import scala.collection._
+import iterace._
 
 class BubbleUpToAppLevel(pa: RacePointerAnalysis) extends Function1[ProgramRaceSet, ProgramRaceSet] {
   import pa._
@@ -22,7 +22,7 @@ class BubbleUpToAppLevel(pa: RacePointerAnalysis) extends Function1[ProgramRaceS
 
         val pairs = crossProduct(alphaAppLevelAccesses, betaAppLevelAccesses)
         
-        i += 1; println(i + "  " + pairs.size)
+//        i += 1; println(i + "  " + pairs.size + "   :    "+r.a+"   X   "+r.b)
 
         pairs collect {
           case (s1, s2) => {
@@ -62,5 +62,11 @@ class BubbleUpToAppLevel(pa: RacePointerAnalysis) extends Function1[ProgramRaceS
       })
       return invokeSs.toSet.flatten
     })
+  }
+}
+
+object BubbleUpToAppLevel extends Stage {
+  def apply(pa: RacePointerAnalysis) = {
+    new BubbleUpToAppLevel(pa)
   }
 }

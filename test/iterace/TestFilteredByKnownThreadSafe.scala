@@ -7,8 +7,6 @@ class TestFilteredByKnownThreadSafe extends RaceTest("Lparticles/Particle") {
   
   analysisScope.addBinaryDependency("particles");
   
-  override def result(iteRace: IteRace) = iteRace.shallowRaces
-  
   testNoRaces("noRaceOnStringConcatenation")
   testResult("noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape","""
 Loop: particles.Particle.noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape(Particle.java:461)

@@ -15,8 +15,6 @@ class TestBubbleUp extends RaceTest("Lparticles/Particle") {
   
   analysisScope.addBinaryDependency("particles");
   
-  override def result(iteRace: IteRace) = iteRace.shallowRaces
-
   testResult("raceOnArrayList", """
 Loop: particles.Particle.raceOnArrayList(Particle.java:676)
 

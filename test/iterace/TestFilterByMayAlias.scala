@@ -11,7 +11,7 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 
 @RunWith(classOf[JUnitRunner])
-class TestRaces extends RaceTest("Lparticles/ParticleWithLocks") {
+class TestFilterByMayAlias extends RaceTest("Lparticles/ParticleWithLocks") {
   
   analysisScope.addBinaryDependency("particles");
   
@@ -40,4 +40,6 @@ particles.ParticleWithLocks.oneSimpleLock(ParticleWithLocks.java:40)
 """)  
 
 	testNoRaces("oneSimpleSafeLock")
+	
+	testNoRaces("imbricatedLocks")
 }

@@ -1,4 +1,4 @@
-package iterace.evaluation;
+package iterace;
 
 import org.junit.runner.RunWith
 import org.scalatest.{ Spec, BeforeAndAfter }
@@ -9,16 +9,11 @@ import org.junit.Assert._
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
-import iterace.RaceTest
-import iterace.IteRace
-import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
-class TestBH extends RaceTest("LbarnesHut/ParallelBarneshut") {
+class TestFilterByMayAliasNow extends RaceTest("Lparticles/ParticleWithLocks") {
   
-  log.activate
+  analysisScope.addBinaryDependency("particles");
   
-  analysisScope.addBinaryDependency("../evaluation/barnesHut/bin");
-  
-  testNoRaces("main([Ljava/lang/String;)V")
+	testNoRaces("imbricatedLocks")
 }

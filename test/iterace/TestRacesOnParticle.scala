@@ -16,5 +16,4 @@ import org.junit.Rule
 
 @RunWith(classOf[JUnitRunner])
 class TestRacesOnParticle extends TestPossibleRaces {
-  override def result(iteRace: IteRace) = iteRace.races
 }

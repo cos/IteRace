@@ -1,8 +1,10 @@
 package iterace
 
-class FilterByLockMayAlias(pa: RacePointerAnalysis, lockSet: LockSet) extends Function1[ProgramRaceSet, ProgramRaceSet] {
+class FilterByLockMayAlias(pa: RacePointerAnalysis) extends Function1[ProgramRaceSet, ProgramRaceSet] {
   import pa._
-
+  
+  private val lockSet = new LockSet(pa)
+  
   def apply(races: ProgramRaceSet): ProgramRaceSet = {
     new ProgramRaceSet(races.children map (loopRaceSet => {
       val locks = lockSet.getLocks(loopRaceSet.l)
@@ -36,5 +38,11 @@ class FilterByLockMayAlias(pa: RacePointerAnalysis, lockSet: LockSet) extends Fu
 
   def pointsToUniqueAbstractObject(l: Lock): Boolean = {
     l.p.pt.size == 1
+  }
+}
+
+object FilterByLockMayAlias extends Stage {
+  def apply(pa: RacePointerAnalysis) = {
+    new FilterByLockMayAlias(pa)
   }
 }

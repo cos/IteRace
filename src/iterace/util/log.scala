@@ -30,7 +30,7 @@ object log {
     if(activeTimer) {
       val endTime = System.currentTimeMillis - timers(name)
       if(activeConsole)
-      	println(" at "+endTime)
+      	println(" in "+endTime / 1000 +"."+endTime % 1000+"s")
     	timers.remove(name)
     }
     else

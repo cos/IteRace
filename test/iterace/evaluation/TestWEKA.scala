@@ -24,8 +24,6 @@ class TestWEKA extends RaceTest("Lweka/clusterers/EM") {
 	log.activeConsole = true
 	log.activeTimer = true
 	
-  override def result(iteRace: IteRace) = iteRace.shallowRaces
-
   testResult("EM_Init(Lweka/core/Instances;)V","""
 
 """)

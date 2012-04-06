@@ -20,7 +20,5 @@ class TestEM3D extends RaceTest("Lem3d/parallelArray/Em3d") {
   
   analysisScope.addBinaryDependency("../evaluation/em3d/bin");
   
-  override def result(iteRace: IteRace) = iteRace.possibleRaces
-  
   testNoRaces("main([Ljava/lang/String;)V")
 }

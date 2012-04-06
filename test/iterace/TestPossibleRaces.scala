@@ -17,10 +17,10 @@ class TestPossibleRaces extends RaceTest("Lparticles/Particle") {
   log.activeConsole = true
   log.activeTimer = true
   
+  override val stages: Seq[Stage] = Seq()
+  
   analysisScope.addBinaryDependency("particles");
   
-  override def result(iteRace: IteRace) = iteRace.possibleRaces
-
   testNoRaces("vacuouslyNoRace")
 
   testNoRaces("noRaceOnParameter")

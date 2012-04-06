@@ -43,7 +43,12 @@ object threadSafe {
     "Ljava/lang/Throwable",
 
     // kind of coarse-grained
-    "Ljava/lang/System")
+    "Ljava/lang/System",
+    
+    // for reflection
+    "Ljava/lang/Class",
+    "Ljava/lang/Method"
+  )
 
   def apply(m: IMethod): Boolean = {
     val isIt = threadSafe.exists { m.getDeclaringClass().getName().toString().equals(_) }

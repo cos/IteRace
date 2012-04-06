@@ -18,40 +18,46 @@ import com.ibm.wala.properties.WalaProperties
 import iterace.oldjava.AnalysisScopeBuilder
 import iterace.util.log
 
-class IteRace(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder) {
+class IteRace private (
+    startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
+    stages: Seq[Stage],
+    options: Set[String]) {
   
   log.startTimer("pointer analysis");
   val pa = new RacePointerAnalysis(startClass, startMethod, analysisScope)
   import pa._
   log.endTimer
   
-  // -------
-  // The analysis steps
   log.startTimer("possible races")
-  val possibleRaces = new PossibleRaces(pa)()
+  private val possibleRaces = new PossibleRaces(pa)()
   log.endTimer
   log(possibleRaces.size)
-  possibleRaces foreach ( r => println(r.prettyPrint))
-  
-//  log.startTimer("filter known thread-safe")
-//  private val filterByKnownThreadSafe = new FilterByKnownThreadSafe  
-//  val filteredPossibleRaces = filterByKnownThreadSafe(possibleRaces).asInstanceOf[ProgramRaceSet]
-//  log.endTimer
-//  log(filteredPossibleRaces.size)
 
-  log.startTimer("filter by lock may-alias")
-  private val lockSet = new LockSet(pa)
-  private val filterByLockMayAlias = new FilterByLockMayAlias(pa, lockSet)
-  val races = filterByLockMayAlias(possibleRaces).asInstanceOf[ProgramRaceSet]
+  log.startTimer("activating stages - should be quick");
+  val activatedStagesSets = {
+    val listOfUniqueStages = stages.toSet
+    val listOfUniqueActivatedStages = listOfUniqueStages map {_(pa)}
+    (listOfUniqueStages zip listOfUniqueActivatedStages) toMap
+  }
+  val activatedStages = stages map {activatedStagesSets(_)}
   log.endTimer
-  log(races.size)
   
-  log.startTimer("bubble up")
-  private val bubbleUp = new BubbleUpToAppLevel(pa)
-  val shallowRaces = bubbleUp(races).asInstanceOf[ProgramRaceSet]
-  log.endTimer
-  log(shallowRaces.size)
+  private var currentRaces = possibleRaces
+  activatedStages foreach(stage => {
+    log.startTimer(stage.getClass().toString())
+    currentRaces = stage(currentRaces)
+    log.endTimer
+    log(stage.getClass().toString() +" resulted in : "+currentRaces.size+" races")
+    } )
   
+  val races = currentRaces
+}
+
+object IteRace {
+  def apply(
+    startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
+    stages: Seq[Stage] = Seq(FilterByLockMayAlias, BubbleUpToAppLevel, FilterByLockMayAlias),
+    options: Set[String] = Set()) = new IteRace(startClass, startMethod, analysisScope, stages, options)
 }
 
 class AnalysisException(m: String) extends Throwable {
