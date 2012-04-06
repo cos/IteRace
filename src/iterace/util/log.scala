@@ -6,6 +6,11 @@ object log {
   var activeConsole = false
   var activeTimer = false
   
+  def activate = {
+    activeConsole = true
+    activeTimer = true
+  }
+  
   val timers:mutable.LinkedHashMap[String, Long] = mutable.LinkedHashMap()
 
   def startTimer(name: String) = {

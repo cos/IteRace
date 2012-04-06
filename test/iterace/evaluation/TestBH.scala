@@ -11,9 +11,12 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.RaceTest
 import iterace.IteRace
+import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
 class TestBH extends RaceTest("LbarnesHut/ParallelBarneshut") {
+  
+  log.activate
   
   analysisScope.addBinaryDependency("../evaluation/barnesHut/bin");
   

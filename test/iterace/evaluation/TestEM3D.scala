@@ -11,9 +11,12 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.RaceTest
 import iterace.IteRace
+import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
 class TestEM3D extends RaceTest("Lem3d/parallelArray/Em3d") {
+  
+  log.activate
   
   analysisScope.addBinaryDependency("../evaluation/em3d/bin");
   
