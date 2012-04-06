@@ -35,18 +35,18 @@ class FilterByKnownThreadSafe extends Function1[Set[Race], Set[Race]] {
 object threadSafe {
   val threadSafe = Seq[String](
     // used for ignoring string operations, including concatenation
-    "java/lang/String, ",
-    "java/lang/StringBuilder, ",
-    "java/lang/StringBuffer, ",
+    "Ljava/lang/String, ",
+    "Ljava/lang/StringBuilder, ",
+    "Ljava/lang/StringBuffer, ",
     // used for ignoring System.out stuff. but it is thread-safe in general
-    "java/io/PrintStream, ",
-    "java/lang/Throwable, ",
+    "Ljava/io/PrintStream, ",
+    "Ljava/lang/Throwable, ",
 
     // kind of coarse-grained
-    "java/lang/System, ")
+    "Ljava/lang/System, ")
 
   def apply(m: IMethod): Boolean = {
-    val isIt = threadSafe.exists { m.toString().contains(_) }
+    val isIt = threadSafe.exists { m.getDeclaringClass().getName().toString().equals(_) }
     
 //    if (m.toString().contains("initializeSystemClass")) println(m.toString() + isIt);
     isIt
