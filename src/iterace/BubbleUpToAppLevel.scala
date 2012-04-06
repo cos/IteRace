@@ -7,7 +7,6 @@ import iterace.util.WALAConversions._
 import iterace.util.crossProduct
 import scala.collection.JavaConverters._
 import scala.collection._
-import iterace._
 
 class BubbleUpToAppLevel(pa: RacePointerAnalysis) extends Function1[ProgramRaceSet, ProgramRaceSet] {
   import pa._
