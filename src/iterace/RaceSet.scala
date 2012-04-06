@@ -126,7 +126,7 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
   def getChild(r: Race): Child
   override def -(race: Race): This = {
     if (!accepts(race)) throw new Exception("Race not accepted: " + race + " by " + this)
-    val newChildren = (children map { _ - race }).asInstanceOf[Set[Child]]
+    val newChildren = (children map { _ - race } filter {_.size > 0}).asInstanceOf[Set[Child]]
     getRaceSet(newChildren)
   }
   override def foreach[U](f: (Race) => U): Unit = children.foreach({ _.foreach(f) })
