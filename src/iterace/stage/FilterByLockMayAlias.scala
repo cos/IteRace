@@ -1,5 +1,8 @@
 package iterace
 
+/**
+ * read: "filter by locks based on may-alias"
+ */
 class FilterByLockMayAlias(pa: RacePointerAnalysis) extends Stage {
   import pa._
   

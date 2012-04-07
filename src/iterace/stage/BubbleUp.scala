@@ -8,7 +8,7 @@ import iterace.util.crossProduct
 import scala.collection.JavaConverters._
 import scala.collection._
 
-class BubbleUpToAppLevel(pa: RacePointerAnalysis) extends Stage {
+class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   import pa._
 
   def apply(races: ProgramRaceSet): ProgramRaceSet = {
@@ -64,8 +64,8 @@ class BubbleUpToAppLevel(pa: RacePointerAnalysis) extends Stage {
   }
 }
 
-object BubbleUpToAppLevel extends StageConstructor {
+object BubbleUp extends StageConstructor {
   def apply(pa: RacePointerAnalysis) = {
-    new BubbleUpToAppLevel(pa)
+    new BubbleUp(pa)
   }
 }

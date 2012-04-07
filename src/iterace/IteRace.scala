@@ -58,7 +58,7 @@ class IteRace private (
 object IteRace {
   def apply(
     startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
-    stages: Seq[StageConstructor] = Seq(FilterByLockMayAlias, BubbleUpToAppLevel, FilterByLockMayAlias),
+    stages: Seq[StageConstructor] = Seq(FilterByLockMayAlias, BubbleUp, FilterByLockMayAlias),
     options: Set[String] = Set()) = new IteRace(startClass, startMethod, analysisScope, stages, options)
 }
 
