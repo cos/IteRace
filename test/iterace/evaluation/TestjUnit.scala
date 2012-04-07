@@ -15,12 +15,12 @@ import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
 class TestjUnit extends RaceAbstractTest("Ljunit/tests/ParallelAllTests") {
-  
+
   log.activate
 
   analysisScope.addBinaryDependency("../evaluation/junit/bin");
-  
-  testResult("main([Ljava/lang/String;)V","""
+
+  testResult("main([Ljava/lang/String;)V", """
 
 """)
 }

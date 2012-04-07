@@ -13,14 +13,14 @@ import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
 class TestPossibleRaces extends RaceAbstractTest("Lparticles/Particle") {
-  
+
   log.activeConsole = true
   log.activeTimer = true
-  
+
   override val stages: Seq[StageConstructor] = Seq()
-  
+
   analysisScope.addBinaryDependency("particles");
-  
+
   testNoRaces("vacuouslyNoRace")
 
   testNoRaces("noRaceOnParameter")
@@ -40,9 +40,9 @@ particles.Particle.verySimpleRace(Particle.java:66)
    (b)  particles.Particle$5.op(Particle$5.java:71)
 """)
 
-	/**
-	 * an part of an element is tainted in another forall
-	 */
+  /**
+   * an part of an element is tainted in another forall
+   */
   testResult("raceOnParameterInitializedBefore",
     """
 Loop: particles.Particle.raceOnParameterInitializedBefore(Particle.java:92)
@@ -53,33 +53,33 @@ particles.Particle.raceOnParameterInitializedBefore(Particle.java:81)
    (b)  particles.Particle$7.op(Particle$7.java:95)
 """)
 
-	/**
-	 * Is it field sensitive?
-	 */
+  /**
+   * Is it field sensitive?
+   */
   testNoRaces("noRaceOnANonSharedField")
 
   /**
-	 * How context sensitive is it? Fails on 0-CFA Works on 1-CFA (old remark)
-	 */
+   * How context sensitive is it? Fails on 0-CFA Works on 1-CFA (old remark)
+   */
   // but we actually solve it from the loop context
   testNoRaces("oneCFANeededForNoRaces")
 
   /**
-	 * How context sensitive is it? Fails on 0-CFA and 1-CFA Works on 2-CFA (old remark)
-	 */
+   * How context sensitive is it? Fails on 0-CFA and 1-CFA Works on 2-CFA (old remark)
+   */
   // but we actually solve it from the loop context
   testNoRaces("twoCFANeededForNoRaces")
 
   /**
-	 * How context sensitive is it? Fails on any CFA due to recursivity Might
-	 * work on smarter analyses
-	 */
+   * How context sensitive is it? Fails on any CFA due to recursivity Might
+   * work on smarter analyses
+   */
   testNoRaces("recursive")
 
   /**
-	 * Disambiguate the trace for a race. The trace should contain
-	 * "shared.moveTo(5, 7);" but not "particle.moveTo(2, 3);"
-	 */
+   * Disambiguate the trace for a race. The trace should contain
+   * "shared.moveTo(5, 7);" but not "particle.moveTo(2, 3);"
+   */
   testResult("disambiguateFalseRace", """
 Loop: particles.Particle.disambiguateFalseRace(Particle.java:189)
 
@@ -194,7 +194,7 @@ particles.Particle.<clinit>(Particle.java:392)
    (b)  particles.Particle$30.op(Particle$30.java:416)
 """)
 
-	testResult("staticMethod","""
+  testResult("staticMethod", """
 Loop: particles.Particle.staticMethod(Particle.java:642)
 
 particles.Particle.<clinit>(Particle.java:392)
@@ -203,7 +203,7 @@ particles.Particle.<clinit>(Particle.java:392)
    (b)  particles.Particle.thisisstatic(Particle.java:652) [2x]
 """);
 
-    testResult("verySimpleRaceOnStaticField", """
+  testResult("verySimpleRaceOnStaticField", """
 Loop: particles.Particle.verySimpleRaceOnStaticField(Particle.java:661)
 
 Static: particles.Particle
@@ -212,7 +212,7 @@ Static: particles.Particle
    (b)  particles.Particle$48.op(Particle$48.java:664)
 """)
 
-    testResult("raceOnArray", """
+  testResult("raceOnArray", """
 Loop: particles.Particle.raceOnArray(Particle.java:491)
 
 particles.Particle.raceOnArray(Particle.java:489)
@@ -221,7 +221,7 @@ particles.Particle.raceOnArray(Particle.java:489)
    (b)  particles.Particle$35.op(Particle$35.java:494)
 """)
 
-/*
+  /*
   testResult("raceInLibrary", """
   ....
 """)*/

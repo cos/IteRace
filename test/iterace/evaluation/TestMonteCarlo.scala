@@ -15,15 +15,15 @@ import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
 class TestMonteCarlo extends RaceAbstractTest("Lmontecarlo/parallel/JGFMonteCarloBench") {
-  
+
   analysisScope.addBinaryDependency("../evaluation/montecarlo/bin");
 
   override def result(iteRace: IteRace) = iteRace.races
-  
+
   log.activeConsole = true
   log.activeTimer = true
 
-  testResult("JGFrun(I)V","""
+  testResult("JGFrun(I)V", """
 Loop: montecarlo.parallel.AppDemo.runParallel(AppDemo.java:178)
 
 Static: montecarlo.parallel.Universal

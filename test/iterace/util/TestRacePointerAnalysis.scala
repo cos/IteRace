@@ -16,19 +16,18 @@ class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers
 
   val startClass = "Lkingdom/Dog"
 
-  
   describe("instructionsReachableFrom") {
-    
+
     def getReachableFrom(method: String) = {
       var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
       analysisScope.addBinaryDependency("kingdom");
-      
-      val pa = new RacePointerAnalysis(startClass, method+"()V", analysisScope)
+
+      val pa = new RacePointerAnalysis(startClass, method + "()V", analysisScope)
       val n = pa.findNode(method).get
       pa.statementsReachableFrom(n)
     }
-    
-    it("must return only the 'return' instruction when given an empty method"){
+
+    it("must return only the 'return' instruction when given an empty method") {
       getReachableFrom("doesNothing") must have size 1
     }
     it("must return the set of instruction in a single method") {

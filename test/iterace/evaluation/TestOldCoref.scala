@@ -17,10 +17,10 @@ class TestOldCoref extends RaceAbstractTest("LLBJ2/nlp/coref/ClusterMerger") {
 
   analysisScope.addBinaryDependency("../evaluation/coref/bin");
   analysisScope.addJarDependency("../evaluation/coref/java_cup_runtime.jar");
-  
+
   override def result(iteRace: IteRace) = iteRace.races
 
-  testResult("main([Ljava/lang/String;)V","""
+  testResult("main([Ljava/lang/String;)V", """
 
 """)
 }

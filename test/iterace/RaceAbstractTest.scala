@@ -56,5 +56,5 @@ abstract class RaceAbstractTest(startClass: String) extends FunSuite with Before
     }
   }
 
-  def testNoRaces(method: String):Unit = testResult(method, "\n\n")
+  def testNoRaces(method: String): Unit = testResult(method, "\n\n")
 }

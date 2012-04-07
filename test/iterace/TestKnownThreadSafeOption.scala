@@ -4,11 +4,11 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class TestKnownThreadSafeOption extends RaceAbstractTest("Lparticles/Particle") {
-  
+
   analysisScope.addBinaryDependency("particles");
-  
+
   testNoRaces("noRaceOnStringConcatenation")
-  testResult("noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape","""
+  testResult("noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape", """
 Loop: particles.Particle.noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape(Particle.java:461)
 
 particles.Particle.noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape(Particle.java:459)

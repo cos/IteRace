@@ -15,10 +15,10 @@ import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
 class TestBH extends RaceAbstractTest("LbarnesHut/ParallelBarneshut") {
-  
+
   log.activate
-  
+
   analysisScope.addBinaryDependency("../evaluation/barnesHut/bin");
-  
+
   testNoRaces("main([Ljava/lang/String;)V")
 }

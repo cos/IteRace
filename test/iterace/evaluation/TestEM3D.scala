@@ -15,10 +15,10 @@ import iterace.util.log
 
 @RunWith(classOf[JUnitRunner])
 class TestEM3D extends RaceAbstractTest("Lem3d/parallelArray/Em3d") {
-  
+
   log.activate
-  
+
   analysisScope.addBinaryDependency("../evaluation/em3d/bin");
-  
+
   testNoRaces("main([Ljava/lang/String;)V")
 }

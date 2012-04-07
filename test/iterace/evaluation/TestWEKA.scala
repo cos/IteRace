@@ -17,14 +17,14 @@ import iterace.util.log
 class TestWEKA extends RaceAbstractTest("Lweka/clusterers/EM") {
 
   analysisScope.addJarDependency("../evaluation/weka/lib/java-cup.jar");
-	analysisScope.addJarDependency("../evaluation/weka/lib/JFlex.jar");
-	analysisScope.addJarDependency("../evaluation/weka/lib/junit.jar");
-	analysisScope.addBinaryDependency("../evaluation/weka/bin");
+  analysisScope.addJarDependency("../evaluation/weka/lib/JFlex.jar");
+  analysisScope.addJarDependency("../evaluation/weka/lib/junit.jar");
+  analysisScope.addBinaryDependency("../evaluation/weka/bin");
 
-	log.activeConsole = true
-	log.activeTimer = true
-	
-  testResult("EM_Init(Lweka/core/Instances;)V","""
+  log.activeConsole = true
+  log.activeTimer = true
+
+  testResult("EM_Init(Lweka/core/Instances;)V", """
 
 """)
 }

@@ -12,9 +12,9 @@ import org.junit.Rule
 
 @RunWith(classOf[JUnitRunner])
 class TestBubbleUp extends RaceAbstractTest("Lparticles/Particle") {
-  
+
   analysisScope.addBinaryDependency("particles");
-  
+
   testResult("raceOnArrayList", """
 Loop: particles.Particle.raceOnArrayList(Particle.java:676)
 
