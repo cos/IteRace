@@ -18,7 +18,7 @@ import com.ibm.wala.ipa.callgraph.impl.Everywhere
 import com.ibm.wala.ipa.callgraph.propagation.cfa.CallerSiteContextPair
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 
-class LoopContextSelector(instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
+class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
 
   // Describes how contexts are chosen
   def getCalleeTarget(caller: CGNode, site: CallSiteReference, callee: IMethod, actualParameters: Array[InstanceKey]): Context = {

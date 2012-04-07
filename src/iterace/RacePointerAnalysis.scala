@@ -1,6 +1,5 @@
 package iterace
 
-import iterace.oldjava.WalaAnalysisStart
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
