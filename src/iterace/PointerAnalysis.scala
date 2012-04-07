@@ -17,17 +17,17 @@ import com.ibm.wala.ipa.callgraph.AnalysisCache
 import com.ibm.wala.ipa.cha.ClassHierarchy
 
 class PointerAnalysis(entryClass: String, entryMethod: String, analysisScopeBuilder: AnalysisScopeBuilder) {
+  
+  /*
+   * Below is the analysis initialization
+   */
   val scope: AnalysisScope = analysisScopeBuilder.getAnalysisScope();
-
-  val cha = ClassHierarchy.make(scope);
-  val options: AnalysisOptions = new AnalysisOptions(scope, entrypoints.asJava);
-
-  val analysisCache = new AnalysisCache();
-  private val builder = new CallGraphBuilder(options, analysisCache, cha, scope);
-
+  val cha = ClassHierarchy.make(scope)
+  private val options: AnalysisOptions = new AnalysisOptions(scope, entrypoints.asJava)
+  val analysisCache = new AnalysisCache()
+  private val builder = new CallGraphBuilder(options, analysisCache, cha, scope)
   val callGraph = builder.makeCallGraph(options);
-  val pointerAnalysis = builder.getPointerAnalysis();
-
+  private val pointerAnalysis = builder.getPointerAnalysis();
   val heap = pointerAnalysis.getHeapGraph()
 
   private lazy val entrypoints = {
@@ -39,6 +39,10 @@ class PointerAnalysis(entryClass: String, entryMethod: String, analysisScopeBuil
     Set(entrypoint)
   }
 
+  /*
+   * And these are helper methods - might be a good ideea to put them in a separate file someday
+   */
+  
   /**
    * find a call graph node that matches .*pattern.*
    */

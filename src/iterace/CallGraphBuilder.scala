@@ -23,9 +23,6 @@ class CallGraphBuilder(
   
 		Util.addDefaultSelectors(options, cha);
 		Util.addDefaultBypassLogic(options, scope, classOf[Util].getClassLoader(), cha);
-		val appContextSelector: DefaultContextSelector = new DefaultContextSelector(options, cha);
-
-		val appContextInterpreter = new DefaultSSAInterpreter(options, cache)
 		
 		val instancePolicy =  
 		  		ZeroXInstanceKeys.SMUSH_STRINGS | 
@@ -33,13 +30,13 @@ class CallGraphBuilder(
 		  		ZeroXInstanceKeys.SMUSH_THROWABLES
 //		  		ZeroXInstanceKeys.SMUSH_MANY |
 		
-    val defI = new DelegatingSSAContextInterpreter(ReflectionContextInterpreter.createReflectionContextInterpreter(cha, options, getAnalysisCache()),  new DefaultSSAInterpreter(options, cache));
-    val contextInterpreter:SSAContextInterpreter = new DelegatingSSAContextInterpreter(appContextInterpreter, defI);
-    setContextInterpreter(contextInterpreter);
+		val contextInterpreter = new DelegatingSSAContextInterpreter(
+        ReflectionContextInterpreter.createReflectionContextInterpreter(cha, options, cache),  
+        new DefaultSSAInterpreter(options, cache))
+		  		
+    setContextInterpreter(contextInterpreter)
     
     val zik: ZeroXInstanceKeys = new ZeroXInstanceKeys(options, cha, contextInterpreter, instancePolicy)
     setContextSelector(new LoopContextSelector(Set(), zik))
-    
-//    setContextSelector(new CS(zik, options, cha));
     setInstanceKeys(zik);
 }

@@ -2,6 +2,7 @@ package iterace
 import iterace.util.S
 import com.ibm.wala.classLoader.IMethod
 
+// not used anywhere anymore but might in the future
 class FilterByKnownThreadSafe extends Function1[Set[Race], Set[Race]] {
 
   val threadSafe = Seq[String](
@@ -56,5 +57,4 @@ object threadSafe {
 //    if (m.toString().contains("Throwable")) println(m.toString() + isIt);
     isIt
   }
-
 }
