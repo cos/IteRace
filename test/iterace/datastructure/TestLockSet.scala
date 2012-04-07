@@ -24,4 +24,18 @@ class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallel
     "{ L: particles.ParticleWithLocks$9.op v3(x) }")
 
   @Test def checkMeetOverAllValidPathsNegative = assertLockSet("xyz", "{  }")
+
+  @Test def lockUsingSynchronizedBlock = assertLockSet("xyz", "{ L: particles.ParticleWithLocks$11.op v1(this) }")
+
+  @Test def lockUsingSynchronizedBlockInAnotherMethod = assertLockSet("xyz", "{ L: particles.ParticleWithLocks$12.op v1(this) }")
+
+  // important test
+  @Test def lockFromBothSynchronizedAndUnsynchronized = assertLockSet("xyz", "{  }")
+
+//   @Test def synchronizedMethod = assertLockSet("xyz", "yyy")
+  // @Test def xxx = assertLockSet("xyz", "yyy")
+  // @Test def xxx = assertLockSet("xyz", "yyy")
+  // @Test def xxx = assertLockSet("xyz", "yyy")
+  // @Test def xxx = assertLockSet("xyz", "yyy")
+  // @Test def xxx = assertLockSet("xyz", "yyy")
 }

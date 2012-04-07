@@ -210,13 +210,13 @@ public class ParticleWithLocks {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
 
-		final Particle shared = new Particle();
+		final ParticleWithLocks shared = new ParticleWithLocks();
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
 			public Particle op() {
 				synchronized (this) {
-					shared.x = 10;
+					shared.xyz = 10;
 				}
 				return new Particle();
 			}
@@ -230,7 +230,7 @@ public class ParticleWithLocks {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
 
-		final Particle shared = new Particle();
+		final ParticleWithLocks shared = new ParticleWithLocks();
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
@@ -241,8 +241,8 @@ public class ParticleWithLocks {
 				return new Particle();
 			}
 
-			private void someMethod(final Particle shared) {
-				shared.x = 10;
+			private void someMethod(final ParticleWithLocks shared) {
+				shared.xyz = 10;
 			}
 		});
 	}
@@ -255,7 +255,7 @@ public class ParticleWithLocks {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
 
-		final Particle shared = new Particle();
+		final ParticleWithLocks shared = new ParticleWithLocks();
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
@@ -267,8 +267,8 @@ public class ParticleWithLocks {
 				return new Particle();
 			}
 
-			private void someMethod(final Particle shared) {
-				shared.x = 10;
+			private void someMethod(final ParticleWithLocks shared) {
+				shared.xyz = 10;
 			}
 		});
 	}
@@ -277,12 +277,12 @@ public class ParticleWithLocks {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
 
-		final Particle shared = new Particle();
+		final ParticleWithLocks shared = new ParticleWithLocks();
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
 			public synchronized Particle op() {
-				shared.x = 10;
+				shared.xyz = 10;
 				return new Particle();
 			}
 		});
@@ -292,7 +292,7 @@ public class ParticleWithLocks {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
 
-		final Particle shared = new Particle();
+		final ParticleWithLocks shared = new ParticleWithLocks();
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
@@ -303,22 +303,22 @@ public class ParticleWithLocks {
 		});
 	}
 
-	private static synchronized void raceBabyRace(final Particle shared) {
-		shared.x = 10;
+	private static synchronized void raceBabyRace(final ParticleWithLocks shared) {
+		shared.xyz = 10;
 	}
 
 	public void reenterantLock() {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
 
-		final Particle shared = new Particle();
+		final ParticleWithLocks shared = new ParticleWithLocks();
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
 			public Particle op() {
 				ReentrantLock l = new ReentrantLock();
 				l.lock();
-				shared.x = 10;
+				shared.xyz = 10;
 				l.unlock();
 				return new Particle();
 			}
