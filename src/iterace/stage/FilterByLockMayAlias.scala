@@ -1,6 +1,6 @@
 package iterace
 
-class FilterByLockMayAlias(pa: RacePointerAnalysis) extends Function1[ProgramRaceSet, ProgramRaceSet] {
+class FilterByLockMayAlias(pa: RacePointerAnalysis) extends Stage {
   import pa._
   
   private val lockSet = new LockSet(pa)
@@ -41,7 +41,7 @@ class FilterByLockMayAlias(pa: RacePointerAnalysis) extends Function1[ProgramRac
   }
 }
 
-object FilterByLockMayAlias extends Stage {
+object FilterByLockMayAlias extends StageConstructor {
   def apply(pa: RacePointerAnalysis) = {
     new FilterByLockMayAlias(pa)
   }

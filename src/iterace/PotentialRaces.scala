@@ -11,7 +11,7 @@ import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 import util._
 
-class PossibleRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
+class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
 
   override def apply(): ProgramRaceSet = {
     ProgramRaceSet(races)

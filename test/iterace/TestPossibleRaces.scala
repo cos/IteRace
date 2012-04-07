@@ -17,7 +17,7 @@ class TestPossibleRaces extends RaceAbstractTest("Lparticles/Particle") {
   log.activeConsole = true
   log.activeTimer = true
   
-  override val stages: Seq[Stage] = Seq()
+  override val stages: Seq[StageConstructor] = Seq()
   
   analysisScope.addBinaryDependency("particles");
   

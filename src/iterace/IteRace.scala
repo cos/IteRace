@@ -20,7 +20,7 @@ import iterace.pointeranalysis.AnalysisScopeBuilder
 
 class IteRace private (
     startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
-    stages: Seq[Stage],
+    stages: Seq[StageConstructor],
     options: Set[String]) {
   
   log.startTimer("pointer analysis");
@@ -29,11 +29,13 @@ class IteRace private (
   log.endTimer
   
   log.startTimer("possible races")
-  private val possibleRaces = new PossibleRaces(pa)()
+  private val potentialRaces = new PotentialRaces(pa)()
   log.endTimer
-  log(possibleRaces.size)
+  log(potentialRaces.size)
 
   log.startTimer("activating stages - should be quick");
+  // we only activate one stage for each constructor type
+  // if a stage appears twice, it is only activated once but can be used as many times as necessary
   val activatedStagesSets = {
     val listOfUniqueStages = stages.toSet
     val listOfUniqueActivatedStages = listOfUniqueStages map {_(pa)}
@@ -42,7 +44,7 @@ class IteRace private (
   val activatedStages = stages map {activatedStagesSets(_)}
   log.endTimer
   
-  private var currentRaces = possibleRaces
+  private var currentRaces = potentialRaces
   activatedStages foreach(stage => {
     log.startTimer(stage.getClass().toString())
     currentRaces = stage(currentRaces)
@@ -56,7 +58,7 @@ class IteRace private (
 object IteRace {
   def apply(
     startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
-    stages: Seq[Stage] = Seq(FilterByLockMayAlias, BubbleUpToAppLevel, FilterByLockMayAlias),
+    stages: Seq[StageConstructor] = Seq(FilterByLockMayAlias, BubbleUpToAppLevel, FilterByLockMayAlias),
     options: Set[String] = Set()) = new IteRace(startClass, startMethod, analysisScope, stages, options)
 }
 

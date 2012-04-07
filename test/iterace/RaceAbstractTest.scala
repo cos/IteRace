@@ -16,7 +16,7 @@ abstract class RaceAbstractTest(startClass: String) extends FunSuite with Before
   analysisScope.setExclusionsFile("walaExclusions.txt");
   analysisScope.addBinaryDependency("../lib/parallelArray.mock");
 
-  val stages: Seq[Stage] = Seq(FilterByLockMayAlias, BubbleUpToAppLevel, FilterByLockMayAlias);
+  val stages: Seq[StageConstructor] = Seq(FilterByLockMayAlias, BubbleUpToAppLevel, FilterByLockMayAlias);
 
   var focusOnMethod: Option[String] = None
   def focus(method: String) = focusOnMethod = Some(method)
