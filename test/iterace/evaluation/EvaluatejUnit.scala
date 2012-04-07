@@ -12,15 +12,14 @@ import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
 import iterace.stage.RaceAbstractTest
+import org.junit.Test
 
-@RunWith(classOf[JUnitRunner])
+
 class EvaluatejUnit extends RaceAbstractTest("Ljunit/tests/ParallelAllTests") {
 
   log.activate
 
   analysisScope.addBinaryDependency("../evaluation/junit/bin");
 
-  testResult("main([Ljava/lang/String;)V", """
-
-""")
+  @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
 }

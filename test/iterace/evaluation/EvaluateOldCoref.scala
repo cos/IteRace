@@ -11,8 +11,9 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
 import iterace.stage.RaceAbstractTest
+import org.junit.Test
 
-@RunWith(classOf[JUnitRunner])
+
 class EvaluateOldCoref extends RaceAbstractTest("LLBJ2/nlp/coref/ClusterMerger") {
 
   analysisScope.addBinaryDependency("../evaluation/coref/bin");
@@ -20,7 +21,5 @@ class EvaluateOldCoref extends RaceAbstractTest("LLBJ2/nlp/coref/ClusterMerger")
 
   override def result(iteRace: IteRace) = iteRace.races
 
-  testResult("main([Ljava/lang/String;)V", """
-
-""")
+  @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
 }

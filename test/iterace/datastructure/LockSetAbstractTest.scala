@@ -6,8 +6,10 @@ import org.junit.Assert._
 import scala.collection._
 import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.pointeranalysis.RacePointerAnalysis
+import iterace.JavaTest
 
-abstract class LockSetAbstractTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter {
+
+abstract class LockSetAbstractTest(dependencies: List[String], startClass: String) extends JavaTest {
   def analyze(method: String) = {
     var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
     analysisScope.setExclusionsFile("walaExclusions.txt");
@@ -20,14 +22,12 @@ abstract class LockSetAbstractTest(dependencies: List[String], startClass: Strin
   /**
    * Test set of all found locks
    */
-  def testGetLocks(method: String, result: String) = {
-    test(method) {
-      val (lockSet, pa) = analyze(method + "()V")
+  def assertAllLocks(result: String):Unit = {
+      val (lockSet, pa) = analyze(testName.getMethodName() + "()V")
       import pa._
       val theLoop = loops.head
       val theLocks = lockSet.getLocks(theLoop)
       assertEquals(result, prettyPrint(theLocks))
-    }
   }
 
   def prettyPrint(locks: Set[Lock]) = "{ " + (locks.map { _.prettyPrint }).reduceOption((x, y) => x + " , " + y).getOrElse("") + " }"
@@ -35,9 +35,8 @@ abstract class LockSetAbstractTest(dependencies: List[String], startClass: Strin
   /**
    * Test lockset of "hinted" statement
    */
-  def testGetLockSet(method: String, hint: String, result: String) = {
-    test(method + " lockset") {
-      val (locksetsolver, pa) = analyze(method + "()V")
+  def assertLockSet(hint: String, result: String):Unit = {
+      val (locksetsolver, pa) = analyze(testName.getMethodName() + "()V")
       import pa._
       val theLoop = loops.head
       val lockSets = locksetsolver.getLockSetMapping(theLoop)
@@ -45,6 +44,5 @@ abstract class LockSetAbstractTest(dependencies: List[String], startClass: Strin
       val s = statementsReachableFrom(theLoop.n).toStringSorted.find(x => { x != null && x.toString().contains(hint) })
       val theLockSet = lockSets(s.get).toStringSorted
       assertEquals(result, prettyPrint(theLockSet))
-    }
   }
 }

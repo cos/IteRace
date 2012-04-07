@@ -14,6 +14,6 @@ import org.junit.Rule
  * Tests Particle.class (the same as TestPossibleRaces) but after the may-alias lock filter
  */
 
-@RunWith(classOf[JUnitRunner])
+
 class TestRacesOnParticle extends TestPotentialRaces {
 }

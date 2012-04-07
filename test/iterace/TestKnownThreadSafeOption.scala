@@ -2,14 +2,15 @@ package iterace
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import iterace.stage.RaceAbstractTest
+import org.junit.Test
 
-@RunWith(classOf[JUnitRunner])
+
 class TestKnownThreadSafeOption extends RaceAbstractTest("Lparticles/Particle") {
 
   analysisScope.addBinaryDependency("particles");
 
-  testNoRaces("noRaceOnStringConcatenation")
-  testResult("noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape", """
+  @Test def noRaceOnStringConcatenation = expectNoRaces
+  @Test def noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape = expect("""
 Loop: particles.Particle.noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape(Particle.java:461)
 
 particles.Particle.noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape(Particle.java:459)
@@ -17,5 +18,5 @@ particles.Particle.noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape(Pa
    (a)  particles.Particle$33.op(Particle$33.java:465)
    (b)  particles.Particle$33.op(Particle$33.java:465)
 """)
-  testNoRaces("noRaceWhenPrintln");
+  @Test def noRaceWhenPrintln = expectNoRaces;
 }

@@ -12,16 +12,14 @@ import com.ibm.wala.properties.WalaProperties
 import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.IteRace
 import iterace.datastructure.ProgramRaceSet
+import iterace.JavaTest
 
-abstract class RaceAbstractTest(startClass: String) extends FunSuite with BeforeAndAfter {
+abstract class RaceAbstractTest(startClass: String) extends JavaTest {
   val analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
   analysisScope.setExclusionsFile("walaExclusions.txt");
   analysisScope.addBinaryDependency("../lib/parallelArray.mock");
 
   val stages: Seq[StageConstructor] = Seq(FilterByLockMayAlias, BubbleUp, FilterByLockMayAlias);
-
-  var focusOnMethod: Option[String] = None
-  def focus(method: String) = focusOnMethod = Some(method)
 
   def analyze(method: String) = {
     log("test: " + method)
@@ -32,15 +30,8 @@ abstract class RaceAbstractTest(startClass: String) extends FunSuite with Before
 
   def result(iteRace: IteRace): ProgramRaceSet = iteRace.races
 
-  def testResult(method: String, expectedResult: String): Unit = {
-    focusOnMethod match {
-      case Some(m) if m != method => // do nothing
-      case _ => test(method) {
-        val iterace = analyze(method + "()V")
-        assertEquals(expectedResult, printRaces(result(iterace)))
-      }
-    }
-  }
-
-  def testNoRaces(method: String): Unit = testResult(method, "\n\n")
+  def expect(entry: String, expectedResult: String) = assertEquals(expectedResult, printRaces(result(analyze(entry + "()V"))))
+  def expect(expectedResult: String): Unit = expect(testName.getMethodName() + "()V", expectedResult)
+  def expectNoRaces:Unit = expectNoRaces(testName.getMethodName() + "()V")
+  def expectNoRaces(entry:String) = expect(entry, "\n\n")
 }

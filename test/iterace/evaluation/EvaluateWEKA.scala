@@ -12,8 +12,9 @@ import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
 import iterace.stage.RaceAbstractTest
+import org.junit.Test
 
-@RunWith(classOf[JUnitRunner])
+
 class EvaluateWEKA extends RaceAbstractTest("Lweka/clusterers/EM") {
 
   analysisScope.addJarDependency("../evaluation/weka/lib/java-cup.jar");
@@ -24,7 +25,5 @@ class EvaluateWEKA extends RaceAbstractTest("Lweka/clusterers/EM") {
   log.activeConsole = true
   log.activeTimer = true
 
-  testResult("EM_Init(Lweka/core/Instances;)V", """
-
-""")
+  @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
 }

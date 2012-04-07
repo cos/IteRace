@@ -12,13 +12,14 @@ import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
 import iterace.stage.RaceAbstractTest
+import org.junit.Test
 
-@RunWith(classOf[JUnitRunner])
+
 class EvaluateEM3D extends RaceAbstractTest("Lem3d/parallelArray/Em3d") {
 
   log.activate
 
   analysisScope.addBinaryDependency("../evaluation/em3d/bin");
 
-  testNoRaces("main([Ljava/lang/String;)V")
+  @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
 }

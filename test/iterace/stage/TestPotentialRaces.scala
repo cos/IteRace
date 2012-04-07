@@ -10,8 +10,9 @@ import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.util.log
+import org.junit.Test
+import org.junit.Ignore
 
-@RunWith(classOf[JUnitRunner])
 class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
 
   log.activate
@@ -20,16 +21,16 @@ class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
 
   analysisScope.addBinaryDependency("particles");
 
-  testNoRaces("vacuouslyNoRace")
+  @Test def vacuouslyNoRace = expectNoRaces
 
-  testNoRaces("noRaceOnParameter")
+  @Test def noRaceOnParameter = expectNoRaces
 
   /**
    * Is there a problem when the elements are initialized in another forall?
    */
-  testNoRaces("noRaceOnParameterInitializedBefore")
+  @Test def noRaceOnParameterInitializedBefore = expectNoRaces
 
-  testResult("verySimpleRace",
+  @Test def verySimpleRace = expect(
     """
 Loop: particles.Particle.verySimpleRace(Particle.java:68)
 
@@ -42,7 +43,7 @@ particles.Particle.verySimpleRace(Particle.java:66)
   /**
    * an part of an element is tainted in another forall
    */
-  testResult("raceOnParameterInitializedBefore",
+  @Test def raceOnParameterInitializedBefore = expect(
     """
 Loop: particles.Particle.raceOnParameterInitializedBefore(Particle.java:92)
 
@@ -55,31 +56,31 @@ particles.Particle.raceOnParameterInitializedBefore(Particle.java:81)
   /**
    * Is it field sensitive?
    */
-  testNoRaces("noRaceOnANonSharedField")
+  @Test def noRaceOnANonSharedField = expectNoRaces
 
   /**
    * How context sensitive is it? Fails on 0-CFA Works on 1-CFA (old remark)
    */
   // but we actually solve it from the loop context
-  testNoRaces("oneCFANeededForNoRaces")
+  @Test def oneCFANeededForNoRaces = expectNoRaces
 
   /**
    * How context sensitive is it? Fails on 0-CFA and 1-CFA Works on 2-CFA (old remark)
    */
   // but we actually solve it from the loop context
-  testNoRaces("twoCFANeededForNoRaces")
+  @Test def twoCFANeededForNoRaces = expectNoRaces
 
   /**
    * How context sensitive is it? Fails on any CFA due to recursivity Might
    * work on smarter analyses
    */
-  testNoRaces("recursive")
+  @Test def recursive = expectNoRaces
 
   /**
    * Disambiguate the trace for a race. The trace should contain
    * "shared.moveTo(5, 7);" but not "particle.moveTo(2, 3);"
    */
-  testResult("disambiguateFalseRace", """
+  @Test def disambiguateFalseRace = expect("""
 Loop: particles.Particle.disambiguateFalseRace(Particle.java:189)
 
 particles.Particle.disambiguateFalseRace(Particle.java:186)
@@ -91,9 +92,9 @@ particles.Particle.disambiguateFalseRace(Particle.java:186)
    (b)  particles.Particle.moveTo(Particle.java:17)
 """)
 
-  testNoRaces("ignoreFalseRacesInSeqOp")
+  @Test def ignoreFalseRacesInSeqOp = expectNoRaces
 
-  testResult("raceBecauseOfOutsideInterference", """
+  @Test def raceBecauseOfOutsideInterference = expect("""
 Loop: particles.Particle.raceBecauseOfOutsideInterference(Particle.java:232)
 
 particles.Particle$15.op(Particle$15.java:235)
@@ -107,7 +108,7 @@ particles.Particle.raceBecauseOfOutsideInterference(Particle.java:229)
         particles.Particle$15.op(Particle$15.java:236)
 """)
 
-  testResult("raceOnSharedObjectCarriedByArray", """
+  @Test def raceOnSharedObjectCarriedByArray = expect("""
 Loop: particles.Particle.raceOnSharedObjectCarriedByArray(Particle.java:259)
 
 particles.Particle$16.op(Particle$16.java:253)
@@ -119,7 +120,7 @@ particles.Particle$16.op(Particle$16.java:253)
    (b)  particles.Particle.moveTo(Particle.java:17)
 """)
 
-  testResult("raceBecauseOfDirectArrayLoad", """
+  @Test def raceBecauseOfDirectArrayLoad = expect("""
 Loop: particles.Particle.raceBecauseOfDirectArrayLoad(Particle.java:274)
 
 particles.Particle$18.op(Particle$18.java:279)
@@ -132,7 +133,7 @@ particles.Particle.raceBecauseOfDirectArrayLoad(Particle.java:271)
    (b)  particles.Particle$18.op(Particle$18.java:278)
 """)
 
-  testResult("raceOnSharedReturnValue", """
+  @Test def raceOnSharedReturnValue = expect("""
 Loop: particles.Particle.raceOnSharedReturnValue(Particle.java:290)
 
 particles.Particle.raceOnSharedReturnValue(Particle.java:288)
@@ -141,7 +142,7 @@ particles.Particle.raceOnSharedReturnValue(Particle.java:288)
    (b)  particles.Particle$19.op(Particle$19.java:293)
 """)
 
-  testResult("raceOnDifferntArrayIteration", """
+  @Test def raceOnDifferntArrayIteration = expect("""
 Loop: particles.Particle.raceOnDifferntArrayIteration(Particle.java:317)
 
 particles.Particle$20.op(Particle$20.java:306)
@@ -150,9 +151,9 @@ particles.Particle$20.op(Particle$20.java:306)
    (b)  particles.Particle$22.op(Particle$22.java:320)
 """)
 
-  ignore("noRaceIfFlowSensitive") {} // should return no races
+  @Test @Ignore def noRaceIfFlowSensitive =  expectNoRaces 
 
-  testResult("raceOnDifferntArrayIterationOneLoop", """
+  @Test def raceOnDifferntArrayIterationOneLoop = expect("""
 Loop: particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:367)
 
 particles.Particle$27.op(Particle$27.java:371)
@@ -166,7 +167,7 @@ particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:365)
         particles.Particle$27.op(Particle$27.java:372)
 """)
 
-  testResult("verySimpleRaceWithIndex", """
+  @Test def verySimpleRaceWithIndex = expect("""
 Loop: particles.Particle.verySimpleRaceWithIndex(Particle.java:383)
 
 particles.Particle.verySimpleRaceWithIndex(Particle.java:381)
@@ -175,7 +176,7 @@ particles.Particle.verySimpleRaceWithIndex(Particle.java:381)
    (b)  particles.Particle$28.op(Particle$28.java:386)
 """)
 
-  testResult("verySimpleRaceToStaticObject", """
+  @Test def verySimpleRaceToStaticObject = expect("""
 Loop: particles.Particle.verySimpleRaceToStaticObject(Particle.java:399)
 
 particles.Particle.<clinit>(Particle.java:392)
@@ -184,7 +185,7 @@ particles.Particle.<clinit>(Particle.java:392)
    (b)  particles.Particle$29.op(Particle$29.java:402)
 """)
 
-  testResult("raceOnSharedFromStatic", """
+  @Test def raceOnSharedFromStatic = expect("""
 Loop: particles.Particle.raceOnSharedFromStatic(Particle.java:412)
 
 particles.Particle.<clinit>(Particle.java:392)
@@ -193,7 +194,7 @@ particles.Particle.<clinit>(Particle.java:392)
    (b)  particles.Particle$30.op(Particle$30.java:416)
 """)
 
-  testResult("staticMethod", """
+  @Test def staticMethod = expect("""
 Loop: particles.Particle.staticMethod(Particle.java:642)
 
 particles.Particle.<clinit>(Particle.java:392)
@@ -202,7 +203,7 @@ particles.Particle.<clinit>(Particle.java:392)
    (b)  particles.Particle.thisisstatic(Particle.java:652) [2x]
 """);
 
-  testResult("verySimpleRaceOnStaticField", """
+  @Test def verySimpleRaceOnStaticField = expect("""
 Loop: particles.Particle.verySimpleRaceOnStaticField(Particle.java:661)
 
 Static: particles.Particle
@@ -211,7 +212,7 @@ Static: particles.Particle
    (b)  particles.Particle$48.op(Particle$48.java:664)
 """)
 
-  testResult("raceOnArray", """
+  @Test def raceOnArray = expect("""
 Loop: particles.Particle.raceOnArray(Particle.java:491)
 
 particles.Particle.raceOnArray(Particle.java:489)
@@ -221,7 +222,7 @@ particles.Particle.raceOnArray(Particle.java:489)
 """)
 
   /*
-  testResult("raceInLibrary", """
+  @Test def raceInLibrary = expect("""
   ....
 """)*/
 }

@@ -9,13 +9,14 @@ import org.junit.Assert._
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
+import org.junit.Test
 
-@RunWith(classOf[JUnitRunner])
+
 class TestBubbleUp extends RaceAbstractTest("Lparticles/Particle") {
 
   analysisScope.addBinaryDependency("particles");
 
-  testResult("raceOnArrayList", """
+  @Test def raceOnArrayList = expect("""
 Loop: particles.Particle.raceOnArrayList(Particle.java:676)
 
 particles.Particle.raceOnArrayList(Particle.java:674)

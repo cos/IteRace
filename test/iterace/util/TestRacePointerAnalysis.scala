@@ -11,7 +11,7 @@ import org.scalatest.matchers.MustMatchers
 import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.pointeranalysis.RacePointerAnalysis
 
-@RunWith(classOf[JUnitRunner])
+
 class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers {
 
   val startClass = "Lkingdom/Dog"
