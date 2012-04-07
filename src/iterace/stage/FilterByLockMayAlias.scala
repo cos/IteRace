@@ -4,6 +4,7 @@ import iterace.datastructure.ProgramRaceSet
 import iterace.datastructure.Lock
 import iterace.datastructure.LockSet
 import iterace.datastructure.Race
+import iterace.datastructure.MayAliasLockConstructor
 
 /**
  * read: "filter by locks based on may-alias"
@@ -11,7 +12,7 @@ import iterace.datastructure.Race
 class FilterByLockMayAlias(pa: RacePointerAnalysis) extends Stage {
   import pa._
   
-  private val lockSet = new LockSet(pa)
+  private val lockSet = new LockSet(pa, new MayAliasLockConstructor(pa))
   
   def apply(races: ProgramRaceSet): ProgramRaceSet = {
     new ProgramRaceSet(races.children map (loopRaceSet => {
@@ -20,10 +21,10 @@ class FilterByLockMayAlias(pa: RacePointerAnalysis) extends Stage {
       val lockMap = lockSet.getLockSetMapping(loopRaceSet.l, locksWithUniqueAbstractObjects)
 
       def isSafe(r: Race): Boolean = {
-        val lockObjectsA = lockMap(r.a) map { _.p.pt } flatten
-        val lockObjectsB = lockMap(r.b) map { _.p.pt } flatten
+        val aLocks = lockMap(r.a)
+        val bLocks = lockMap(r.b)
 
-        lockObjectsA.size == 1 && lockObjectsB.size == 1 && (lockObjectsA & lockObjectsB).size == 1
+        (aLocks & bLocks).size > 0
       }
       loopRaceSet.filter { !isSafe(_) }
     }))
@@ -45,7 +46,8 @@ class FilterByLockMayAlias(pa: RacePointerAnalysis) extends Stage {
   }
 
   def pointsToUniqueAbstractObject(l: Lock): Boolean = {
-    l.p.pt.size == 1
+//    l.p.pt.size == 1
+    true
   }
 }
 

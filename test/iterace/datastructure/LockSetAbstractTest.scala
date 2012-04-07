@@ -15,7 +15,7 @@ abstract class LockSetAbstractTest(dependencies: List[String], startClass: Strin
     for (d <- dependencies) { analysisScope.addBinaryDependency(d); }
 
     val pa = new RacePointerAnalysis(startClass, method, analysisScope)
-    (new LockSet(pa), pa)
+    (new LockSet(pa, new MayAliasLockConstructor(pa)), pa)
   }
 
   /**
