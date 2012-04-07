@@ -10,7 +10,6 @@ import iterace.util._
 import scala.collection.JavaConversions._
 import com.ibm.wala.properties.WalaProperties
 import iterace.pointeranalysis.AnalysisScopeBuilder
-import iterace.stage.StageConstructor
 import iterace.IteRace
 import iterace.datastructure.ProgramRaceSet
 
