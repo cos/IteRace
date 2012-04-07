@@ -15,5 +15,5 @@ import org.junit.Rule
  */
 
 @RunWith(classOf[JUnitRunner])
-class TestRacesOnParticle extends TestPossibleRaces {
+class TestRacesOnParticle extends TestPotentialRaces {
 }
