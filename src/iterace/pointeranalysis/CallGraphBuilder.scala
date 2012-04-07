@@ -1,4 +1,4 @@
-package iterace
+package iterace.pointeranalysis
 
 import com.ibm.wala.analysis.reflection.ReflectionContextInterpreter;
 import com.ibm.wala.ipa.callgraph.AnalysisCache;

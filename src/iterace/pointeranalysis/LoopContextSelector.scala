@@ -1,4 +1,4 @@
-package iterace
+package iterace.pointeranalysis
 import com.ibm.wala.ipa.callgraph.ContextSelector
 import com.ibm.wala.ipa.callgraph.CGNode
 import com.ibm.wala.classLoader.CallSiteReference
@@ -17,6 +17,8 @@ import com.ibm.wala.ipa.callgraph.propagation.ContainerUtil
 import com.ibm.wala.ipa.callgraph.impl.Everywhere
 import com.ibm.wala.ipa.callgraph.propagation.cfa.CallerSiteContextPair
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
+import iterace.stage.threadSafe
+import iterace.AnalysisException
 
 class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
 

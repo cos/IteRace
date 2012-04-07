@@ -7,6 +7,7 @@ import scala.collection._
 import iterace.util.WALAConversions._
 import com.ibm.wala.analysis.pointers.HeapGraph
 import com.ibm.wala.ssa.SSAPutInstruction
+import iterace.pointeranalysis.PointerAnalysis
 
 class RelativeMustAliasLevels(pa: PointerAnalysis) {
   import pa._

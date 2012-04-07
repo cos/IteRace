@@ -1,12 +1,13 @@
-package iterace
+package iterace.datastructure
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
 import iterace.util.WALAConversions._
 import org.junit.Assert._
 import scala.collection._
 import iterace.pointeranalysis.AnalysisScopeBuilder
+import iterace.pointeranalysis.RacePointerAnalysis
 
-abstract class LockSetTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter {
+abstract class LockSetAbstractTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter {
   def analyze(method: String) = {
     var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
     analysisScope.setExclusionsFile("walaExclusions.txt");
@@ -15,7 +16,10 @@ abstract class LockSetTest(dependencies: List[String], startClass: String) exten
     val pa = new RacePointerAnalysis(startClass, method, analysisScope)
     (new LockSet(pa), pa)
   }
-
+  
+  /**
+   * Test set of all found locks
+   */
   def testGetLocks(method: String, result: String) = {
     test(method) {
       val (lockSet, pa) = analyze(method + "()V")
@@ -28,6 +32,9 @@ abstract class LockSetTest(dependencies: List[String], startClass: String) exten
 
   def prettyPrint(locks: Set[Lock]) = "{ " + (locks.map { _.prettyPrint }).reduceOption((x, y) => x + " , " + y).getOrElse("") + " }"
 
+  /**
+   * Test lockset of "hinted" statement
+   */
   def testGetLockSet(method: String, hint: String, result: String) = {
     test(method + " lockset") {
       val (locksetsolver, pa) = analyze(method + "()V")

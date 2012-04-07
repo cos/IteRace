@@ -17,6 +17,8 @@ import com.ibm.wala.dataflow.IFDS.PathEdge
 import com.ibm.wala.properties.WalaProperties
 import iterace.util.log
 import iterace.pointeranalysis.AnalysisScopeBuilder
+import iterace.stage._
+import iterace.pointeranalysis._
 
 class IteRace private (
     startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,

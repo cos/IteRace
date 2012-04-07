@@ -1,4 +1,4 @@
-package iterace
+package iterace.datastructure
 
 import scala.collection._
 import scala.collection.JavaConversions._
@@ -26,6 +26,7 @@ import com.ibm.wala.dataflow.IFDS.TabulationSolver
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.dataflow.IFDS.IMergeFunction
 import iterace.util.S
+import iterace.pointeranalysis._
 
 case class Lock(p: P) {
   def prettyPrint = "L: " + p.prettyPrint

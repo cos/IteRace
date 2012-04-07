@@ -1,4 +1,5 @@
-package iterace
+package iterace.datastructure
+
 import iterace.util.WALAConversions._
 import scala.collection._
 import scala.collection.JavaConverters._
@@ -8,6 +9,8 @@ import scala.collection.mutable.{ Builder, SetBuilder }
 import scala.collection.generic.CanBuildFrom
 import scala.util.Sorting
 import scala.collection.immutable.TreeSet
+import iterace.pointeranalysis.Loop
+import iterace.pointeranalysis.LoopCallSiteContext
 
 abstract sealed class RaceSet extends immutable.Set[Race] with PrettyPrintable {
   type This <: RaceSet

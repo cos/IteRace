@@ -1,6 +1,7 @@
 package iterace
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import iterace.stage.RaceAbstractTest
 
 @RunWith(classOf[JUnitRunner])
 class TestKnownThreadSafeOption extends RaceAbstractTest("Lparticles/Particle") {

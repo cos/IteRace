@@ -1,4 +1,4 @@
-package iterace
+package iterace.stage
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.util.graph.impl.GraphInverter
 import com.ibm.wala.util.collections.Filter
@@ -7,6 +7,9 @@ import iterace.util.WALAConversions._
 import iterace.util.crossProduct
 import scala.collection.JavaConverters._
 import scala.collection._
+import iterace.pointeranalysis.RacePointerAnalysis
+import iterace.datastructure.ProgramRaceSet
+import iterace.datastructure.ShallowRace
 
 class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   import pa._

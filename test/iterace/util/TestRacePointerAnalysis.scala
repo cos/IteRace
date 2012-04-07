@@ -8,8 +8,8 @@ import iterace.util.WALAConversions._
 import org.junit.Assert._
 import org.scalatest.FunSuite
 import org.scalatest.matchers.MustMatchers
-import iterace.RacePointerAnalysis
 import iterace.pointeranalysis.AnalysisScopeBuilder
+import iterace.pointeranalysis.RacePointerAnalysis
 
 @RunWith(classOf[JUnitRunner])
 class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers {

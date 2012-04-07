@@ -1,4 +1,4 @@
-package iterace.stage
+package iterace.evaluation;
 
 import org.junit.runner.RunWith
 import org.scalatest.{ Spec, BeforeAndAfter }
@@ -9,11 +9,16 @@ import org.junit.Assert._
 import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
-
-/**
- * Tests Particle.class (the same as TestPossibleRaces) but after the may-alias lock filter
- */
+import iterace.IteRace
+import iterace.util.log
+import iterace.stage.RaceAbstractTest
 
 @RunWith(classOf[JUnitRunner])
-class TestRacesOnParticle extends TestPotentialRaces {
+class EvaluateEM3D extends RaceAbstractTest("Lem3d/parallelArray/Em3d") {
+
+  log.activate
+
+  analysisScope.addBinaryDependency("../evaluation/em3d/bin");
+
+  testNoRaces("main([Ljava/lang/String;)V")
 }

@@ -1,4 +1,4 @@
-package iterace
+package iterace.stage
 import com.ibm.wala.analysis.pointers.HeapGraph
 import scala.collection._
 import scala.collection.JavaConverters._
@@ -9,7 +9,11 @@ import com.ibm.wala.ssa.SSAPutInstruction
 import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
-import util._
+import iterace.pointeranalysis.RacePointerAnalysis
+import iterace.datastructure.ProgramRaceSet
+import iterace.datastructure.Race
+import iterace.pointeranalysis.THREAD_SAFE
+import iterace.util._
 
 class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
 

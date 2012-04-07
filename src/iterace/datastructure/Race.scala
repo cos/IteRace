@@ -1,8 +1,9 @@
-package iterace
+package iterace.datastructure
 
 import scala.collection._
 import iterace.util.WALAConversions._
 import iterace.util._
+import iterace.pointeranalysis.Loop
 
 object Race {
   def apply(l: Loop, o: O, f:F, a: S[I], b: S[I]) = new RaceOnField(l,o,f,a,b)

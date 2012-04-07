@@ -1,4 +1,4 @@
-package iterace;
+package iterace.stage
 
 import org.junit.runner.RunWith
 import org.scalatest.{ Spec, BeforeAndAfter }
@@ -14,8 +14,7 @@ import iterace.util.log
 @RunWith(classOf[JUnitRunner])
 class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
 
-  log.activeConsole = true
-  log.activeTimer = true
+  log.activate
 
   override val stages: Seq[StageConstructor] = Seq()
 

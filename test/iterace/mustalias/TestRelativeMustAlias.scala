@@ -11,6 +11,7 @@ import org.scalatest.FunSuite
 import org.junit.rules.TestName
 import org.junit.Rule
 import iterace.pointeranalysis.AnalysisScopeBuilder
+import iterace.pointeranalysis.PointerAnalysis
 
 @RunWith(classOf[JUnitRunner])
 class TestRelativeMustAlias extends FunSuite with BeforeAndAfter {

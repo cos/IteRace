@@ -1,4 +1,9 @@
-package iterace
+package iterace.stage
+import iterace.pointeranalysis.RacePointerAnalysis
+import iterace.datastructure.ProgramRaceSet
+import iterace.datastructure.Lock
+import iterace.datastructure.LockSet
+import iterace.datastructure.Race
 
 /**
  * read: "filter by locks based on may-alias"

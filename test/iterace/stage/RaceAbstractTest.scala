@@ -1,4 +1,4 @@
-package iterace
+package iterace.stage
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
 import iterace.util.WALAConversions._
@@ -10,6 +10,9 @@ import iterace.util._
 import scala.collection.JavaConversions._
 import com.ibm.wala.properties.WalaProperties
 import iterace.pointeranalysis.AnalysisScopeBuilder
+import iterace.stage.StageConstructor
+import iterace.IteRace
+import iterace.datastructure.ProgramRaceSet
 
 abstract class RaceAbstractTest(startClass: String) extends FunSuite with BeforeAndAfter {
   val analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
@@ -27,22 +30,6 @@ abstract class RaceAbstractTest(startClass: String) extends FunSuite with Before
   }
 
   def printRaces(races: ProgramRaceSet): String = "\n" + races.prettyPrint + "\n"
-
-  //    for ((l, lRaces) <- races.groupBy { _.l } toStringSorted) {
-  //      s ++= "Loop: " + l.n.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint() + "\n\n"
-  //      for ((o, oRaces) <- lRaces.groupBy { _.o } toStringSorted) {
-  //        s ++= o.prettyPrint() + "\n"
-  //        val racesOnFields = oRaces collect { case r: RaceOnField => r }
-  //        for ((f, fRaces) <- racesOnFields.groupBy { _.f } toStringSorted) {
-  //          s ++= ((new FieldRaceSet(f, fRaces)).prettyPrint) + "\n"
-  //        }
-  //
-  //        val shallowRaces = oRaces collect {case r: ShallowRace => r}
-  //        if(!shallowRaces.isEmpty)
-  //        s ++= " on object: \n" + new ShallowRaceSet(shallowRaces).prettyPrint() + "\n"
-  //        
-  //      }
-  //    }
 
   def result(iteRace: IteRace): ProgramRaceSet = iteRace.races
 

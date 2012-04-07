@@ -1,6 +1,7 @@
-package iterace
+package iterace.stage
 import iterace.util.S
 import com.ibm.wala.classLoader.IMethod
+import iterace.datastructure.Race
 
 // not used anywhere anymore but might in the future
 class FilterByKnownThreadSafe extends Function1[Set[Race], Set[Race]] {

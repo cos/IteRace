@@ -29,8 +29,8 @@ import com.ibm.wala.util.intset.IntSetAction
 import com.ibm.wala.types.TypeReference
 import com.ibm.wala.classLoader.IClassLoader
 import com.ibm.wala.types.ClassLoaderReference
-import iterace.Loop
-import iterace.LoopContext
+import iterace.pointeranalysis.LoopContext
+import iterace.pointeranalysis.Loop
 
 class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConversionsForP {
   trait Named {

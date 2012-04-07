@@ -1,4 +1,4 @@
-package iterace
+package iterace.pointeranalysis
 
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._

@@ -1,4 +1,4 @@
-package iterace;
+package iterace.stage
 
 import org.junit.runner.RunWith
 import org.scalatest.{ Spec, BeforeAndAfter }

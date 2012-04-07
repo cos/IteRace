@@ -1,10 +1,10 @@
-package iterace
+package iterace.datastructure
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class TestLockSet extends LockSetTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/ParticleWithLocks") {
-  testGetLocks("simpleRaceNoLocks", "{  }")
+class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/ParticleWithLocks") {
+  testGetLocks("noLocks", "{  }")
   testGetLocks("oneSimpleLock", "{ L: particles.ParticleWithLocks$3.op v3(x) }")
 
   testGetLockSet("oneSimpleLock", "xyz",
@@ -25,4 +25,6 @@ class TestLockSet extends LockSetTest(List("particles", "../lib/parallelArray.mo
     "xyz", "{ L: particles.ParticleWithLocks$9.op v3(x) }")
 
   testGetLockSet("checkMeetOverAllValidPathsNegative", "xyz", "{  }")
+  
+  testGetLockSet("lockUsingSynchronizedBlock")
 }
