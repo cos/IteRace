@@ -15,6 +15,7 @@ import com.ibm.wala.ssa.SSAArrayReferenceInstruction
 import com.ibm.wala.ssa.SSAArrayStoreInstruction
 import com.ibm.wala.classLoader.IField
 import com.ibm.wala.ssa.SSAInvokeInstruction
+import com.ibm.wala.ssa.SSAMonitorInstruction
 
 trait TypeAliases {
   type SS = BasicBlockInContext[IExplodedBasicBlock]
@@ -34,6 +35,8 @@ trait TypeAliases {
   type ArrayStoreI = SSAArrayStoreInstruction
   type ArrayReferenceI = SSAArrayReferenceInstruction
   type InvokeI = SSAInvokeInstruction
+  
+  type MonitorI = SSAMonitorInstruction
   
   type G = CallGraph
   type C = IClass

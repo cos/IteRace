@@ -27,6 +27,7 @@ import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.dataflow.IFDS.IMergeFunction
 import iterace.util.S
 import iterace.pointeranalysis._
+import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
 
 case class Lock(p: P) {
   def prettyPrint = "L: " + p.prettyPrint
@@ -34,6 +35,12 @@ case class Lock(p: P) {
 
 object LockSet {
   type LockDomain = TabulationDomain[Lock, SS]
+}
+
+object IExplodedBasicBlock {
+  def unapply(bb: IExplodedBasicBlock): Option[(I)] = {
+    Some(bb.getInstruction())
+  }
 }
 
 class LockSet(pa: PointerAnalysis) {
@@ -45,18 +52,22 @@ class LockSet(pa: PointerAnalysis) {
    * Get all the locks that appear in the loop
    */
   val locksForLoop: mutable.Map[Loop, Set[Lock]] = mutable.Map()
-  def getLocks(l: Loop): Set[Lock] = {
-    locksForLoop.getOrElseUpdate(l,
-      (for (
-        n <- asScalaIterator(DFS.iterateDiscoverTime(callGraph, l.n));
-        i <- n.instructions
-      ) yield {
-        i match {
-          case i: SSAMonitorInstruction => Lock(P(n, i.getRef()))
-          case _ => null
-        }
-      }) filter { _ != null } toSet)
-  }
+  def getLocks(l: Loop): Set[Lock] = locksForLoop.getOrElseUpdate(l,
+    asScalaIterator(DFS.iterateDiscoverTime(callGraph, l.n)) flatMap (n => {
+
+      // synchronized method locks
+      val nLockSet: Set[Lock] = if (n.m.isSynchronized())
+        if (n.m.isStatic()) Set(Lock(P(n, 0))) // for now, consider the convention that 0 is a pointer to the class
+        else Set(Lock(P(n, 1))) // lock on "this"
+      else Set()
+
+      // synchronized locks block
+      nLockSet ++ (n.instructions collect {
+        case i: SSAMonitorInstruction => Lock(P(n, i.getRef()))
+      })
+
+      // will add ReentrantLock locks here at some point
+    }) toSet)
 
   def getLockSetMapping(l: Loop): S[I] => Set[Lock] = getLockSetMapping(l, getLocks(l))
 
@@ -78,20 +89,33 @@ class LockSet(pa: PointerAnalysis) {
       override def getCallNoneToReturnFlowFunction(src: SS, dest: SS) = IdentityFlowFunction.identity();
       override def getCallToReturnFlowFunction(src: SS, dest: SS) = SingletonFlowFunction.create(0);
       override def getNormalFlowFunction(src: SS, dest: SS) = {
-        src.getLastInstruction() match { // I don't know why it is "last", just some ugly interface, matching to generally
-          case i: SSAMonitorInstruction => {
-            if (i.isMonitorEnter()) {
-              val theSet = SparseIntSet.singleton(locksDomain.getMappedIndex(Lock(P(src.getNode(), i.getRef()))))
-              VectorKillFlowFunction.make(theSet)
-            } else {
-              // for some reason the their gen function needs 0 explicitly 
-              // (a nice way to waste 3 hours figuring why the algorithm doesn't work)
-              val theSet = SparseIntSet.pair(0, locksDomain.getMappedIndex(Lock(P(src.getNode(), i.getRef()))))
-              VectorGenFlowFunction.make(theSet)
-            }
-          }
-          case _ => IdentityFlowFunction.identity()
+
+        // tuple (isEnter, refV)
+        val isEnterAndRefV = src.getDelegate() match {
+          case IExplodedBasicBlock(i: MonitorI) =>
+            if (i.isMonitorEnter()) Some(true, i.getRef())
+            else Some(false, i.getRef())
+
+          case bb: IExplodedBasicBlock if bb.getMethod().isSynchronized() && (bb.isEntryBlock() || bb.isExitBlock()) =>
+            Some(bb.isEntryBlock(), if (bb.getMethod().isStatic()) 0 else 1)
+
+          case _ => None
         }
+
+        isEnterAndRefV match {
+          case Some((true, refV: V)) => {
+            val theSet = SparseIntSet.singleton(locksDomain.getMappedIndex(Lock(P(src.getNode(), refV))))
+            VectorKillFlowFunction.make(theSet)
+          }
+          case Some((false, refV: V)) => {
+            // for some reason the their gen function needs 0 explicitly 
+            // (a nice way to waste 3 hours figuring why the algorithm doesn't work)
+            val theSet = SparseIntSet.pair(0, locksDomain.getMappedIndex(Lock(P(src.getNode(), refV))))
+            VectorGenFlowFunction.make(theSet)
+          }
+          case None => IdentityFlowFunction.identity()
+        }
+
       }
       override def getReturnFlowFunction(call: SS, src: SS, dest: SS) = IdentityFlowFunction.identity();
     }

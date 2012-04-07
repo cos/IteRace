@@ -5,6 +5,7 @@ import org.junit.Test
 
 class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/ParticleWithLocks") {
   @Test def noLocks = assertAllLocks("{  }")
+  @Test def synchronizedMethod = assertAllLocks("{ L: particles.ParticleWithLocks$14.op v1(this) }")
 
   @Test def oneSimpleLock = assertLockSet("xyz",
     "{ L: particles.ParticleWithLocks$3.op v3(x) }")
@@ -32,9 +33,9 @@ class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallel
   // important test
   @Test def lockFromBothSynchronizedAndUnsynchronized = assertLockSet("xyz", "{  }")
 
-//   @Test def synchronizedMethod = assertLockSet("xyz", "yyy")
-  // @Test def xxx = assertLockSet("xyz", "yyy")
-  // @Test def xxx = assertLockSet("xyz", "yyy")
+  @Test def synchronizedMethodLockSet = assertLockSet("synchronizedMethod", "xyz", "{ L: particles.ParticleWithLocks$14.op v1(this) }")
+
+//  @Test def synchronizedStaticMethod = assertLockSet("xyz", "yyy")
   // @Test def xxx = assertLockSet("xyz", "yyy")
   // @Test def xxx = assertLockSet("xyz", "yyy")
   // @Test def xxx = assertLockSet("xyz", "yyy")

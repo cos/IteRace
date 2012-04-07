@@ -109,7 +109,7 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
   implicit def o2prettyprintable(o: O): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = O.prettyPrint(o)
   }
-  
+
   implicit def f2prettyprintable(f: F): PrettyPrintable = new PrettyPrintable {
     def prettyPrint(): String = f.getName().toString()
   }
@@ -122,18 +122,18 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
     }
   }
 
-  def inApplicationScope(n: N):Boolean = inApplicationScope(n.m)
-  def inApplicationScope(m: M):Boolean = {
+  def inApplicationScope(n: N): Boolean = inApplicationScope(n.m)
+  def inApplicationScope(m: M): Boolean = {
     val classLoader = m.getDeclaringClass().getClassLoader();
     classLoader.getReference() == ClassLoaderReference.Application;
   }
 
-  def inPrimordialScope(n: N):Boolean = inPrimordialScope(n.m)
+  def inPrimordialScope(n: N): Boolean = inPrimordialScope(n.m)
   def inPrimordialScope(m: M) = {
     val classLoader = m.getDeclaringClass().getClassLoader();
     classLoader.getReference() == ClassLoaderReference.Primordial;
   }
-  
+
   object unknownO extends O {
     override def getConcreteType() = null
     override def toString = "UNKOWN object"
@@ -166,16 +166,18 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
   //      }
   //    }
   //  }
-  
+
   // should move these at some point
   def getLoopFor(n: N): Option[Loop] = n.getContext() match {
     case LoopContext(nl, _) => Some(Loop(nl))
     case _ => None
   }
-  
+
   implicit def statementWithLoop(s: S[_]) = new {
-    lazy val l:Option[Loop] = getLoopFor(s.n)
+    lazy val l: Option[Loop] = getLoopFor(s.n)
   }
+ 
+
 }
 
 object WALAConversions extends WALAConversions
