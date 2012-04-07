@@ -8,7 +8,7 @@ import scala.collection._
 import iterace.util.S
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.properties.WalaProperties
-import iterace.oldjava.AnalysisScopeBuilder
+import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.util.ArrayContents
 import com.ibm.wala.util.collections.Filter
 

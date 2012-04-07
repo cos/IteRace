@@ -1,4 +1,4 @@
-package iterace.oldjava;
+package iterace.pointeranalysis;
 
 import java.io.File;
 import java.io.IOException;

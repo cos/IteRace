@@ -15,8 +15,8 @@ import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
 import com.ibm.wala.dataflow.IFDS.PathEdge
 import com.ibm.wala.properties.WalaProperties
-import iterace.oldjava.AnalysisScopeBuilder
 import iterace.util.log
+import iterace.pointeranalysis.AnalysisScopeBuilder
 
 class IteRace private (
     startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,

@@ -4,7 +4,7 @@ import org.scalatest.BeforeAndAfter
 import iterace.util.WALAConversions._
 import org.junit.Assert._
 import scala.collection._
-import iterace.oldjava.AnalysisScopeBuilder
+import iterace.pointeranalysis.AnalysisScopeBuilder
 
 abstract class LockSetTest(dependencies: List[String], startClass: String) extends FunSuite with BeforeAndAfter  {
   def analyze(method: String) = {

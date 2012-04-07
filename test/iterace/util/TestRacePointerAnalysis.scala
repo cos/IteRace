@@ -9,7 +9,7 @@ import org.junit.Assert._
 import org.scalatest.FunSuite
 import org.scalatest.matchers.MustMatchers
 import iterace.RacePointerAnalysis
-import iterace.oldjava.AnalysisScopeBuilder
+import iterace.pointeranalysis.AnalysisScopeBuilder
 
 @RunWith(classOf[JUnitRunner])
 class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers {

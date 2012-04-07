@@ -10,7 +10,7 @@ import scala.collection.mutable._
 import org.scalatest.FunSuite
 import org.junit.rules.TestName
 import org.junit.Rule
-import iterace.oldjava.AnalysisScopeBuilder
+import iterace.pointeranalysis.AnalysisScopeBuilder
 
 @RunWith(classOf[JUnitRunner])
 class TestRelativeMustAlias extends FunSuite with BeforeAndAfter {

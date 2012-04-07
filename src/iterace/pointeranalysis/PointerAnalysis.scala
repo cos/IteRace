@@ -5,7 +5,7 @@ import scala.collection.JavaConverters._
 import scala.collection._
 import iterace.util.WALAConversions._
 import com.ibm.wala.properties.WalaProperties
-import iterace.oldjava.AnalysisScopeBuilder
+import iterace.pointeranalysis.AnalysisScopeBuilder
 import com.ibm.wala.ipa.callgraph.AnalysisScope
 import com.ibm.wala.ipa.callgraph.Entrypoint
 import com.ibm.wala.types.MethodReference

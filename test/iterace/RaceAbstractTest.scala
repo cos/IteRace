@@ -9,7 +9,7 @@ import scala.collection.immutable.TreeMap
 import iterace.util._
 import scala.collection.JavaConversions._
 import com.ibm.wala.properties.WalaProperties
-import iterace.oldjava.AnalysisScopeBuilder
+import iterace.pointeranalysis.AnalysisScopeBuilder
 
 abstract class RaceAbstractTest(startClass: String) extends FunSuite with BeforeAndAfter {
   val analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
