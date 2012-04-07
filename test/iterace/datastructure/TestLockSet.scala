@@ -25,6 +25,4 @@ class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallel
     "xyz", "{ L: particles.ParticleWithLocks$9.op v3(x) }")
 
   testGetLockSet("checkMeetOverAllValidPathsNegative", "xyz", "{  }")
-  
-  testGetLockSet("lockUsingSynchronizedBlock")
 }
