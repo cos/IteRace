@@ -49,7 +49,10 @@ object threadSafe {
     
     // for reflection
     "Ljava/lang/Class",
-    "Ljava/lang/Method"
+    "Ljava/lang/Method",
+    
+    // lock classes
+    "Ljava/util/concurrent/locks/ReentrantLock"
   )
 
   def apply(m: IMethod): Boolean = {

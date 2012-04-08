@@ -28,6 +28,11 @@ import com.ibm.wala.dataflow.IFDS.IMergeFunction
 import iterace.util.S
 import iterace.pointeranalysis._
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
+import com.ibm.wala.util.collections.Filter
+import com.ibm.wala.ssa.SSAInvokeInstruction
+import com.ibm.wala.ssa.SSAAbstractInvokeInstruction
+import com.ibm.wala.util.graph.GraphUtil
+import com.ibm.wala.ipa.callgraph.impl.PartialCallGraph
 
 abstract class Lock extends PrettyPrintable
 
@@ -46,18 +51,23 @@ trait LockConstructor {
   def apply(c: C): Some[Lock]
 }
 
-class LockSet(pa: PointerAnalysis, lockConstructor: LockConstructor) {
+object threadSafeFilter extends Filter[N] { def accepts(n: N): Boolean = n.getContext() != THREAD_SAFE }
+
+class LockSet(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
   import pa._
 
-  val supergraph = ICFGSupergraph.make(pa.callGraph, pa.analysisCache)
+  val supergraph = {
+    val filterdCallGraph = PartialCallGraph.make(callGraph,callGraph.getEntrypointNodes(), threadSafeFilter)
+    ICFGSupergraph.make(filterdCallGraph , pa.analysisCache)
+  }
 
   /**
    * Get all the locks that appear in the loop
    */
   val locksForLoop: mutable.Map[Loop, Set[Lock]] = mutable.Map()
   def getLocks(l: Loop): Set[Lock] = locksForLoop.getOrElseUpdate(l,
-      
-    DFS.getReachableNodes(callGraph, Set(l.n), new Filter[N] { def accepts(n:N):Boolean = n.getContext() != THREAD_SAFE}) flatMap (n => {
+
+    DFS.getReachableNodes(callGraph, Set(l.n), threadSafeFilter) flatMap (n => {
 
       // synchronized method locks
       val nLockSet: Set[Lock] = if (n.m.isSynchronized())
@@ -67,8 +77,16 @@ class LockSet(pa: PointerAnalysis, lockConstructor: LockConstructor) {
 
       // synchronized locks block
       nLockSet ++ (
-        n.instructions
-        collect { case i: SSAMonitorInstruction => lockConstructor(P(n, i.getRef())) }
+        n.instructions collect {
+          case i: SSAMonitorInstruction => lockConstructor(P(n, i.getRef()))
+          case i: InvokeI => {
+            i.m match {
+              case null => None
+              case M(C("java/util/concurrent/locks", "ReentrantLock"), "lock()V") => lockConstructor(P(n, i.getUse(0)))
+              case _ => None
+            }
+          }
+        }
         collect { case Some(l) => l })
 
       // will add ReentrantLock locks here at some point
@@ -90,22 +108,37 @@ class LockSet(pa: PointerAnalysis, lockConstructor: LockConstructor) {
   def getLockSetMapping(l: Loop, locksDomain: LockSet.LockDomain): S[I] => Set[Lock] = {
 
     object flowFunctions extends IFlowFunctionMap[SS] {
-      override def getCallFlowFunction(src: SS, dest: SS, ret: SS) = IdentityFlowFunction.identity();
-      override def getCallNoneToReturnFlowFunction(src: SS, dest: SS) = IdentityFlowFunction.identity();
-      override def getCallToReturnFlowFunction(src: SS, dest: SS) = SingletonFlowFunction.create(0);
+      override def getCallFlowFunction(src: SS, dest: SS, ret: SS) = identity
+      override def getCallNoneToReturnFlowFunction(src: SS, dest: SS) = identity
+      override def getCallToReturnFlowFunction(src: SS, dest: SS) = src.getDelegate() match {
+        // reentrant locks
+        case IExplodedBasicBlock(i: InvokeI) => {
+          i.m match {
+            case null => identity
+            
+            case M(C("java/util/concurrent/locks", "ReentrantLock"), "lock()V") => 
+              lockConstructor(P(src.getNode(), i.getUse(0))) map { getLockEnterFlowFunction(_) } getOrElse identity
+            
+            case M(C("java/util/concurrent/locks", "ReentrantLock"), "unlock()V") =>
+              lockConstructor(P(src.getNode(), i.getUse(0))) map { getLockExitFlowFunction(_) } getOrElse identity
+              
+            case _ => identity
+          }
+        }
+      }
       override def getNormalFlowFunction(src: SS, dest: SS) = {
 
         val n: N = src.getNode()
 
-        // tuple (isEnter, lock)
-        val isEnterAndLock = src.getDelegate() match {
+        src.getDelegate() match {
+          // monitor instruction; i.e., synchronized blocks
           case IExplodedBasicBlock(i: MonitorI) => {
             lockConstructor(P(n, i.getRef())) match {
-              case Some(l) => Some(i.isMonitorEnter(), l)
-              case _ => None
+              case Some(l) => getLockFlowFunction(i.isMonitorEnter(), l)
+              case _ => identity
             }
           }
-
+          // synchronized methods
           case bb: IExplodedBasicBlock if n.m.isSynchronized() && (bb.isEntryBlock() || bb.isExitBlock()) => {
             val lock = if (n.m.isStatic())
               lockConstructor(bb.getMethod().getDeclaringClass())
@@ -113,29 +146,31 @@ class LockSet(pa: PointerAnalysis, lockConstructor: LockConstructor) {
               lockConstructor(P(n, 1))
 
             lock match {
-              case Some(l) => Some(bb.isEntryBlock(), l)
-              case _ => None
+              case Some(l) => getLockFlowFunction(bb.isEntryBlock(), l)
+              case _ => identity
             }
           }
 
-          case _ => None
-        }
-
-        isEnterAndLock match {
-          case Some((true, lock)) => {
-            val theSet = SparseIntSet.singleton(locksDomain.getMappedIndex(lock))
-            VectorKillFlowFunction.make(theSet)
-          }
-          case Some((false, lock)) => {
-            // for some reason the their gen function needs 0 explicitly 
-            // (a nice way to waste 3 hours figuring why the algorithm doesn't work)
-            val theSet = SparseIntSet.pair(0, locksDomain.getMappedIndex(lock))
-            VectorGenFlowFunction.make(theSet)
-          }
-          case None => IdentityFlowFunction.identity()
+          case _ => identity
         }
       }
-      override def getReturnFlowFunction(call: SS, src: SS, dest: SS) = IdentityFlowFunction.identity();
+
+      override def getReturnFlowFunction(call: SS, src: SS, dest: SS) = identity
+
+      private def getLockFlowFunction(isEnter: Boolean, lock: Lock) =
+        if (isEnter) getLockEnterFlowFunction(lock) else getLockExitFlowFunction(lock)
+
+      private def getLockEnterFlowFunction(lock: Lock) = {
+        val theSet = SparseIntSet.singleton(locksDomain.getMappedIndex(lock))
+        VectorKillFlowFunction.make(theSet)
+      }
+      private def getLockExitFlowFunction(lock: Lock) = {
+        // for some reason the their gen function needs 0 explicitly 
+        // (a nice way to waste 3 hours figuring why the algorithm doesn't work)
+        val theSet = SparseIntSet.pair(0, locksDomain.getMappedIndex(lock))
+        VectorGenFlowFunction.make(theSet)
+      }
+      private val identity = IdentityFlowFunction.identity()
     }
 
     object problem extends TabulationProblem[SS, N, Lock] {

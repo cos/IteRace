@@ -63,6 +63,10 @@ class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope
       case _ => None
     }
   }
+  
+  implicit def invokeIWithMethod(i: InvokeI) = new {
+    lazy val m = cha.resolveMethod(i.getDeclaredTarget())
+  }
 
   implicit def accessIWithReferencePointer[T <: AccessI](s: S[T]) = new {
     lazy val isStatic: Boolean = s.i isStatic

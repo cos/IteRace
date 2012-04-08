@@ -2,6 +2,7 @@ package iterace.datastructure
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.junit.Test
+import org.junit.Ignore
 
 class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/ParticleWithLocks") {
   @Test def noLocks = assertAllLocks("{  }")
@@ -26,20 +27,23 @@ class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallel
 
   @Test def checkMeetOverAllValidPathsNegative = assertLockSet("xyz", "{  }")
 
-  @Test def lockUsingSynchronizedBlock = assertLockSet("xyz", 
-      "{ L: particles.ParticleWithLocks.lockUsingSynchronizedBlock(ParticleWithLocks.java:215) }")
+  @Test def lockUsingSynchronizedBlock = assertLockSet("xyz",
+    "{ L: particles.ParticleWithLocks.lockUsingSynchronizedBlock(ParticleWithLocks.java:215) }")
 
-  @Test def lockUsingSynchronizedBlockInAnotherMethod = assertLockSet("xyz", 
-      "{ L: particles.ParticleWithLocks.lockUsingSynchronizedBlockInAnotherMethod(ParticleWithLocks.java:235) }")
+  @Test def lockUsingSynchronizedBlockInAnotherMethod = assertLockSet("xyz",
+    "{ L: particles.ParticleWithLocks.lockUsingSynchronizedBlockInAnotherMethod(ParticleWithLocks.java:235) }")
 
   // important test
   @Test def lockFromBothSynchronizedAndUnsynchronized = assertLockSet("xyz", "{  }")
 
-  @Test def synchronizedMethodLockSet = assertLockSet("synchronizedMethod", "xyz", 
-      "{ L: particles.ParticleWithLocks.synchronizedMethod(ParticleWithLocks.java:282) }")
+  @Test def synchronizedMethodLockSet = assertLockSet("synchronizedMethod", "xyz",
+    "{ L: particles.ParticleWithLocks.synchronizedMethod(ParticleWithLocks.java:282) }")
 
   @Test def synchronizedStaticMethod = assertLockSet("xyz", "{ L: particles.ParticleWithLocks }")
-  // @Test def xxx = assertLockSet("xyz", "yyy")
+  
+  @Test def reenterantLock = assertAllLocks("{ L: particles.ParticleWithLocks$16.op(ParticleWithLocks$16.java:319) }")
+  
+  @Ignore @Test def reenterantLockSet = assertLockSet("reenterantLock", "xyz", "yyy")
   // @Test def xxx = assertLockSet("xyz", "yyy")
   // @Test def xxx = assertLockSet("xyz", "yyy")
 }
