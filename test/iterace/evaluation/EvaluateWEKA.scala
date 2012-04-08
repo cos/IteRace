@@ -22,8 +22,7 @@ class EvaluateWEKA extends RaceAbstractTest("Lweka/clusterers/EM") {
   analysisScope.addJarDependency("../evaluation/weka/lib/junit.jar");
   analysisScope.addBinaryDependency("../evaluation/weka/bin");
 
-  log.activeConsole = true
-  log.activeTimer = true
+  log.activate
 
   @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
 }

@@ -21,8 +21,7 @@ class EvaluateMonteCarlo extends RaceAbstractTest("Lmontecarlo/parallel/JGFMonte
 
   override def result(iteRace: IteRace) = iteRace.races
 
-  log.activeConsole = true
-  log.activeTimer = true
+  log.activate
 
   @Test def bla = expect("JGFrun(I)V","""
 Loop: montecarlo.parallel.AppDemo.runParallel(AppDemo.java:178)
