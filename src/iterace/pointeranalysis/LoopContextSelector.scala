@@ -24,18 +24,18 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
 
   // Describes how contexts are chosen
   def getCalleeTarget(caller: CGNode, site: CallSiteReference, callee: IMethod, actualParameters: Array[InstanceKey]): Context = {
-//    if(!isInterestingForUs(callee))
-//      Everywhere.EVERYWHERE
-    
-    if(threadSafe(callee) || caller.getContext() == THREAD_SAFE)
+    //    if(!isInterestingForUs(callee))
+    //      Everywhere.EVERYWHERE
+
+    if (threadSafe(callee) || caller.getContext() == THREAD_SAFE)
       return THREAD_SAFE
-    
-    if(!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
+
+    if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
       return Everywhere.EVERYWHERE
-    
+
     val opsPattern = ".*Ops.*".r
     val parallelArrayPattern = ".*ParallelArray.*".r
-    
+
     caller.getContext() match {
       // we've entered the loop but not the iteration. callee is the iteration
       case c: LoopCallSiteContext => {
@@ -61,24 +61,37 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
         // site.getProgramCounter() == 5 || site.getProgramCounter() == 2 || site.getProgramCounter() == 30);
       }
       // we're inside the loop
-      case c: LoopContext => c 
+      case c: LoopContext => c
       // we're outside the loop
       case _ => callee match {
-          case M(C(_, "ParallelArray"), opsPattern()) => new LoopCallSiteContext(caller, site)
-          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
-          case _ => { caller.getContext(); }
-        }
+        case M(C(_, "ParallelArray"), opsPattern()) => new LoopCallSiteContext(caller, site)
+        case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
+        case _ =>
+          if (inApplicationScope(caller) && inPrimordialScope(callee))
+            ObjectContext(actualParameters(0))
+          else
+            caller.getContext();
+      }
     }
   }
   def getRelevantParameters(caller: CGNode, site: CallSiteReference): IntSet = {
     EmptyIntSet.instance
   }
-  def isInterestingForUs(callee: M) = 
+  def isInterestingForUs(callee: M) =
     ContainerUtil.isContainer(callee.getDeclaringClass()) || callee.toString().contains("DateFormat");
 }
 
 object THREAD_SAFE extends Context {
   def get(key: ContextKey) = null
+}
+
+case class ObjectItem(o: O) extends ContextItem
+case object ObjectKey extends ContextKey
+case class ObjectContext(o: O) extends Context {
+  def get(key: ContextKey): ContextItem = key match {
+    case ObjectKey => ObjectItem(o)
+    case _ => null
+  }
 }
 
 case object Loop extends ContextKey
@@ -88,17 +101,17 @@ case class Loop(n: N) extends ContextItem {
 case object LoopIteration extends ContextKey
 case class LoopIteration(alpha: Boolean) extends ContextItem
 // this is the context for all the nodes in the loop iterations
-class LoopContext(val l: CGNode,val alphaIteration: Boolean) extends Context {
+class LoopContext(val l: CGNode, val alphaIteration: Boolean) extends Context with PrettyPrintable {
   def loop = Loop(l)
   def iteration = LoopIteration(alphaIteration)
-  
-  def get(key: ContextKey): ContextItem = {
-    key match {
-      case Loop => Loop(l)
-      case LoopIteration => LoopIteration(alphaIteration)
-      case _ => null
-    }
-  } 
+
+  def get(key: ContextKey): ContextItem = key match {
+    case Loop => Loop(l)
+    case LoopIteration => LoopIteration(alphaIteration)
+    case _ => null
+  }
+  override def toString = prettyPrint
+  def prettyPrint = "Loop Context: "+l.prettyPrint+" - "+ (if(alphaIteration) "alpha" else "beta")
 }
 
 object LoopContext {
@@ -113,16 +126,16 @@ case object LoopCallN extends ContextKey
 case class LoopCallN(n: N) extends ContextItem
 case object LoopCallSiteReference extends ContextKey
 case class LoopCallSiteReference(site: CallSiteReference) extends ContextItem
-class LoopCallSiteContext(val n: N,val site: CallSiteReference) extends Context with PrettyPrintable {
-	def get(key: ContextKey): ContextItem = {
-			key match {
-			case LoopCallN => LoopCallN(n)
-			case LoopCallSiteReference => LoopCallSiteReference(site)
-			case _ => null
-			}
-	}
-	
-	def prettyPrint = {
-			printCodeLocation(n.getMethod(), site.getProgramCounter())
-	}
+class LoopCallSiteContext(val n: N, val site: CallSiteReference) extends Context with PrettyPrintable {
+  def get(key: ContextKey): ContextItem = {
+    key match {
+      case LoopCallN => LoopCallN(n)
+      case LoopCallSiteReference => LoopCallSiteReference(site)
+      case _ => null
+    }
+  }
+
+  def prettyPrint = {
+    printCodeLocation(n.getMethod(), site.getProgramCounter())
+  }
 }

@@ -2,7 +2,6 @@ package iterace.util;
 
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
-import com.ibm.wala.types.TypeReference;
 
 public class StaticClassObject implements InstanceKey {
 	
