@@ -13,19 +13,13 @@ import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.IteRace
 import iterace.datastructure.ProgramRaceSet
 import iterace.JavaTest
+import iterace.IteRaceTest
 
-abstract class RaceAbstractTest(startClass: String) extends JavaTest {
-  val analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
-  analysisScope.setExclusionsFile("walaExclusions.txt");
-  analysisScope.addBinaryDependency("../lib/parallelArray.mock");
-
+abstract class RaceAbstractTest(startClass: String) extends IteRaceTest {
   val stages: Seq[StageConstructor] = Seq(FilterByLockMayAlias, BubbleUp, FilterByLockMayAlias);
 
-  def analyze(method: String) = {
-    log("test: " + method)
-    IteRace(startClass, method, analysisScope, stages)
-  }
-
+  def analyze(method: String) = super.analyze(startClass, method, stages)
+  
   def printRaces(races: ProgramRaceSet): String = "\n" + races.prettyPrint + "\n"
 
   def result(iteRace: IteRace): ProgramRaceSet = iteRace.races
