@@ -38,7 +38,7 @@ object RaceSet {
   //  }
 }
 
-abstract sealed class LowLevelRaceSet(val alphaAccesses: Set[S[I]], val betaAccesses: Set[S[I]])
+abstract sealed class LowLevelRaceSet(val l: Loop, val o: O, val alphaAccesses: Set[S[I]], val betaAccesses: Set[S[I]])
   extends RaceSet with PrettyPrintable {
 
   lazy val races = crossProduct(alphaAccesses, betaAccesses) map {
@@ -72,8 +72,8 @@ abstract sealed class LowLevelRaceSet(val alphaAccesses: Set[S[I]], val betaAcce
   }
 }
 
-final class FieldRaceSet(val l: Loop, val o: O, val f: F, alphaAccesses: Set[S[I]], betaAccesses: Set[S[I]])
-  extends LowLevelRaceSet(alphaAccesses, betaAccesses) with SetLike[Race, FieldRaceSet] {
+final class FieldRaceSet(l: Loop, o: O, val f: F, alphaAccesses: Set[S[I]], betaAccesses: Set[S[I]])
+  extends LowLevelRaceSet(l, o, alphaAccesses, betaAccesses) with SetLike[Race, FieldRaceSet] {
 
   type This = FieldRaceSet
 
@@ -89,10 +89,12 @@ final class FieldRaceSet(val l: Loop, val o: O, val f: F, alphaAccesses: Set[S[I
     case that: FieldRaceSet => this.l == that.l && this.o == that.o && this.f == that.f && super.equals(that)
     case _ => false
   }
+
+  override def hashCode = l.hashCode() * 71 + o.hashCode() * 31 + f.hashCode()
 }
 
-final class ShallowRaceSet(val l: Loop, val o: O, alphaAccesses: Set[S[I]], betaAccesses: Set[S[I]])
-  extends LowLevelRaceSet(alphaAccesses, betaAccesses) with SetLike[Race, ShallowRaceSet] {
+final class ShallowRaceSet(l: Loop, o: O, alphaAccesses: Set[S[I]], betaAccesses: Set[S[I]])
+  extends LowLevelRaceSet(l, o, alphaAccesses, betaAccesses) with SetLike[Race, ShallowRaceSet] {
 
   type This = ShallowRaceSet
 
@@ -109,6 +111,7 @@ final class ShallowRaceSet(val l: Loop, val o: O, alphaAccesses: Set[S[I]], beta
     case that: ShallowRaceSet => this.l == that.l && this.o == that.o && super.equals(that)
     case _ => false
   }
+  override def hashCode = l.hashCode() * 67 + o.hashCode()
 }
 
 abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
@@ -144,6 +147,8 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
     case that: CompositeRaceSet[_] => this.children == that.children
     case _ => false
   }
+
+  def getLowLevelRaceSets: Set[LowLevelRaceSet]
 }
 
 final class ObjectRaceSet(val l: Loop, val o: O, children: Set[LowLevelRaceSet])
@@ -160,6 +165,9 @@ final class ObjectRaceSet(val l: Loop, val o: O, children: Set[LowLevelRaceSet])
     case that: ObjectRaceSet => this.l == that.l && this.o == that.o && super.equals(that)
     case _ => false
   }
+
+  override def hashCode = l.hashCode() * 97 + o.hashCode()
+  def getLowLevelRaceSets: Set[LowLevelRaceSet] = children
 }
 
 final class LoopRaceSet(val l: Loop, children: Set[ObjectRaceSet])
@@ -177,6 +185,8 @@ final class LoopRaceSet(val l: Loop, children: Set[ObjectRaceSet])
     case that: LoopRaceSet => this.l == that.l && super.equals(that)
     case _ => false
   }
+  override def hashCode = l.hashCode()
+  def getLowLevelRaceSets: Set[LowLevelRaceSet] = children flatMap { _.getLowLevelRaceSets }
 }
 
 final class ProgramRaceSet(children: Set[LoopRaceSet])
@@ -186,6 +196,8 @@ final class ProgramRaceSet(children: Set[LoopRaceSet])
   override def getRaceSet(children: Set[LoopRaceSet]): This = new ProgramRaceSet(children)
   override def accepts(r: Race) = true
   override def getChild(r: Race) = new LoopRaceSet(r.l, Set.empty) + r
+
+  def getLowLevelRaceSets: Set[LowLevelRaceSet] = children flatMap { _.getLowLevelRaceSets }
 }
 
 object ProgramRaceSet {
@@ -195,5 +207,15 @@ object ProgramRaceSet {
       prs = prs + r
     }
     prs
+  }
+
+  def fromRaceSets(racesets: Set[LowLevelRaceSet]): ProgramRaceSet = {
+    new ProgramRaceSet(racesets groupBy { _.l } map {
+      case (l, racesets) =>
+        new LoopRaceSet(l, racesets groupBy { _.o } map {
+          case (o, racesets) =>
+            new ObjectRaceSet(l, o, racesets)
+        } toSet)
+    } toSet)
   }
 }
