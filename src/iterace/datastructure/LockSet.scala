@@ -56,7 +56,8 @@ class LockSet(pa: PointerAnalysis, lockConstructor: LockConstructor) {
    */
   val locksForLoop: mutable.Map[Loop, Set[Lock]] = mutable.Map()
   def getLocks(l: Loop): Set[Lock] = locksForLoop.getOrElseUpdate(l,
-    asScalaIterator(DFS.iterateDiscoverTime(callGraph, l.n)) flatMap (n => {
+      
+    DFS.getReachableNodes(callGraph, Set(l.n), new Filter[N] { def accepts(n:N):Boolean = n.getContext() != THREAD_SAFE}) flatMap (n => {
 
       // synchronized method locks
       val nLockSet: Set[Lock] = if (n.m.isSynchronized())
