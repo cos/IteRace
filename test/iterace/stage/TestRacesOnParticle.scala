@@ -16,4 +16,5 @@ import org.junit.Rule
 
 
 class TestRacesOnParticle extends TestPotentialRaces {
+  override val stages: Seq[StageConstructor] = Seq(FilterByLockMayAlias, BubbleUp);
 }

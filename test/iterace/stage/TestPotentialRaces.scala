@@ -15,7 +15,7 @@ import org.junit.Ignore
 
 class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
 
-  log.activate
+//  log.activate
 
   override val stages: Seq[StageConstructor] = Seq()
 

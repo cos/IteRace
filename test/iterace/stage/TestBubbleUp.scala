@@ -10,9 +10,12 @@ import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
 import org.junit.Test
+import iterace.util.log
 
 
 class TestBubbleUp extends RaceAbstractTest("Lparticles/Particle") {
+  
+  log.activate
 
   analysisScope.addBinaryDependency("particles");
 
