@@ -13,16 +13,24 @@ import iterace.datastructure.ShallowRace
 import iterace.datastructure.LowLevelRaceSet
 import iterace.datastructure.ShallowRaceSet
 import iterace.datastructure.FieldRaceSet
+import iterace.util.O
 
 class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   import pa._
 
   def groupByObject(accesses: Set[S[I]]): Map[O, Set[S[I]]] = {
-    accesses.flatMap[(O, S[I]), Set[(O, S[I])]](s =>
+    val bigSet = accesses.flatMap[(O, S[I]), Set[(O, S[I])]](s =>
       if (s.isStatic)
         Set((unknownO, s))
       else
         s.refP.get.pt map { (_, s) }) groupBy { _._1 } map { case (o, set) => (o, set map { _._2 }) }
+        
+     // filter out second iteration - look for similar functionality in PotentialRaces if decided 
+     // to modify something here
+     bigSet filter {
+       case(O(n,_), _) => !inLoop(n) || firstIteration(n)
+       case _ => true
+     }
   }
 
   def containsShallowAccess(accesses: Set[S[I]]) =
@@ -60,30 +68,6 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
         }
       } toSet
     }))
-
-//    ProgramRaceSet(
-//      races map (r => {
-//        if (inPrimordialScope(r.a.n) || inPrimordialScope(r.b.n)) {
-//          val alphaAppLevelAccesses = bubbleUp(r.a)
-//          val betaAppLevelAccesses = bubbleUp(r.b)
-//
-//          val pairs = crossProduct(alphaAppLevelAccesses, betaAppLevelAccesses)
-//
-//          //        i += 1; println(i + "  " + pairs.size + "   :    "+r.a+"   X   "+r.b)
-//
-//          pairs collect {
-//            case (s1, s2) => {
-//              val objects =
-//                if (!s1.isStatic && !s2.isStatic)
-//                  s1.refP.get.pt & s2.refP.get.pt
-//                else
-//                  Seq(unknownO)
-//              objects collect { case o => new ShallowRace(r.l, o, s1, s2) }
-//            }
-//          } flatten
-//        } else
-//          Set(r)
-//      }) flatten)
   }
 
   private val bubbledUp: mutable.Map[S[I], Set[S[I]]] = mutable.Map()
