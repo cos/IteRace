@@ -9,7 +9,7 @@ class TestRaceSet extends IteRaceTest {
   analysisScope.addBinaryDependency("particles")
   
   @Test def bla:Unit = {
-    val iterace = analyze("Lparticles/Particle","raceBecauseOfOutsideInterference()V", Seq())
+    val iterace = analyze("Lparticles/Particle","raceBecauseOfOutsideInterference()V", Set())
     assertEquals(iterace.races, ProgramRaceSet.fromRaceSets(iterace.races.getLowLevelRaceSets))
   }
 }

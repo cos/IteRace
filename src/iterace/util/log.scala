@@ -42,4 +42,5 @@ object log {
     if(activeConsole)
       println(note)
   }
+ 
 }

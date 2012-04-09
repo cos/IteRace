@@ -8,8 +8,6 @@ class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
 
 //  log.activate
 
-  override val stages: Seq[StageConstructor] = Seq()
-
   analysisScope.addBinaryDependency("particles")
 
   @Test def vacuouslyNoRace = expectNoRaces

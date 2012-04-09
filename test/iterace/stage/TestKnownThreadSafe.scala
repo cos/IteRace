@@ -6,8 +6,6 @@ import iterace.util.debug
 
 class TestKnownThreadSafe extends RaceAbstractTest("Lparticles/ParticleWithKnownThreadSafe") {
   
-  override val stages: Seq[StageConstructor] = Seq()
-  
   log.activate
   debug.activate
 

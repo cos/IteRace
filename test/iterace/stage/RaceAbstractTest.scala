@@ -6,11 +6,13 @@ import iterace.IteRaceTest
 import iterace.datastructure.ProgramRaceSet
 import org.junit.Assert._
 import iterace.IteRace
+import iterace.IteRaceOption
 
 abstract class RaceAbstractTest(startClass: String) extends IteRaceTest {
-  val stages: Seq[StageConstructor] = Seq(FilterByLockMayAlias, BubbleUp, FilterByLockMayAlias);
-
-  def analyze(method: String) = super.analyze(startClass, method, stages)
+  
+  val options: Set[IteRaceOption] = Set()
+  
+  def analyze(method: String) = super.analyze(startClass, method, options)
   
   def printRaces(races: ProgramRaceSet): String = "\n" + races.prettyPrint + "\n"
 

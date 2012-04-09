@@ -5,6 +5,7 @@ import iterace.datastructure.Lock
 import iterace.datastructure.LockSet
 import iterace.datastructure.Race
 import iterace.datastructure.MayAliasLockConstructor
+import iterace.IteRaceOption
 
 /**
  * read: "filter by locks based on may-alias"
@@ -26,11 +27,11 @@ class FilterByLockMayAlias(pa: RacePointerAnalysis) extends Stage {
         (aLocks & bLocks).size > 0
       }
       loopRaceSet.filter { !isSafe(_) }
-    }))
+    }) filter { _.size > 0})
   }
 }
 
-object FilterByLockMayAlias extends StageConstructor {
+object FilterByLockMayAlias extends StageConstructor with IteRaceOption {
   def apply(pa: RacePointerAnalysis) = {
     new FilterByLockMayAlias(pa)
   }

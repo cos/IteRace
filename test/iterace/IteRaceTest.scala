@@ -12,8 +12,8 @@ abstract class IteRaceTest extends JavaTest {
   analysisScope.setExclusionsFile("walaExclusions.txt")
   analysisScope.addBinaryDependency("../lib/parallelArray.mock")
   
-  def analyze(entryClass: String, entryMethod: String, stages: Seq[StageConstructor]) = {
+  def analyze(entryClass: String, entryMethod: String, options: Set[IteRaceOption]) = {
     log("test: " + entryMethod)
-    IteRace(entryClass, entryMethod, analysisScope, stages)
+    IteRace(entryClass, entryMethod, analysisScope, options)
   }
 }

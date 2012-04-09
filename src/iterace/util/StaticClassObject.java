@@ -24,4 +24,21 @@ public class StaticClassObject implements InstanceKey {
 	public String toString() {
 		return "Class: "+klass;
 	}
+	
+	@Override
+	public int hashCode() {
+		return 17;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null)
+			return false;
+		
+		if(!(obj instanceof StaticClassObject))
+			return false;
+		
+		StaticClassObject that = (StaticClassObject) obj;
+		return this.klass.equals(that.klass);
+	}
 }

@@ -15,6 +15,7 @@ import iterace.datastructure.ShallowRaceSet
 import iterace.datastructure.FieldRaceSet
 import iterace.util.O
 import iterace.util.StaticClassObject
+import iterace.IteRaceOption
 
 class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   import pa._
@@ -26,7 +27,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
         case i: InvokeI if i.isStatic => Set((new StaticClassObject(i.f.get.getDeclaringClass()), s))
         case _ => s.refP.get.pt map { (_, s) }
       }) groupBy { _._1 } map { case (o, set) => (o, set map { _._2 }) }
-
+      
     // filter out second iteration - look for similar functionality in PotentialRaces if decided 
     // to modify something here
     bigSet filter {
@@ -53,6 +54,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
       val aGroupedByObject = groupByObject(aAppLevelAccesses)
       val bGroupedByObject = groupByObject(bAppLevelAccesses)
 
+      
       zipByKey(aGroupedByObject, bGroupedByObject) flatMap {
         case (o, (aAccesses, bAccesses)) => {
           val innerSet: Set[LowLevelRaceSet] =
@@ -98,7 +100,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   }
 }
 
-object BubbleUp extends StageConstructor {
+object BubbleUp extends StageConstructor with IteRaceOption {
   def apply(pa: RacePointerAnalysis) = {
     new BubbleUp(pa)
   }

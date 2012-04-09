@@ -1,7 +1,5 @@
 package iterace
 import com.ibm.wala.analysis.pointers.HeapGraph
-import scala.collection.mutable.Map
-import scala.collection.mutable.Set
 import scala.collection._
 import scala.collection.JavaConversions._
 import iterace.util.WALAConversions._
@@ -21,54 +19,58 @@ import iterace.stage._
 import iterace.pointeranalysis._
 
 class IteRace private (
-    startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
-    stages: Seq[StageConstructor],
-    options: Set[String]) {
-  
+  startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
+  options: Set[IteRaceOption]) {
+
   log.startTimer("pointer analysis");
   val pa = new RacePointerAnalysis(startClass, startMethod, analysisScope)
   import pa._
   log.endTimer
-  
-//  log(callGraph)
-  
+
   log.startTimer("possible races")
   private val potentialRaces = new PotentialRaces(pa)()
   log.endTimer
-  log(potentialRaces.size)
-  log(potentialRaces.prettyPrint)
+  log("potential races : +" + potentialRaces.size)
 
-  log.startTimer("activating stages - should be quick");
-  // we only activate one stage for each constructor type
-  // if a stage appears twice, it is only activated once but can be used as many times as necessary
-  val activatedStagesSets = {
-    val listOfUniqueStages = stages.toSet
-    val listOfUniqueActivatedStages = listOfUniqueStages map {_(pa)}
-    (listOfUniqueStages zip listOfUniqueActivatedStages) toMap
-  }
-  val activatedStages = stages map {activatedStagesSets(_)}
-  log.endTimer
-  
   private var currentRaces = potentialRaces
-  activatedStages foreach(stage => {
-    log.startTimer(stage.getClass().toString())
-    currentRaces = stage(currentRaces)
+
+  if (options(FilterByLockMayAlias)) {
+    log.startTimer("lock may alias")
+    currentRaces = FilterByLockMayAlias(pa)(currentRaces)
     log.endTimer
-    log(stage.getClass().toString() +" resulted in : "+currentRaces.size+" races")
-    } )
-  
+    log("lock may alias resulted in : " + currentRaces.size + " races")
+  }
+
+  if (options(BubbleUp)) {
+    log.startTimer("bubble up")
+    currentRaces = BubbleUp(pa)(currentRaces)
+    log.endTimer
+    log("bubble up resulted in : " + currentRaces.size + " races")
+  }
+
+  if (options(FilterByLockMayAlias)) {
+    log.startTimer("lock may alias")
+    currentRaces = FilterByLockMayAlias(pa)(currentRaces)
+    log.endTimer
+    log("lock may alias resulted in : " + currentRaces.size + " races")
+  }
+
   val races = currentRaces
-  
+
   log(" \n\n ******************************************************** \n\n  ")
-//  log(races.prettyPrint)
+  //  log(races.prettyPrint)
 }
 
 object IteRace {
   def apply(
-    startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
-    stages: Seq[StageConstructor] = Seq(FilterByLockMayAlias, BubbleUp, FilterByLockMayAlias),
-    options: Set[String] = Set()) = new IteRace(startClass, startMethod, analysisScope, stages, options)
+    startClass: String,
+    startMethod: String,
+    analysisScope: AnalysisScopeBuilder,
+    options: Set[IteRaceOption] = Set(FilterByLockMayAlias, BubbleUp)) =
+    new IteRace(startClass, startMethod, analysisScope, options)
 }
+
+trait IteRaceOption
 
 class AnalysisException(m: String) extends Throwable {
 
