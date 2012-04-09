@@ -11,11 +11,11 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
-import iterace.stage.RaceAbstractTest
+
 import org.junit.Test
 
 
-class EvaluateMonteCarlo extends RaceAbstractTest("Lmontecarlo/parallel/JGFMonteCarloBench") {
+class EvaluateMonteCarlo extends Evaluate("Lmontecarlo/parallel/JGFMonteCarloBench") {
 
   analysisScope.addBinaryDependency("../evaluation/montecarlo/bin");
 

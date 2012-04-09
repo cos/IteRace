@@ -11,11 +11,11 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
-import iterace.stage.RaceAbstractTest
+
 import org.junit.Test
 
 
-class EvaluatejUnit extends RaceAbstractTest("Ljunit/tests/ParallelAllTests") {
+class EvaluatejUnit extends Evaluate("Ljunit/tests/ParallelAllTests") {
 
   log.activate
 

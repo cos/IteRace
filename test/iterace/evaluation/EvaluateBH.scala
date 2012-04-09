@@ -11,12 +11,12 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
-import iterace.stage.RaceAbstractTest
 import org.junit.Test
+import iterace.IteRaceOption
 
 
-class EvaluateBH extends RaceAbstractTest("LbarnesHut/ParallelBarneshut") {
-
+class EvaluateBH extends Evaluate("LbarnesHut/ParallelBarneshut") {
+  
   log.activate
 
   analysisScope.addBinaryDependency("../evaluation/barnesHut/bin");

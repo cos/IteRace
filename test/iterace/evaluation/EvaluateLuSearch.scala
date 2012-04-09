@@ -11,11 +11,11 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
-import iterace.stage.RaceAbstractTest
+
 import org.junit.Test
 
 
-class EvaluateLuSearch extends RaceAbstractTest("Lorg/dacapo/lusearch/Search") {
+class EvaluateLuSearch extends Evaluate("Lorg/dacapo/lusearch/Search") {
 
   analysisScope.addBinaryDependency("../evaluation/lusearch/bin");
 	analysisScope.addBinaryDependency("../lib/parallelArray.mock");

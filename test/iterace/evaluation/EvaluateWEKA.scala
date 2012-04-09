@@ -11,11 +11,11 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
-import iterace.stage.RaceAbstractTest
+
 import org.junit.Test
 
 
-class EvaluateWEKA extends RaceAbstractTest("Lweka/clusterers/EM") {
+class EvaluateWEKA extends Evaluate("Lweka/clusterers/EM") {
 
   analysisScope.addJarDependency("../evaluation/weka/lib/java-cup.jar");
   analysisScope.addJarDependency("../evaluation/weka/lib/JFlex.jar");

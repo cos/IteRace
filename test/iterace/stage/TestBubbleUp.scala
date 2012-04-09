@@ -2,10 +2,12 @@ package iterace.stage
 
 import org.junit.Test
 import iterace.util.log
+import iterace.IteRaceOption
 
 class TestBubbleUp extends RaceAbstractTest("Lparticles/ParticleUsingLibrary") {
   
   log.activate
+  override val options = Set[IteRaceOption](BubbleUp)
 
   analysisScope.addBinaryDependency("particles");
 
