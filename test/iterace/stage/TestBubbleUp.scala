@@ -10,11 +10,11 @@ class TestBubbleUp extends RaceAbstractTest("Lparticles/ParticleUsingLibrary") {
   analysisScope.addBinaryDependency("particles");
 
   @Test def raceOnArrayList = expect("""
-Loop: particles.ParticleUsingLibrary.raceOnArrayList(ParticleUsingLibrary.java:46)
+Loop: particles.ParticleUsingLibrary.raceOnArrayList(ParticleUsingLibrary.java:92)
 
-java.util.ArrayList: particles.ParticleUsingLibrary.raceOnArrayList(ParticleUsingLibrary.java:44)
+java.util.ArrayList: particles.ParticleUsingLibrary.raceOnArrayList(ParticleUsingLibrary.java:90)
  application level
-   (a)  particles.ParticleUsingLibrary$3.op(ParticleUsingLibrary$3.java:49)
-   (b)  particles.ParticleUsingLibrary$3.op(ParticleUsingLibrary$3.java:49)
+   (a)  particles.ParticleUsingLibrary$6.op(ParticleUsingLibrary$6.java:95)
+   (b)  particles.ParticleUsingLibrary$6.op(ParticleUsingLibrary$6.java:95)
 """)
 }
