@@ -17,26 +17,65 @@ import com.ibm.wala.ipa.callgraph.propagation.ContainerUtil
 import com.ibm.wala.ipa.callgraph.impl.Everywhere
 import com.ibm.wala.ipa.callgraph.propagation.cfa.CallerSiteContextPair
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
-import iterace.stage.threadSafe
 import iterace.AnalysisException
+import scala.collection._
+import com.ibm.wala.ipa.callgraph.DelegatingContext
+import iterace.datastructure.threadSafeOnClosure
+import iterace.datastructure.generatesSafeObjects
+import iterace.util.WALAConversions._
+import iterace.datastructure.movesObjectsAround
 
 class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
+  // this is the context for all the nodes in the loop iterations
+  private class LoopContext(val l: CGNode, val parallel: Boolean, val alphaIteration: Boolean) extends Context {
+    val loop = Loop(l, parallel)
+    val iteration = if (alphaIteration) AlphaIteration else BetaIteration
+
+    def get(key: ContextKey): ContextItem = key match {
+      case Loop => loop
+      case Iteration => iteration
+      case _ => null
+    }
+    override def toString = loop.prettyPrint + "," + (if (alphaIteration) "alpha" else "beta")
+  }
+
+  private object ThreadSafeContext extends Context {
+    override def get(key: ContextKey) = key match {
+      case ThreadSafeOnClosure => ThreadSafeOnClosure
+      case _ => null
+    }
+    override def toString = "ThreadSafe"
+  }
+
+  private object UninterestingContext extends Context {
+    override def get(key: ContextKey) = key match {
+      case Uninteresting => Uninteresting
+      case _ => null
+    }
+    override def toString = "Uninteresting"
+  }
+
+  private object InterestingContext extends Context {
+    override def get(key: ContextKey) = key match {
+      case Interesting => Interesting
+      case _ => null
+    }
+    override def toString = "Interesting"
+  }
 
   // Describes how contexts are chosen
   def getCalleeTarget(caller: CGNode, site: CallSiteReference, callee: IMethod, actualParameters: Array[InstanceKey]): Context = {
-    //    if(!isInterestingForUs(callee))
-    //      Everywhere.EVERYWHERE
-
-    if (threadSafe(callee) || caller.getContext() == THREAD_SAFE)
-      return THREAD_SAFE
-
-    if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
-      return Everywhere.EVERYWHERE
 
     val opsPattern = ".*Ops.*".r
     val parallelArrayPattern = ".*ParallelArray.*".r
 
+    //    if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
+    //    	return UninterestingContext
+
     caller.getContext() match {
+
+      case UninterestingContext => UninterestingContext
+
       // we've entered the loop but not the iteration. callee is the iteration
       case c: LoopCallSiteContext => {
         val invocations = caller.getIR().getCalls(site);
@@ -56,33 +95,63 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
 
         val alphaIteration = !(defAndUses & e0Vals).isEmpty
 
-        new LoopContext(caller, alphaIteration)
+        val sequential = caller.getMethod().getSelector().toString().matches(".*Seq.*")
+
+        new LoopContext(caller, !sequential, alphaIteration)
 
         // site.getProgramCounter() == 5 || site.getProgramCounter() == 2 || site.getProgramCounter() == 30);
       }
-      // we're inside the loop
-      case c: LoopContext => c
-      // we're outside the loop
-      case _ => callee match {
-        case M(C(_, "ParallelArray"), opsPattern()) => new LoopCallSiteContext(caller, site)
-        case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
-        case _ =>
-          if (inApplicationScope(caller) && inPrimordialScope(callee))
-            ObjectContext(actualParameters(0))
+
+      // we're inside the loop (the objectKey test is to avoid recursion)
+      case c: Context if c.get(Loop) != null => {
+        val addThreadSafe =
+          if (c.get(ThreadSafeOnClosure) == null && threadSafeOnClosure(caller, callee, actualParameters))
+            new DelegatingContext(ThreadSafeContext, c)
           else
-            caller.getContext();
+            c
+
+        // we are not adding additional context when we know no races can happen from here on
+        // and we also know all generated classes from here on are thread-safe
+        // !!! 	question: "generatesSafeObjects" all generated objects from here on are thread-safe
+        // 								or just the ones instantiated in callee (i.e., is it on transitive closure)
+        //    
+        // I'll make it more extreme... and simply remove all context from now on Uninteresting
+
+        val addInteresting =
+          if (addThreadSafe.get(Interesting) == null && (generatesSafeObjects(callee) || movesObjectsAround(callee)))
+            new DelegatingContext(InterestingContext, addThreadSafe)
+          else
+            addThreadSafe
+
+        if (addInteresting.get(ThreadSafeOnClosure) != null && addInteresting.get(Interesting) == null)
+          return UninterestingContext
+
+        val addMembrane =
+          if (c.get(ObjectKey) == null && inApplicationScope(caller) && inPrimordialScope(callee) && actualParameters.size > 1)
+            new DelegatingContext(ObjectContext(actualParameters(0)), addInteresting)
+          else
+            addInteresting
+        addMembrane
       }
+
+      // we're outside the loop
+      case c: Context if c.get(Loop) == null =>
+        callee match {
+          case M(C(_, "ParallelArray"), opsPattern()) => new LoopCallSiteContext(caller, site)
+          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
+          case _ =>
+            if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
+              c
+            //              return UninterestingContext
+            else c
+        }
     }
   }
-  def getRelevantParameters(caller: CGNode, site: CallSiteReference): IntSet = {
+  override def getRelevantParameters(caller: CGNode, site: CallSiteReference): IntSet = {
     EmptyIntSet.instance
   }
   def isInterestingForUs(callee: M) =
     ContainerUtil.isContainer(callee.getDeclaringClass()) || callee.toString().contains("DateFormat");
-}
-
-object THREAD_SAFE extends Context {
-  def get(key: ContextKey) = null
 }
 
 case class ObjectItem(o: O) extends ContextItem
@@ -94,29 +163,23 @@ case class ObjectContext(o: O) extends Context {
   }
 }
 
-case object Loop extends ContextKey
-case class Loop(n: N) extends ContextItem {
-  def prettyPrint = toString
-}
-case object LoopIteration extends ContextKey
-case class LoopIteration(alpha: Boolean) extends ContextItem
-// this is the context for all the nodes in the loop iterations
-class LoopContext(val l: CGNode, val alphaIteration: Boolean) extends Context with PrettyPrintable {
-  def loop = Loop(l)
-  def iteration = LoopIteration(alphaIteration)
+// completely uninteresting context
+case object Uninteresting extends ContextKey with ContextItem
 
-  def get(key: ContextKey): ContextItem = key match {
-    case Loop => Loop(l)
-    case LoopIteration => LoopIteration(alphaIteration)
-    case _ => null
-  }
-  override def toString = prettyPrint
-  def prettyPrint = "Loop Context: "+l.prettyPrint+" - "+ (if(alphaIteration) "alpha" else "beta")
+// completely uninteresting context
+case object Interesting extends ContextKey with ContextItem
+
+// thread-safe on transitive closure
+case object ThreadSafeOnClosure extends ContextKey with ContextItem
+
+object Loop extends ContextKey
+case class Loop(n: N, parallel: Boolean) extends ContextItem {
+  def prettyPrint = "Loop: " + (if (parallel) "parallel" else "sequential")
 }
 
-object LoopContext {
-  def unapply(c: LoopContext) = Some(c.l, c.alphaIteration)
-}
+object Iteration extends ContextKey
+object AlphaIteration extends ContextItem
+object BetaIteration extends ContextItem
 
 // this is used for marking the entrance to the loop, so that it differentiated between loops at different locations
 // e.g. n is the method that calls the apply

@@ -4,6 +4,7 @@ import com.ibm.wala.ipa.callgraph.Context
 import com.ibm.wala.ssa.IR
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
+import com.ibm.wala.ipa.callgraph.ContextKey
 
 trait WALAConversionsForN { self: WALAConversions =>
 
@@ -37,5 +38,8 @@ trait WALAConversionsForN { self: WALAConversions =>
       
     def m: M = 
       n.getMethod()
+      
+    def c(k: ContextKey) = 
+      n.getContext().get(k)
   }
 }

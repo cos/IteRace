@@ -30,10 +30,13 @@ class IteRace private (
   import pa._
   log.endTimer
   
+//  log(callGraph)
+  
   log.startTimer("possible races")
   private val potentialRaces = new PotentialRaces(pa)()
   log.endTimer
   log(potentialRaces.size)
+  log(potentialRaces.prettyPrint)
 
   log.startTimer("activating stages - should be quick");
   // we only activate one stage for each constructor type
@@ -55,6 +58,9 @@ class IteRace private (
     } )
   
   val races = currentRaces
+  
+  log(" \n\n ******************************************************** \n\n  ")
+//  log(races.prettyPrint)
 }
 
 object IteRace {

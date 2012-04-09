@@ -29,7 +29,6 @@ import com.ibm.wala.util.intset.IntSetAction
 import com.ibm.wala.types.TypeReference
 import com.ibm.wala.classLoader.IClassLoader
 import com.ibm.wala.types.ClassLoaderReference
-import iterace.pointeranalysis.LoopContext
 import iterace.pointeranalysis.Loop
 
 class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConversionsForP {
@@ -37,11 +36,11 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
     def name(): String
   }
 
-  implicit def imethod2named(m: IMethod): Named = new Named {
-    def name() = m.getSelector().getName().toString()
+  implicit def m2named(m: M): Named = new Named {
+    def name = m.getSelector().getName().toString()
   }
 
-  implicit def c2named(c: IClass): Named = new Named {
+  implicit def c2named(c: C): Named = new Named {
     def name = c.getName().getClassName().toString()
   }
 
@@ -63,11 +62,14 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
     }
   }
 
-  implicit def iclass2prettyprintable(t: IClass): PrettyPrintable = new PrettyPrintable {
-    def prettyPrint(): String = {
-      val packageName = t.getName().getPackage().toString().replace('/', '.')
-      packageName + "." + t.getName().getClassName()
-    }
+  implicit def c2prettyprintable(t: C): PrettyPrintable = new PrettyPrintable {
+    def prettyPrint(): String =
+      try {
+        val packageName = t.getName().getPackage().toString().replace('/', '.')
+        packageName + "." + t.getName().getClassName()
+      } catch {
+        case e: NullPointerException => "null"
+      }
   }
 
   // method
@@ -84,7 +86,7 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
     }
   }
 
-  def printCodeLocation(n: N, bytecodeIndex: Int): String = {
+  def codeLocation(n: N, bytecodeIndex: Int): String = {
     printCodeLocation(n.getMethod(), bytecodeIndex)
   }
 
@@ -168,15 +170,15 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
   //  }
 
   // should move these at some point
-  def getLoopFor(n: N): Option[Loop] = n.getContext() match {
-    case LoopContext(nl, _) => Some(Loop(nl))
-    case _ => None
-  }
+  def getLoopFor(n: N): Option[Loop] =
+    n.c(Loop) match {
+      case l: Loop => Some(l)
+      case _ => None
+    }
 
   implicit def statementWithLoop(s: S[_]) = new {
     lazy val l: Option[Loop] = getLoopFor(s.n)
   }
- 
 
 }
 

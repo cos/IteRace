@@ -1,16 +1,7 @@
 package iterace.stage
 
-import org.junit.runner.RunWith
-import org.scalatest.{ Spec, BeforeAndAfter }
-import org.scalatest.junit.JUnitRunner
-import scala.collection.JavaConversions._
-import iterace.util.WALAConversions._
-import org.junit.Assert._
-import scala.collection._
-import org.scalatest.FunSuite
-import org.junit.Rule
-import iterace.util.log
 import org.junit.Test
+import iterace.util.log
 import org.junit.Ignore
 
 class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
@@ -34,7 +25,7 @@ class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
     """
 Loop: particles.Particle.verySimpleRace(Particle.java:68)
 
-particles.Particle.verySimpleRace(Particle.java:66)
+particles.Particle: particles.Particle.verySimpleRace(Particle.java:66)
  .x
    (a)  particles.Particle$5.op(Particle$5.java:71)
    (b)  particles.Particle$5.op(Particle$5.java:71)
@@ -47,7 +38,7 @@ particles.Particle.verySimpleRace(Particle.java:66)
     """
 Loop: particles.Particle.raceOnParameterInitializedBefore(Particle.java:92)
 
-particles.Particle.raceOnParameterInitializedBefore(Particle.java:81)
+particles.Particle: particles.Particle.raceOnParameterInitializedBefore(Particle.java:81)
  .x
    (a)  particles.Particle$7.op(Particle$7.java:95)
    (b)  particles.Particle$7.op(Particle$7.java:95)
@@ -83,7 +74,7 @@ particles.Particle.raceOnParameterInitializedBefore(Particle.java:81)
   @Test def disambiguateFalseRace = expect("""
 Loop: particles.Particle.disambiguateFalseRace(Particle.java:189)
 
-particles.Particle.disambiguateFalseRace(Particle.java:186)
+particles.Particle: particles.Particle.disambiguateFalseRace(Particle.java:186)
  .x
    (a)  particles.Particle.moveTo(Particle.java:16)
    (b)  particles.Particle.moveTo(Particle.java:16)
@@ -97,11 +88,11 @@ particles.Particle.disambiguateFalseRace(Particle.java:186)
   @Test def raceBecauseOfOutsideInterference = expect("""
 Loop: particles.Particle.raceBecauseOfOutsideInterference(Particle.java:232)
 
-particles.Particle$15.op(Particle$15.java:235)
+particles.Particle: particles.Particle$15.op(Particle$15.java:235)
  .x
    (a)  particles.Particle$15.op(Particle$15.java:236)
    (b)  particles.Particle$15.op(Particle$15.java:236)
-particles.Particle.raceBecauseOfOutsideInterference(Particle.java:229)
+particles.Particle: particles.Particle.raceBecauseOfOutsideInterference(Particle.java:229)
  .origin
    (a)  particles.Particle$15.op(Particle$15.java:235)
    (b)  particles.Particle$15.op(Particle$15.java:235)
@@ -111,7 +102,7 @@ particles.Particle.raceBecauseOfOutsideInterference(Particle.java:229)
   @Test def raceOnSharedObjectCarriedByArray = expect("""
 Loop: particles.Particle.raceOnSharedObjectCarriedByArray(Particle.java:259)
 
-particles.Particle$16.op(Particle$16.java:253)
+particles.Particle: particles.Particle$16.op(Particle$16.java:253)
  .x
    (a)  particles.Particle.moveTo(Particle.java:16)
    (b)  particles.Particle.moveTo(Particle.java:16)
@@ -123,11 +114,11 @@ particles.Particle$16.op(Particle$16.java:253)
   @Test def raceBecauseOfDirectArrayLoad = expect("""
 Loop: particles.Particle.raceBecauseOfDirectArrayLoad(Particle.java:274)
 
-particles.Particle$18.op(Particle$18.java:279)
+particles.Particle: particles.Particle$18.op(Particle$18.java:279)
  .x
    (a)  particles.Particle$18.op(Particle$18.java:278)
    (b)  particles.Particle$18.op(Particle$18.java:278)
-particles.Particle.raceBecauseOfDirectArrayLoad(Particle.java:271)
+particles.Particle: particles.Particle.raceBecauseOfDirectArrayLoad(Particle.java:271)
  .x
    (a)  particles.Particle$18.op(Particle$18.java:278)
    (b)  particles.Particle$18.op(Particle$18.java:278)
@@ -136,7 +127,7 @@ particles.Particle.raceBecauseOfDirectArrayLoad(Particle.java:271)
   @Test def raceOnSharedReturnValue = expect("""
 Loop: particles.Particle.raceOnSharedReturnValue(Particle.java:290)
 
-particles.Particle.raceOnSharedReturnValue(Particle.java:288)
+particles.Particle: particles.Particle.raceOnSharedReturnValue(Particle.java:288)
  .x
    (a)  particles.Particle$19.op(Particle$19.java:293)
    (b)  particles.Particle$19.op(Particle$19.java:293)
@@ -145,7 +136,7 @@ particles.Particle.raceOnSharedReturnValue(Particle.java:288)
   @Test def raceOnDifferntArrayIteration = expect("""
 Loop: particles.Particle.raceOnDifferntArrayIteration(Particle.java:317)
 
-particles.Particle$20.op(Particle$20.java:306)
+particles.Particle: particles.Particle$20.op(Particle$20.java:306)
  .x
    (a)  particles.Particle$22.op(Particle$22.java:320)
    (b)  particles.Particle$22.op(Particle$22.java:320)
@@ -156,11 +147,11 @@ particles.Particle$20.op(Particle$20.java:306)
   @Test def raceOnDifferntArrayIterationOneLoop = expect("""
 Loop: particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:367)
 
-particles.Particle$27.op(Particle$27.java:371)
+particles.Particle: particles.Particle$27.op(Particle$27.java:371)
  .x
    (a)  particles.Particle$27.op(Particle$27.java:370)
    (b)  particles.Particle$27.op(Particle$27.java:370)
-particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:365)
+particles.Particle: particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:365)
  .origin
    (a)  particles.Particle$27.op(Particle$27.java:371)
    (b)  particles.Particle$27.op(Particle$27.java:371)
@@ -170,7 +161,7 @@ particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:365)
   @Test def verySimpleRaceWithIndex = expect("""
 Loop: particles.Particle.verySimpleRaceWithIndex(Particle.java:383)
 
-particles.Particle.verySimpleRaceWithIndex(Particle.java:381)
+particles.Particle: particles.Particle.verySimpleRaceWithIndex(Particle.java:381)
  .x
    (a)  particles.Particle$28.op(Particle$28.java:386)
    (b)  particles.Particle$28.op(Particle$28.java:386)
@@ -179,7 +170,7 @@ particles.Particle.verySimpleRaceWithIndex(Particle.java:381)
   @Test def verySimpleRaceToStaticObject = expect("""
 Loop: particles.Particle.verySimpleRaceToStaticObject(Particle.java:399)
 
-particles.Particle.<clinit>(Particle.java:392)
+particles.Particle: particles.Particle.<clinit>(Particle.java:392)
  .x
    (a)  particles.Particle$29.op(Particle$29.java:402)
    (b)  particles.Particle$29.op(Particle$29.java:402)
@@ -188,37 +179,37 @@ particles.Particle.<clinit>(Particle.java:392)
   @Test def raceOnSharedFromStatic = expect("""
 Loop: particles.Particle.raceOnSharedFromStatic(Particle.java:412)
 
-particles.Particle.<clinit>(Particle.java:392)
+particles.Particle: particles.Particle.<clinit>(Particle.java:392)
  .y
    (a)  particles.Particle$30.op(Particle$30.java:416)
    (b)  particles.Particle$30.op(Particle$30.java:416)
 """)
 
   @Test def staticMethod = expect("""
-Loop: particles.Particle.staticMethod(Particle.java:642)
+Loop: particles.Particle.staticMethod(Particle.java:613)
 
-particles.Particle.<clinit>(Particle.java:392)
+particles.Particle: particles.Particle.<clinit>(Particle.java:392)
  .forceX
-   (a)  particles.Particle.thisisstatic(Particle.java:652)
-   (b)  particles.Particle.thisisstatic(Particle.java:652) [2x]
+   (a)  particles.Particle.thisisstatic(Particle.java:623)
+   (b)  particles.Particle.thisisstatic(Particle.java:623) [2x]
 """);
 
   @Test def verySimpleRaceOnStaticField = expect("""
-Loop: particles.Particle.verySimpleRaceOnStaticField(Particle.java:661)
+Loop: particles.Particle.verySimpleRaceOnStaticField(Particle.java:632)
 
 Static: particles.Particle
  .staticX
-   (a)  particles.Particle$48.op(Particle$48.java:664)
-   (b)  particles.Particle$48.op(Particle$48.java:664)
+   (a)  particles.Particle$46.op(Particle$46.java:635)
+   (b)  particles.Particle$46.op(Particle$46.java:635)
 """)
 
   @Test def raceOnArray = expect("""
-Loop: particles.Particle.raceOnArray(Particle.java:491)
+Loop: particles.Particle.raceOnArray(Particle.java:462)
 
-particles.Particle.raceOnArray(Particle.java:489)
+particles.Particle: particles.Particle.raceOnArray(Particle.java:460)
  .[*]
-   (a)  particles.Particle$35.op(Particle$35.java:494)
-   (b)  particles.Particle$35.op(Particle$35.java:494)
+   (a)  particles.Particle$33.op(Particle$33.java:465)
+   (b)  particles.Particle$33.op(Particle$33.java:465)
 """)
 
   /*

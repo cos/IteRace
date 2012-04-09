@@ -27,12 +27,12 @@ import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.dataflow.IFDS.IMergeFunction
 import iterace.util.S
 import iterace.pointeranalysis._
-import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
 import com.ibm.wala.util.collections.Filter
 import com.ibm.wala.ssa.SSAInvokeInstruction
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction
 import com.ibm.wala.util.graph.GraphUtil
 import com.ibm.wala.ipa.callgraph.impl.PartialCallGraph
+import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
 
 abstract class Lock extends PrettyPrintable
 
@@ -51,14 +51,14 @@ trait LockConstructor {
   def apply(c: C): Some[Lock]
 }
 
-object threadSafeFilter extends Filter[N] { def accepts(n: N): Boolean = n.getContext() != THREAD_SAFE }
+//object threadSafeFilter extends Filter[N] { def accepts(n: N): Boolean = !threadSafe(n.m) }
 
 class LockSet(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
   import pa._
 
   val supergraph = {
-    val filterdCallGraph = PartialCallGraph.make(callGraph,callGraph.getEntrypointNodes(), threadSafeFilter)
-    ICFGSupergraph.make(filterdCallGraph , pa.analysisCache)
+    //    val filterdCallGraph = PartialCallGraph.make(callGraph,callGraph.getEntrypointNodes())
+    ICFGSupergraph.make(callGraph, pa.analysisCache)
   }
 
   /**
@@ -67,13 +67,20 @@ class LockSet(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
   val locksForLoop: mutable.Map[Loop, Set[Lock]] = mutable.Map()
   def getLocks(l: Loop): Set[Lock] = locksForLoop.getOrElseUpdate(l,
 
-    DFS.getReachableNodes(callGraph, Set(l.n), threadSafeFilter) flatMap (n => {
+    DFS.getReachableNodes(callGraph, Set(l.n)) flatMap (n => {
+
+      if (threadSafe(n))
+        return Set()
 
       // synchronized method locks
-      val nLockSet: Set[Lock] = if (n.m.isSynchronized())
-        if (n.m.isStatic()) Set(lockConstructor(n.m.getDeclaringClass()).get) // for now, consider the convention that 0 is a pointer to the class
-        else lockConstructor(P(n, 1)) map { Set(_) } getOrElse Set() // lock on "this"
-      else Set()
+      val nLockSet: Set[Lock] =
+        if (n.m.isSynchronized())
+          if (n.m.isStatic())
+            Set(lockConstructor(n.m.getDeclaringClass()).get) // lock on "class object"
+          else
+            lockConstructor(P(n, 1)) map { Set(_) } getOrElse Set() // lock on "this"
+        else
+          Set()
 
       // synchronized locks block
       nLockSet ++ (
@@ -115,13 +122,13 @@ class LockSet(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
         case IExplodedBasicBlock(i: InvokeI) => {
           i.m match {
             case null => identity
-            
-            case M(C("java/util/concurrent/locks", "ReentrantLock"), "lock()V") => 
+
+            case M(C("java/util/concurrent/locks", "ReentrantLock"), "lock()V") =>
               lockConstructor(P(src.getNode(), i.getUse(0))) map { getLockEnterFlowFunction(_) } getOrElse identity
-            
+
             case M(C("java/util/concurrent/locks", "ReentrantLock"), "unlock()V") =>
               lockConstructor(P(src.getNode(), i.getUse(0))) map { getLockExitFlowFunction(_) } getOrElse identity
-              
+
             case _ => identity
           }
         }

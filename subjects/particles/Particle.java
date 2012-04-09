@@ -436,22 +436,6 @@ public class Particle {
 		});
 	}
 
-	public void noRaceOnStringConcatenation() {
-		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
-				ParallelArray.defaultExecutor());
-
-		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
-			@Override
-			public Particle op() {
-				Particle p = new Particle();
-				@SuppressWarnings("unused")
-				String bla = "tralala" + p;
-				bla += "";
-				return p;
-			}
-		});
-	}
-
 	// should only report one race on "shared.origin = p"
 	public void noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape() {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
@@ -464,19 +448,6 @@ public class Particle {
 				Particle p = new Particle();
 				shared.origin = p;
 				p.x = 10;
-				return new Particle();
-			}
-		});
-	}
-
-	public void noRaceWhenPrintln() {
-		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
-				ParallelArray.defaultExecutor());
-
-		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
-			@Override
-			public Particle op() {
-				System.out.println("bla");
 				return new Particle();
 			}
 		});
@@ -662,21 +633,6 @@ public class Particle {
 			@Override
 			public Particle op(int i) {
 				staticX = 100;
-				return new Particle();
-			}
-		});
-	}
-	
-	public void raceOnArrayList() {
-		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
-				ParallelArray.defaultExecutor());
-		
-		final ArrayList<Integer> someList = new ArrayList<Integer>();
-
-		particles.replaceWithMappedIndex(new Ops.IntToObject<Particle>() {
-			@Override
-			public Particle op(int i) {
-				someList.add(i);
 				return new Particle();
 			}
 		});

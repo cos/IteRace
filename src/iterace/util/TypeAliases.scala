@@ -22,7 +22,10 @@ trait TypeAliases {
   type V = Int
   type N = CGNode
   type P = LocalPointerKey
+  
   type O = InstanceKey
+  
+  
   type F = IField
   
   type WithReference = {def ref: V}

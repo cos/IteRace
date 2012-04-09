@@ -13,9 +13,8 @@ object S {
 
 class S[+J <: I](val n: N, val i: J) extends PrettyPrintable {
 
-  def prettyPrint() = {
-    printCodeLocation()
-  }
+  def prettyPrint() = printCodeLocation() + (if (debug.detailContexts) " --- " + n else "")
+
   def printCodeLocation(): String = {
     if (irNo >= 0) {
       n.getMethod() match {

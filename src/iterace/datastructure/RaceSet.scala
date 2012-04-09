@@ -23,7 +23,8 @@ abstract sealed class RaceSet extends immutable.Set[Race] with PrettyPrintable {
   /**
    * Aid for compact pretty printing
    */
-  def printSameSet(p: (String, Set[_])) = p._1 + (if (p._2.size > 1) " [" + p._2.size + "x]" else "")
+  def printSameSet(p: (String, Set[_])) = p._1 + (if (p._2.size > 1) " [" + level + p._2.size + "x]" else "")
+  def level: String
 }
 
 object RaceSet {
@@ -70,6 +71,8 @@ abstract sealed class LowLevelRaceSet(val l: Loop, val o: O, val alphaAccesses: 
     case that: LowLevelRaceSet => this.alphaAccesses == that.alphaAccesses && this.betaAccesses == that.betaAccesses
     case _ => false
   }
+  
+  override def level = ""
 }
 
 final class FieldRaceSet(l: Loop, o: O, val f: F, alphaAccesses: Set[S[I]], betaAccesses: Set[S[I]])
@@ -168,6 +171,8 @@ final class ObjectRaceSet(val l: Loop, val o: O, children: Set[LowLevelRaceSet])
 
   override def hashCode = l.hashCode() * 97 + o.hashCode()
   def getLowLevelRaceSets: Set[LowLevelRaceSet] = children
+  
+  override def level = "Object - "
 }
 
 final class LoopRaceSet(val l: Loop, children: Set[ObjectRaceSet])
@@ -187,6 +192,7 @@ final class LoopRaceSet(val l: Loop, children: Set[ObjectRaceSet])
   }
   override def hashCode = l.hashCode()
   def getLowLevelRaceSets: Set[LowLevelRaceSet] = children flatMap { _.getLowLevelRaceSets }
+  override def level = "Loop - "
 }
 
 final class ProgramRaceSet(children: Set[LoopRaceSet])
@@ -198,6 +204,8 @@ final class ProgramRaceSet(children: Set[LoopRaceSet])
   override def getChild(r: Race) = new LoopRaceSet(r.l, Set.empty) + r
 
   def getLowLevelRaceSets: Set[LowLevelRaceSet] = children flatMap { _.getLowLevelRaceSets }
+  
+  override def level = "Program - "
 }
 
 object ProgramRaceSet {

@@ -10,8 +10,11 @@ object O {
     }
   }
   def prettyPrint(o: O) = o match {
-    case o: AllocationSiteInNode => printCodeLocation(o.getNode(), o.getSite().getProgramCounter())
-    case o: StaticClassObject => "Static: "+o.getKlass().prettyPrint()
+    case o: AllocationSiteInNode =>
+      (o.getConcreteType().prettyPrint + ": " + codeLocation(o.getNode(), o.getSite().getProgramCounter())) +
+        (if (debug.detailContexts) " --- " + o.getNode() else "")
+
+    case o: StaticClassObject => "Static: " + o.getKlass().prettyPrint()
     case _ => o.toString
   }
 }
