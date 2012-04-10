@@ -65,43 +65,48 @@ class LockSet(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
    * Get all the locks that appear in the loop
    */
   val locksForLoop: mutable.Map[Loop, Set[Lock]] = mutable.Map()
-  def getLocks(l: Loop): Set[Lock] = locksForLoop.getOrElseUpdate(l,
+  def getLocks(l: Loop): Set[Lock] =
+    locksForLoop.getOrElseUpdate(l,
+      DFS.getReachableNodes(callGraph, Set(l.n)) map (n => {
 
-    DFS.getReachableNodes(callGraph, Set(l.n)) flatMap (n => {
+        if (threadSafe(n))
+          Set[Lock]()
+        else {
+          // synchronized method locks
+          val nLockSet: Set[Lock] =
+            if (n.m.isSynchronized())
+              if (n.m.isStatic())
+                Set(lockConstructor(n.m.getDeclaringClass()).get) // lock on "class object"
+              else
+                lockConstructor(P(n, 1)) map { Set(_) } getOrElse Set() // lock on "this"
+            else
+              Set[Lock]()
 
-      if (threadSafe(n))
-        return Set()
-
-      // synchronized method locks
-      val nLockSet: Set[Lock] =
-        if (n.m.isSynchronized())
-          if (n.m.isStatic())
-            Set(lockConstructor(n.m.getDeclaringClass()).get) // lock on "class object"
-          else
-            lockConstructor(P(n, 1)) map { Set(_) } getOrElse Set() // lock on "this"
-        else
-          Set()
-
-      // synchronized locks block
-      nLockSet ++ (
-        n.instructions collect {
-          case i: SSAMonitorInstruction => lockConstructor(P(n, i.getRef()))
-          case i: InvokeI => {
-            i.m match {
-              case null => None
-              case M(C("java/util/concurrent/locks", "ReentrantLock"), "lock()V") => lockConstructor(P(n, i.getUse(0)))
-              case _ => None
+          // synchronized locks block
+          nLockSet ++ (
+            n.instructions collect {
+              case i: SSAMonitorInstruction => lockConstructor(P(n, i.getRef()))
+              case i: InvokeI => {
+                i.m match {
+                  case null => None
+                  case M(C("java/util/concurrent/locks", "ReentrantLock"), "lock()V") => lockConstructor(P(n, i.getUse(0)))
+                  case _ => None
+                }
+              }
             }
-          }
+            collect { case Some(l) => l })
+          // will add ReentrantLock locks here at some point
         }
-        collect { case Some(l) => l })
+      }) flatten)
 
-      // will add ReentrantLock locks here at some point
-    }) toSet)
+  def getLockSet[T <: I](s: S[T]): Set[Lock] = getLockSetMapping(s.l.get)(s)
 
-  def getLockSetMapping(l: Loop): S[I] => Set[Lock] = getLockSetMapping(l, getLocks(l))
+  val cachedFunctions: Map[Loop, S[I] => immutable.Set[Lock]] = Map()
 
-  def getLockSetMapping(l: Loop, s: Set[Lock]): S[I] => Set[Lock] = {
+  def getLockSetMapping(l: Loop): S[I] => immutable.Set[Lock] =
+    cachedFunctions.getOrElse(l, { getLockSetMapping(l, getLocks(l)) })
+
+  def getLockSetMapping(l: Loop, s: Set[Lock]): S[I] => immutable.Set[Lock] = {
     val locksDomain = new UnorderedDomain[Lock, SS]()
     locksDomain.add(null); // so that we have a 0 value
     s.foreach({ locksDomain.add(_) })
@@ -112,7 +117,7 @@ class LockSet(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
   /**
    * get the lockset for any instruction in the program
    */
-  def getLockSetMapping(l: Loop, locksDomain: LockSet.LockDomain): S[I] => Set[Lock] = {
+  def getLockSetMapping(l: Loop, locksDomain: LockSet.LockDomain): S[I] => immutable.Set[Lock] = {
 
     object flowFunctions extends IFlowFunctionMap[SS] {
       override def getCallFlowFunction(src: SS, dest: SS, ret: SS) = identity
@@ -202,6 +207,6 @@ class LockSet(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
       val notHeldLocks = intSet.map({ locksDomain.getMappedObject(_) }).toSet
       locksDomain.elements.toSet.&~(notHeldLocks).&~(Set(null)) // have to figure out why it doesn't propagate 0 here
     }
-    return funct _
+    (funct _)
   }
 }

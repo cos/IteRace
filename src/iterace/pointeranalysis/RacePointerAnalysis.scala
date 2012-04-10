@@ -10,6 +10,8 @@ import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.properties.WalaProperties
 import iterace.util.ArrayContents
 import com.ibm.wala.util.collections.Filter
+import iterace.datastructure.LockSet
+import iterace.datastructure.Lock
 
 class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder)
   extends PointerAnalysis(startClass, startMethod, analysisScope) {
@@ -28,12 +30,13 @@ class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope
   }
 
   // I think it is very inefficient 
-  lazy val loops: immutable.Set[Loop] = {
-    callGraph collect
+  lazy val loops: immutable.Set[Loop] = callGraph collect
       { case n: N if n.getContext().get(Loop) != null => n.getContext().get(Loop).asInstanceOf[Loop] } toSet
-  }
+  
 
-  lazy val parLoops = loops filter { !_.n.m.toString().contains("Seq") }
+  lazy val parLoops = 
+    loops filter { !_.n.m.toString().contains("Seq") }
+  
   lazy val seqLoops = loops filter { _.n.m.toString().contains("Seq") }
 
   implicit def loopWithIterations(l: Loop) = new {
@@ -89,6 +92,12 @@ class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope
       case BetaIteration => true
       case _ => false
     }
+  }
+
+  var lockMapping: Option[LockSet] = None
+
+  implicit def sWithLockSet[T <: I](s: S[T]) = new {
+    lazy val lockset: Option[Set[Lock]] = lockMapping map { _.getLockSet(s) }
   }
 
 }

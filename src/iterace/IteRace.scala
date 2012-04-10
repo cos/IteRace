@@ -17,6 +17,8 @@ import iterace.util.log
 import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.stage._
 import iterace.pointeranalysis._
+import iterace.datastructure.LockSet
+import iterace.datastructure.MayAliasLockConstructor
 
 class IteRace private (
   startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
@@ -30,13 +32,17 @@ class IteRace private (
   log.startTimer("possible races")
   private val potentialRaces = new PotentialRaces(pa)()
   log.endTimer
-  log("potential races : +" + potentialRaces.size)
 
+  log(potentialRaces.prettyPrint())
+  log("potential races : +" + potentialRaces.size)
+  
   private var currentRaces = potentialRaces
 
+  val filterByLockMayAlias = new FilterByLockMayAlias(pa, new LockSet(pa, new MayAliasLockConstructor(pa)))
+  
   if (options(FilterByLockMayAlias)) {
     log.startTimer("lock may alias")
-    currentRaces = FilterByLockMayAlias(pa)(currentRaces)
+    currentRaces = filterByLockMayAlias(currentRaces)
     log.endTimer
     log("lock may alias resulted in : " + currentRaces.size + " races")
   }
@@ -50,7 +56,7 @@ class IteRace private (
 
   if (options(FilterByLockMayAlias)) {
     log.startTimer("lock may alias")
-    currentRaces = FilterByLockMayAlias(pa)(currentRaces)
+    currentRaces = filterByLockMayAlias(currentRaces)
     log.endTimer
     log("lock may alias resulted in : " + currentRaces.size + " races")
   }
@@ -58,7 +64,7 @@ class IteRace private (
   val races = currentRaces
 
   log(" \n\n ******************************************************** \n\n  ")
-  //  log(races.prettyPrint)
+  log(races.prettyPrint)
 }
 
 object IteRace {

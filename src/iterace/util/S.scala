@@ -3,6 +3,8 @@ import com.ibm.wala.ipa.cfg.BasicBlockInContext
 import WALAConversions._
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
 import com.ibm.wala.classLoader.ShrikeBTMethod
+import iterace.pointeranalysis.RacePointerAnalysis
+import iterace.datastructure.Lock
 
 object S {
   def unapply(b: BasicBlockInContext[IExplodedBasicBlock]): Option[(N, I)] = {
@@ -13,7 +15,16 @@ object S {
 
 class S[+J <: I](val n: N, val i: J) extends PrettyPrintable {
 
-  def prettyPrint() = printCodeLocation() + (if (debug.detailContexts) " --- " + n else "")
+  // mutable but not part of the object's identity
+  var lockset: Option[Set[Lock]] = None
+
+  def prettyPrint(): String =
+    printCodeLocation() +
+      (lockset match {
+        case Some(lockset) => lockset.map("         "+_.prettyPrint).reduceOption(_+"\n"+_).map("\n"+_).getOrElse("")
+        case None => ""
+      }) +
+      (if (debug.detailContexts) " --- " + n else "")
 
   def printCodeLocation(): String = {
     if (irNo >= 0) {

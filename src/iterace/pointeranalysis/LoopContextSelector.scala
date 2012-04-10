@@ -141,8 +141,7 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
           case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
           case _ =>
             if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
-              c
-            //              return UninterestingContext
+            	return UninterestingContext
             else c
         }
     }
@@ -178,8 +177,12 @@ case class Loop(n: N, parallel: Boolean) extends ContextItem {
 }
 
 object Iteration extends ContextKey
-object AlphaIteration extends ContextItem
-object BetaIteration extends ContextItem
+object AlphaIteration extends ContextItem {
+  override def toString = "alpha"
+}
+object BetaIteration extends ContextItem {
+  override def toString = "beta"
+}
 
 // this is used for marking the entrance to the loop, so that it differentiated between loops at different locations
 // e.g. n is the method that calls the apply

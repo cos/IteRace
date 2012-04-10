@@ -21,10 +21,10 @@ abstract class LockSetAbstractTest(dependencies: List[String], startClass: Strin
   /**
    * Test set of all found locks
    */
-  def assertAllLocks(result: String): Unit = {
-    val (lockSet, pa) = analyze(testName.getMethodName() + "()V")
+  def assertAllLocks(result: String, entry:String = testName.getMethodName()): Unit = {
+    val (lockSet, pa) = analyze(entry + "()V")
     import pa._
-    val theLoop = loops.head
+    val theLoop = parLoops.head
     val theLocks = lockSet.getLocks(theLoop)
     assertEquals(result, prettyPrint(theLocks))
   }

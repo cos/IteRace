@@ -24,7 +24,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
     val bigSet = accesses.flatMap[(O, S[I]), Set[(O, S[I])]](s =>
       s.i match {
         case i: AccessI if i.isStatic => Set((new StaticClassObject(i.f.get.getDeclaringClass()), s))
-        case i: InvokeI if i.isStatic => Set((new StaticClassObject(i.f.get.getDeclaringClass()), s))
+        case i: InvokeI if i.isStatic => Set((new StaticClassObject(cha.resolveMethod(i.getDeclaredTarget()).getDeclaringClass()), s))
         case _ => s.refP.get.pt map { (_, s) }
       }) groupBy { _._1 } map { case (o, set) => (o, set map { _._2 }) }
       
@@ -95,7 +95,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
         val invokeSs = invokeIs map { S(predN, _) }
         invokeSs
       })
-      return invokeSs.toSet.flatten
+      invokeSs.toSet.flatten
     })
   }
 }

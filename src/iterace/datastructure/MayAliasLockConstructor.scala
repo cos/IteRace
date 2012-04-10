@@ -2,6 +2,8 @@ package iterace.datastructure
 
 import iterace.pointeranalysis.PointerAnalysis
 import iterace.util.WALAConversions._
+import iterace.util.O
+import iterace.pointeranalysis.Iteration
 
 class MayAliasLockConstructor(pa: PointerAnalysis) extends LockConstructor {
   import pa._
@@ -11,7 +13,11 @@ class MayAliasLockConstructor(pa: PointerAnalysis) extends LockConstructor {
 }
 
 case class OLock(o: O) extends Lock {
-  def prettyPrint = "L: " + o.prettyPrint
+  def prettyPrint = "L: " + o.prettyPrint + 
+  		(o match {
+  		  case O(n,_) => "-"+ (Option(n.c(Iteration)) getOrElse "outside")
+  		  case _ => ""
+  		})
 }
 case class CLock(c: C) extends Lock {
   def prettyPrint = "L: " + c.prettyPrint
