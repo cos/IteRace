@@ -104,6 +104,9 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
 
       // we're inside the loop (the objectKey test is to avoid recursion)
       case c: Context if c.get(Loop) != null => {
+        if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
+            return UninterestingContext
+        
         val addThreadSafe =
           if (c.get(ThreadSafeOnClosure) == null && threadSafeOnClosure(caller, callee, actualParameters))
             new DelegatingContext(ThreadSafeContext, c)

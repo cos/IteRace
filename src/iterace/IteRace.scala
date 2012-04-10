@@ -34,7 +34,7 @@ class IteRace private (
   log.endTimer
 
   log(potentialRaces.prettyPrint())
-  log("potential races : +" + potentialRaces.size)
+  log("potential races : " + potentialRaces.size)
   
   private var currentRaces = potentialRaces
 

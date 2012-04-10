@@ -52,6 +52,7 @@ object threadSafeOnClosure extends ContextKey {
     "Ljava/util/Date",
     "Ljava/util/Locale",
     "Ljava/util/Timezone",
+    "Ljava/util/TimeZone",
     "Ljava/util/GregorianCalendar",
 
     "Ljava/util/Properties",
@@ -59,6 +60,8 @@ object threadSafeOnClosure extends ContextKey {
     "Ljava/lang/Long",
     "Ljava/lang/Integer",
     "Ljava/lang/Character",
+    "Ljava/math/BigDecimal",
+    "Ljava/math/BigInteger",
 
     // regex Pattern class - it is thread-safe
     "Ljava/util/regex/Pattern",
@@ -78,7 +81,7 @@ object threadSafeOnClosure extends ContextKey {
    */
   def apply(caller: N): Boolean =
     caller.c(Uninteresting) != null ||
-    caller.c(ThreadSafeOnClosure) != null ||
+      caller.c(ThreadSafeOnClosure) != null ||
       apply(caller.m)
 
   /**
@@ -143,6 +146,17 @@ object movesObjectsAround {
   val classes = immutable.HashSet[String](
     "Ljava/util/regex/Pattern",
     "Ljava/util/Vector")
+
+  def apply(c: C): Boolean = classes.contains(c.getName.toString)
+
+  def apply(m: M): Boolean = apply(m.getDeclaringClass())
+
+  def apply(n: N): Boolean = apply(n.m)
+}
+
+object doesntMoveObjects {
+  val classes = immutable.HashSet[String](
+    )
 
   def apply(c: C): Boolean = classes.contains(c.getName.toString)
 
