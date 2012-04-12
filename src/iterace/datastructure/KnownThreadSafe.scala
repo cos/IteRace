@@ -229,6 +229,18 @@ object threadSafe {
    * is any invocation of callee thread-safe when called from caller?
    */
   def apply(caller: N, callee: M): Boolean = threadSafeOnClosure(caller) || apply(callee)
+
+  /**
+   * is the node,i.e., invocation, thread-safe?
+   */
+  def apply(s: S[I]): Boolean = apply(s.n) || writeInConstructorOnThis(s)
+
+  def writeInConstructorOnThis(s: S[I]): Boolean = s.n.getMethod().isInit() &&
+    (s.i match {
+      case i: PutI => i.getRef() == 1
+      case i: ArrayStoreI => i.getArrayRef() == 1
+      case _ => false
+    })
 }
 
 
