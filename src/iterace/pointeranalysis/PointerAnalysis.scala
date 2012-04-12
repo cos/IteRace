@@ -20,17 +20,17 @@ class PointerAnalysis(
     entryClass: String, 
     entryMethod: String, 
     analysisScopeBuilder: AnalysisScopeBuilder,
-    iteRaceOptions: Set[IteRaceOption]) {
+    val options: Set[IteRaceOption]) {
   
   /*
    * Below is the analysis initialization
    */
   val scope: AnalysisScope = analysisScopeBuilder.getAnalysisScope();
   val cha = ClassHierarchy.make(scope)
-  private val options: AnalysisOptions = new AnalysisOptions(scope, entrypoints.asJava)
+  private val analysisOptions: AnalysisOptions = new AnalysisOptions(scope, entrypoints.asJava)
   val analysisCache = new AnalysisCache()
-  private val builder = new CallGraphBuilder(options, analysisCache, cha, scope, iteRaceOptions.toSet)
-  val callGraph = builder.makeCallGraph(options);
+  private val builder = new CallGraphBuilder(analysisOptions, analysisCache, cha, scope, options.toSet)
+  val callGraph = builder.makeCallGraph(analysisOptions);
   private val pointerAnalysis = builder.getPointerAnalysis();
   val heap = pointerAnalysis.getHeapGraph()
 

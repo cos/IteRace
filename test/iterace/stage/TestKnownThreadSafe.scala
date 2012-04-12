@@ -3,8 +3,12 @@ package iterace.stage
 import org.junit.Test
 import iterace.util.log
 import iterace.util.debug
+import iterace.IteRaceOption
+import iterace.IteRaceOptions
 
 class TestKnownThreadSafe extends RaceAbstractTest("Lparticles/ParticleWithKnownThreadSafe") {
+  
+  override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.KnownSafeFiltering)
   
   debug.activate
 

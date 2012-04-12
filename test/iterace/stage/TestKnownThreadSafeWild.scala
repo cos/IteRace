@@ -3,9 +3,13 @@ package iterace.stage
 import org.junit.Test
 import iterace.util.log
 import iterace.util.debug
+import iterace.IteRaceOptions
+import iterace.IteRaceOption
 
 class TestKnownThreadSafeWild extends RaceAbstractTest("Lparticles/ParticleUsingLibrary") {
  
+  override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.KnownSafeFiltering)
+  
   debug.activate
 
   analysisScope.addBinaryDependency("particles");

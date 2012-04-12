@@ -114,22 +114,24 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
 
         var newC: Context = c
 
-        newC = if (!c.is(ThreadSafeOnClosure) && threadSafeOnClosure(caller, callee, actualParameters))
-          ThreadSafeContext + c
-        else
-          c
+        if (options(IteRaceOption.KnownSafeFiltering)) {
+          newC = if (!c.is(ThreadSafeOnClosure) && threadSafeOnClosure(caller, callee, actualParameters))
+            ThreadSafeContext + c
+          else
+            c
 
-        // we are not adding additional context when we know no races can happen from here on
-        // and we also know all generated classes from here on are thread-safe
-        // !!! 	question: "generatesSafeObjects" all generated objects from here on are thread-safe
-        // 								or just the ones instantiated in callee (i.e., is it on transitive closure)
-        //    
-        // I'll make it more extreme... and simply remove all context from now on Uninteresting
+          // we are not adding additional context when we know no races can happen from here on
+          // and we also know all generated classes from here on are thread-safe
+          // !!! 	question: "generatesSafeObjects" all generated objects from here on are thread-safe
+          // 								or just the ones instantiated in callee (i.e., is it on transitive closure)
+          //    
+          // I'll make it more extreme... and simply remove all context from now on Uninteresting
 
-        newC = if (!newC.is(Interesting) && (generatesSafeObjects(callee) || movesObjectsAround(callee)))
-          InterestingContext + newC
-        else
-          newC
+          newC = if (!newC.is(Interesting) && (generatesSafeObjects(callee) || movesObjectsAround(callee)))
+            InterestingContext + newC
+          else
+            newC
+        }
 
         if (newC.is(ThreadSafeOnClosure) && !newC.is(Interesting))
           return UninterestingContext
