@@ -9,6 +9,7 @@ import com.ibm.wala.analysis.reflection.InstanceKeyWithNode
 import scala.collection._
 import com.ibm.wala.ipa.callgraph.ContextKey
 import iterace.pointeranalysis.Uninteresting
+import com.ibm.wala.ipa.callgraph.propagation.ContainerUtil
 
 object threadSafeOnClosure extends ContextKey {
 
@@ -49,7 +50,7 @@ object threadSafeOnClosure extends ContextKey {
     "Ljava/lang/Class$EnclosingMethodInfo",
     "Ljava/lang/Method",
     "Ljava/lang/ClassLoader",
-    
+
     // lock classes
     "Ljava/util/concurrent/locks/ReentrantLock",
     "Ljava/util/concurrent/ConcurrentHashMap$Segment",
@@ -75,7 +76,7 @@ object threadSafeOnClosure extends ContextKey {
     // beans
     "Ljava/beans/PropertyDescriptor",
     "Ljava/beans/IndexedPropertyDescriptor",
-    
+
     // regex Pattern class - it is thread-safe
     "Ljava/util/regex/Pattern",
 
@@ -84,14 +85,25 @@ object threadSafeOnClosure extends ContextKey {
     // kind of coarse-grained
     "Ljava/lang/System",
 
-     // soft and weak reference
+    // soft and weak reference
     "Ljava/lang/ref/SoftReference",
     "Ljava/lang/ref/WeakReference",
-    
+
+    // not very sure about this one
+    "Ljava/text/AttributedString",
+
     // for testing
     "Lparticles/ParticleWithKnownThreadSafe$ThreadSafeOnClosure",
 
     "the end of the list")
+
+  val classAndMethod = Set(
+
+    // this shouldn't be here but there is a bug in wala:
+    // "found a bug in the wala framework - it sees as the same weka.core.Attribute and 
+    // java.text.NumberFormat$Field; the latter is of class AttributedCharacterIterator$Attribute - that might be the reason
+
+    ("Lweka/core/Attribute", "equalsMsg"))
 
   /**
    * is it thread-safe on closure when called from caller
@@ -112,6 +124,7 @@ object threadSafeOnClosure extends ContextKey {
    */
   def apply(callee: M): Boolean =
     apply(callee.getDeclaringClass()) ||
+      classAndMethod.exists({ case (c, m) => callee.getDeclaringClass().getName().toString() == c && callee.getName().toString() == m }) ||
       ZeroXInstanceKeys.isThrowable(callee.getDeclaringClass())
 
   /**
@@ -147,7 +160,7 @@ object generatesSafeObjects {
     // kind of coarse-grained
     "Ljava/lang/System",
     "Ljava/security/Security",
-    
+
     "Ljava/io/ObjectStreamClass", // not true
 
     // for testing
@@ -160,22 +173,17 @@ object generatesSafeObjects {
   def apply(n: N): Boolean = apply(n.m)
 }
 
-object movesObjectsAround {
+object isActuallyLibraryCode {
+  /**
+   * this are classes that are marked as "application" by WALA by I want them to be library
+   * quick hack, could be made more elegantly
+   */
   val classes = immutable.HashSet[String](
-    "Ljava/util/regex/Pattern",
-      // collections
-    "Ljava/util/Collections$SynchronizedCollection",
-    "Ljava/util/Vector",
-    
-    "Ljava/io/ObjectStreamClass",
-    
-    // data structures used by WEKA
-//    "Lweka/core/SparseInstance",
-    
-    // soft and weak reference
-    "Ljava/lang/ref/SoftReference",
-    "Ljava/lang/ref/WeakReference"
-  )
+
+    // for WEKA
+    "Lweka/core/SparseInstance",
+    "Lweka/core/DenseInstance",
+    "Lweka/core/AbstractInstance")
 
   def apply(c: C): Boolean = classes.contains(c.getName.toString)
 
@@ -184,9 +192,37 @@ object movesObjectsAround {
   def apply(n: N): Boolean = apply(n.m)
 }
 
-object doesntMoveObjects {
+object movesObjectsAround {
   val classes = immutable.HashSet[String](
-    )
+    "Ljava/util/regex/Pattern",
+    // collections that are safe
+    "Ljava/util/Collections$SynchronizedCollection",
+    "Ljava/util/Collections$SynchronizedList",
+    "Ljava/util/Collections$SynchronizedSet",
+    "Ljava/util/Collections$SynchronizedSortedSet",
+    "Ljava/util/Vector",
+
+    // other collections
+    "Ljava/util/HashMap",
+
+    "Ljava/io/ObjectStreamClass",
+
+    // data structures used by WEKA
+    //    "Lweka/core/SparseInstance",
+
+    // soft and weak reference
+    "Ljava/lang/ref/SoftReference",
+    "Ljava/lang/ref/WeakReference")
+
+  def apply(c: C): Boolean = classes.contains(c.getName.toString) || ContainerUtil.isContainer(c)
+
+  def apply(m: M): Boolean = apply(m.getDeclaringClass())
+
+  def apply(n: N): Boolean = apply(n.m)
+}
+
+object doesntMoveObjects {
+  val classes = immutable.HashSet[String]()
 
   def apply(c: C): Boolean = classes.contains(c.getName.toString)
 
@@ -205,9 +241,8 @@ object threadSafe {
     "Ljava/util/Collections$SynchronizedCollection", // not true
     "Ljava/util/Vector", // not true
     "Ljava/util/concurrent/ConcurrentHashMap",
-    
-    "somethig at the end"
-  )
+
+    "somethig at the end")
 
   /**
    * is the node,i.e., invocation, thread-safe?

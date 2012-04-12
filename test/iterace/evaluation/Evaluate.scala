@@ -11,14 +11,17 @@ import iterace.IteRace
 import scala.io._
 import java.io.FileWriter
 import iterace.util.log
-
 import sjson.json._
 import DefaultProtocol._
 import JsonSerialization._
+import iterace.util.debug
 
 abstract class Evaluate(
   entryClass: String,
   entryMethod: String = "main([Ljava/lang/String;)V") extends IteRaceTest {
+
+  debug.activate
+  debug(this.getClass().toString())
 
   var options: Set[IteRaceOption] = IteRaceOptions(TwoThreadModel, DeepSynchronized, BubbleUp, AppLevelSynchronized)
 
@@ -26,13 +29,13 @@ abstract class Evaluate(
 
   def result: String = analyze(entryClass, entryMethod, options).races.prettyPrint
 
-  def expectNoRaces = toRun = () => { assertEquals("", result) }
-  def expectSomeRaces = toRun = () => { assertNotSame("", result) }
-  def expect(printedRaces: String) = toRun = () => { assertEquals(printedRaces, result) }
+  def expectNoRaces { toRun = () => { assertEquals("", result) } }
+  def expectSomeRaces { toRun = () => { assertNotSame("", result) } }
+  def expect(printedRaces: String) { toRun = () => { assertEquals(printedRaces, "\n"+result+"\n") } }
 
   var toRun: () => Unit = expectNoRaces _
 
-  @Test def t = toRun()
+  @Test def t {toRun()}
 }
 
 object Evaluate extends App {
@@ -56,11 +59,11 @@ object Evaluate extends App {
   println(options)
 
   val iteRace = subject.analyze(options)
-  
-  val fw = new FileWriter("evaluation/"+subjectName+"_"+optionNames.mkString("-")+".json")
-  
+
+  val fw = new FileWriter("evaluation/" + subjectName + "_" + optionNames.mkString("-") + ".json")
+
   println(log.entries.toMap)
-  fw.write("\n\n"+tojson(log.entries.toMap)) ; fw.close()
+  fw.write("\n\n" + tojson(log.entries.toMap)); fw.close()
 }
 
 object Bla extends App {
@@ -76,10 +79,10 @@ object EvaluateAll extends App {
 
     val cmd = Seq("env", "JAVA_OPTS=-Xmx2g",
       "scala", "-cp", classPath, "iterace.evaluation.Evaluate", subject, "2-threads-model")
-    
-    val countLogger = ProcessLogger(line => println("normal: "+line), line => println("err: " + line))
-    
-    println(cmd run(countLogger, false))
+
+    val countLogger = ProcessLogger(line => println("normal: " + line), line => println("err: " + line))
+
+    println(cmd run (countLogger, false))
   })
 
   def classPath = {

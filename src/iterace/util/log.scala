@@ -20,7 +20,7 @@ object log {
     entries += (name+"-time" -> runtime.toString())
   }
 
-  val entries: mutable.Map[String, String] = mutable.Map()
+  val entries: mutable.Map[String, String] = mutable.ListMap()
 
   def apply(entry: String, value:Any) = {
      debug(entry +": "+value)

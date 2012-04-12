@@ -10,6 +10,7 @@ import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
+import iterace.IteRaceOption
 import iterace.util.log
 
 import org.junit.Test

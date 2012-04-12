@@ -32,6 +32,7 @@ import com.ibm.wala.types.ClassLoaderReference
 import iterace.pointeranalysis.Loop
 import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.DelegatingContext
+import iterace.datastructure.isActuallyLibraryCode
 
 class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConversionsForP {
   trait Named {
@@ -129,13 +130,13 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
   def inApplicationScope(n: N): Boolean = inApplicationScope(n.m)
   def inApplicationScope(m: M): Boolean = {
     val classLoader = m.getDeclaringClass().getClassLoader();
-    classLoader.getReference() == ClassLoaderReference.Application;
+    classLoader.getReference() == ClassLoaderReference.Application && !isActuallyLibraryCode(m)
   }
 
   def inPrimordialScope(n: N): Boolean = inPrimordialScope(n.m)
   def inPrimordialScope(m: M) = {
     val classLoader = m.getDeclaringClass().getClassLoader();
-    classLoader.getReference() == ClassLoaderReference.Primordial;
+    classLoader.getReference() == ClassLoaderReference.Primordial || isActuallyLibraryCode(m)
   }
 
   object unknownO extends O {

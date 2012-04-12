@@ -11,6 +11,7 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
+import iterace.IteRaceOption
 
 import org.junit.Test
 
@@ -18,6 +19,6 @@ import org.junit.Test
 class EvaluateEM3D extends Evaluate("Lem3d/parallelArray/Em3d") {
 
   analysisScope.addBinaryDependency("../evaluation/em3d/bin");
-
+  
   expectNoRaces
 }

@@ -32,14 +32,6 @@ particles.Particle: particles.Particle$3.op(Particle$3.java:50)
   @Test def verySimpleRace = expect("""
 Loop: particles.Particle.verySimpleRace(Particle.java:68)
 
-particles.Particle: particles.Particle$5.op(Particle$5.java:72)
- .c
-   (a)  particles.Particle.<init>(Particle.java:566)
-   (b)  particles.Particle.<init>(Particle.java:566)
-particles.Particle: particles.Particle.<init>(Particle.java:566)
- .c
-   (a)  particles.Particle.<init>(Particle.java:566)
-   (b)  particles.Particle.<init>(Particle.java:566)
 particles.Particle: particles.Particle.verySimpleRace(Particle.java:66)
  .x
    (a)  particles.Particle$5.op(Particle$5.java:71)
@@ -66,9 +58,6 @@ particles.Particle: particles.Particle.raceOnParameterInitializedBefore(Particle
 Loop: particles.Particle.noRaceOnANonSharedField(Particle.java:106)
 
 particles.Particle: particles.Particle$8.op(Particle$8.java:109)
- .c
-   (a)  particles.Particle.<init>(Particle.java:566)
-   (b)  particles.Particle.<init>(Particle.java:566)
  .origin
    (a)  particles.Particle$8.op(Particle$8.java:110)
    (b)  particles.Particle$8.op(Particle$8.java:110)
@@ -77,15 +66,8 @@ particles.Particle: particles.Particle$8.op(Particle$8.java:109)
    (b)  particles.Particle$8.op(Particle$8.java:111)
         particles.Particle$8.op(Particle$8.java:112)
 particles.Particle: particles.Particle$8.op(Particle$8.java:111)
- .c
-   (a)  particles.Particle.<init>(Particle.java:566)
-   (b)  particles.Particle.<init>(Particle.java:566)
  .x
    (a)  particles.Particle$8.op(Particle$8.java:112)
    (b)  particles.Particle$8.op(Particle$8.java:112)
-particles.Particle: particles.Particle.<init>(Particle.java:566)
- .c
-   (a)  particles.Particle.<init>(Particle.java:566)
-   (b)  particles.Particle.<init>(Particle.java:566)
 """)
 }

@@ -37,7 +37,7 @@ class IteRace private (
   private val potentialRaces = new PotentialRaces(pa)()
   log.endTimer
   log("potential-races",potentialRaces.size)
-//  potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
+  potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
 
   private var currentRaces = potentialRaces
 
@@ -65,9 +65,10 @@ class IteRace private (
   }
   
   val races = currentRaces
-
+  
+  debug(log.entries)
+  		//  log(races.prettyPrint)
   debug(" \n\n ******************************************************** \n\n  ")
-  //  log(races.prettyPrint)
 }
 
 object IteRace {
