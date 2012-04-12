@@ -2,7 +2,7 @@ package iterace
 
 import scala.collection._
 
-trait IteRaceOption 
+trait IteRaceOption
 
 object IteRaceOption {
   object TwoThreadModel extends IteRaceOption {
@@ -23,8 +23,8 @@ object IteRaceOption {
   object BubbleUp extends IteRaceOption {
     override def toString = "bubble-up"
   }
-  
-  def apply(s: String):IteRaceOption = s match {
+
+  def apply(s: String): IteRaceOption = s match {
     case "2-threads-model" => TwoThreadModel
     case "known-safe-filtering" => KnownSafeFiltering
     case "app-lib-membrane" => AppLibMembrane
@@ -35,6 +35,20 @@ object IteRaceOption {
 }
 
 object IteRaceOptions {
-  def apply(s: IteRaceOption*):immutable.Set[IteRaceOption] = apply(s)
+  import IteRaceOption._
+
+  def apply(s: IteRaceOption*): immutable.Set[IteRaceOption] = apply(s)
   def apply(s: Traversable[IteRaceOption]): immutable.Set[IteRaceOption] = immutable.Set[IteRaceOption]() ++ s
+
+  def all = apply(TwoThreadModel, KnownSafeFiltering, AppLibMembrane, BubbleUp, DeepSynchronized, AppLevelSynchronized)
+  def allAsString = all map { _.toString }
+
+  def powerset[T](s: Set[T]): Set[Set[T]] = {
+    if (s.tail.isEmpty)
+      Set(Set(), s)
+    else {
+      val other = powerset(s.tail)
+      (other) ++ (other map { _ + s.head })
+    }
+  }
 }

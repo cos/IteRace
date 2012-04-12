@@ -16,6 +16,8 @@ import DefaultProtocol._
 import JsonSerialization._
 import iterace.util.debug
 
+import scala.actors.Futures._
+
 abstract class Evaluate(
   entryClass: String,
   entryMethod: String = "main([Ljava/lang/String;)V") extends IteRaceTest {
@@ -31,11 +33,11 @@ abstract class Evaluate(
 
   def expectNoRaces { toRun = () => { assertEquals("", result) } }
   def expectSomeRaces { toRun = () => { assertNotSame("", result) } }
-  def expect(printedRaces: String) { toRun = () => { assertEquals(printedRaces, "\n"+result+"\n") } }
+  def expect(printedRaces: String) { toRun = () => { assertEquals(printedRaces, "\n" + result + "\n") } }
 
   var toRun: () => Unit = expectNoRaces _
 
-  @Test def t {toRun()}
+  @Test def t { toRun() }
 }
 
 object Evaluate extends App {
@@ -60,14 +62,14 @@ object Evaluate extends App {
 
   val iteRace = subject.analyze(options)
 
-  val fw = new FileWriter("evaluation/" + subjectName + "_" + optionNames.mkString("-") + ".json")
+  val fw = new FileWriter("evaluation/" + subjectName + "/" + optionNames.mkString("_") + ".json")
 
   println(log.entries.toMap)
   fw.write("\n\n" + tojson(log.entries.toMap)); fw.close()
 }
 
 object Bla extends App {
-  println("bl1a")
+  println(IteRaceOptions.powerset(Set("a", "b", "c")))
 }
 
 object EvaluateAll extends App {
@@ -77,12 +79,22 @@ object EvaluateAll extends App {
 
   args.foreach(subject => {
 
-    val cmd = Seq("env", "JAVA_OPTS=-Xmx2g",
-      "scala", "-cp", classPath, "iterace.evaluation.Evaluate", subject, "2-threads-model")
+    for (val currentOptions <- IteRaceOptions.powerset(IteRaceOptions.allAsString)) {
+      val cmd = Seq("env", "JAVA_OPTS=-Xmx2g",
+        "scala", "-cp", classPath, "iterace.evaluation.Evaluate", subject) ++ currentOptions
 
-    val countLogger = ProcessLogger(line => println("normal: " + line), line => println("err: " + line))
+      val errors = new FileWriter("evaluation/" + subject + "/" + currentOptions.mkString("_") + ".txt", true)
 
-    println(cmd run (countLogger, false))
+      val errorLogger = ProcessLogger(line => println(line), line => { errors.write(line + "\n"); println(line) })
+
+      val process = cmd run (errorLogger, false)
+
+      val f = future {
+        process.exitValue()
+      }
+      awaitAll(600000, f)
+      process.destroy()
+    }
   })
 
   def classPath = {
@@ -93,7 +105,10 @@ object EvaluateAll extends App {
     "bin:lib/*.jar:lib/org.junit.jar:../wala/com.ibm.wala.util/bin:../wala/com.ibm.wala.shrike/bin:../wala/com.ibm.wala.core/bin:../lib/parallelArray.mock/bin" +
       ":" + eclipseRuntime +
       ":" + eclipseEquinox +
-      ":" + eclipseOsgi
+      ":" + eclipseOsgi +
+      ":lib/sjson_2.9.1-0.17.jar" +
+      ":lib/dispatch-json_2.9.1-0.8.8.jar"
+
   }
 }
 
