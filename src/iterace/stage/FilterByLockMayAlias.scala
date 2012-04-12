@@ -28,5 +28,3 @@ class FilterByLockMayAlias(pa: RacePointerAnalysis, lockMapping: LockSet) extend
     }) filter { _.size > 0})
   }
 }
-
-object FilterByLockMayAlias extends IteRaceOption

@@ -2,12 +2,14 @@ package iterace.stage
 
 import org.junit.Test
 import iterace.util.log
+import iterace.IteRaceOption._
 import iterace.IteRaceOption
+import iterace.IteRaceOptions
 
 
 class TestFilterByMayAlias extends RaceAbstractTest("Lparticles/ParticleWithLocks") {
   
-  override val options = Set[IteRaceOption](FilterByLockMayAlias)
+  override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.DeepSynchronized)
 
   analysisScope.addBinaryDependency("particles");
   

@@ -7,10 +7,13 @@ import iterace.datastructure.ProgramRaceSet
 import org.junit.Assert._
 import iterace.IteRace
 import iterace.IteRaceOption
+import iterace.util.debug
 
 abstract class RaceAbstractTest(startClass: String) extends IteRaceTest {
   
-  val options: Set[IteRaceOption] = Set()
+  debug.activate
+  
+  val options: Set[IteRaceOption] = Set(IteRaceOption.TwoThreadModel)
   
   def analyze(method: String) = super.analyze(startClass, method, options)
   

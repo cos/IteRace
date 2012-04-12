@@ -45,9 +45,8 @@ class RelativeMustAlias(pa: PointerAnalysis) {
     // a wrapper over the ma relation, used for caching computation and
     // cycle elimination
     def ma(q1: PP, q2: PP): Boolean = {
-      println("ma( " + q1.prettyPrint + " " + q2.prettyPrint + " ) ")
       if (lma(q1, q2)) {
-        println("Seen before")
+        //("Seen before")
         return true
       }
 
@@ -56,7 +55,7 @@ class RelativeMustAlias(pa: PointerAnalysis) {
       // when we cannot prove (q1,q2) we try (q2, q1)
       // so, we know we cannot prove something when both permutations failed
       if (lnma(q1, q2)) {
-        println("Proved false before")
+        //("Proved false before")
         return false
       }
       knownNMA.add((q1, q2))
@@ -74,7 +73,7 @@ class RelativeMustAlias(pa: PointerAnalysis) {
     def innerMA(q_a: PP, q_b: PP) = {
       // By same initial param
       var result = maBySameInitialParam(q_a, q_b) // same initial param
-      if (result) println("By same initial param")
+      //if (result) ("By same initial param")
 
       result ||= ((q_a.getDef, q_b.getDef) match {
         // Intraprocedural
@@ -87,7 +86,7 @@ class RelativeMustAlias(pa: PointerAnalysis) {
             (for(o <- p_a.pt & p_b.pt;
             		p <- localPtTo(o);
             		i <- p.getPuts() if i.getDeclaredField() == i1.getDeclaredField()) yield {
-              println(">")
+              //(">")
               ma(q_a, PP(p.n,i.getVal()))
             }).fold(true)(_ && _)
         }

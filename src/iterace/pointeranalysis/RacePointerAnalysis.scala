@@ -12,31 +12,32 @@ import iterace.util.ArrayContents
 import com.ibm.wala.util.collections.Filter
 import iterace.datastructure.LockSet
 import iterace.datastructure.Lock
+import iterace.IteRaceOption
 
-class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder)
-  extends PointerAnalysis(startClass, startMethod, analysisScope) {
+class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder, options: Set[IteRaceOption])
+  extends PointerAnalysis(startClass, startMethod, analysisScope, options) {
 
   lazy val allInstructions = {
     callGraph.map(n => n.getIR().iterateAllInstructions().map(i => (n, i))).flatten.toSet
   }
 
-  def statementsReachableFrom(n: N, filter: N => Boolean = null): Set[S[I]] = {
+  // we return an interable but we know it is actually a set
+  def statementsReachableFrom(n: N, filter: N => Boolean = null): Iterable[S[I]] = {
     val reachableNs = if (filter == null)
       DFS.getReachableNodes(callGraph, Set(n))
     else
       DFS.getReachableNodes(callGraph, Set(n), new Filter[N] { def accepts(n: N): Boolean = filter(n) })
 
-    (reachableNs map (nn => nn.instructions.map(i => S(nn, i)).toSet)).toSet.flatten
+    (reachableNs map (nn => nn.instructions.map(i => S(nn, i)).toSet)).flatten
   }
 
   // I think it is very inefficient 
   lazy val loops: immutable.Set[Loop] = callGraph collect
-      { case n: N if n.getContext().get(Loop) != null => n.getContext().get(Loop).asInstanceOf[Loop] } toSet
-  
+    { case n: N if n.getContext().get(Loop) != null => n.getContext().get(Loop).asInstanceOf[Loop] } toSet
 
-  lazy val parLoops = 
+  lazy val parLoops =
     loops filter { !_.n.m.toString().contains("Seq") }
-  
+
   lazy val seqLoops = loops filter { _.n.m.toString().contains("Seq") }
 
   implicit def loopWithIterations(l: Loop) = new {
@@ -47,16 +48,19 @@ class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope
       }).get
 
     lazy val betaIterationN =
-      callGraph.getSuccNodes(l.n).find(n => n.c(Iteration) match {
-        case BetaIteration => true
-        case _ => false
-      }).get
+      if (options.contains(IteRaceOption.TwoThreadModel))
+        callGraph.getSuccNodes(l.n).find(n => n.c(Iteration) match {
+          case BetaIteration => true
+          case _ => false
+        }).get
+      else
+      	alphaIterationN
   }
 
   implicit def iWithField(i: I) = new {
     lazy val f: Option[F] = i match {
       case i: ArrayReferenceI => Some(ArrayContents.v)
-      case i: AccessI => Some(cha.resolveField(i.getDeclaredField()))
+      case i: AccessI => Option(cha.resolveField(i.getDeclaredField()))
       case _ => None
     }
   }

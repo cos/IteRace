@@ -20,13 +20,13 @@ import iterace.IteRaceOption
 class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   import pa._
 
-  def groupByObject(accesses: Set[S[I]]): Map[O, Set[S[I]]] = {
+  def groupByObject(accesses: Set[S[I]]): immutable.Map[O, immutable.Set[S[I]]] = {
     val bigSet = accesses.flatMap[(O, S[I]), Set[(O, S[I])]](s =>
       s.i match {
         case i: AccessI if i.isStatic => Set((new StaticClassObject(i.f.get.getDeclaringClass()), s))
         case i: InvokeI if i.isStatic => Set((new StaticClassObject(cha.resolveMethod(i.getDeclaredTarget()).getDeclaringClass()), s))
         case _ => s.refP.get.pt map { (_, s) }
-      }) groupBy { _._1 } map { case (o, set) => (o, set map { _._2 }) }
+      }) groupBy { _._1 } mapValues { _ map { _._2 } toSet }
       
     // filter out second iteration - look for similar functionality in PotentialRaces if decided 
     // to modify something here
@@ -100,7 +100,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   }
 }
 
-object BubbleUp extends StageConstructor with IteRaceOption {
+object BubbleUp extends StageConstructor {
   def apply(pa: RacePointerAnalysis) = {
     new BubbleUp(pa)
   }

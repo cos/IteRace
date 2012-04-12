@@ -19,12 +19,6 @@ class EvaluateOldCoref extends Evaluate("LLBJ2/nlp/coref/ClusterMerger") {
 
   analysisScope.addBinaryDependency("../evaluation/coref/bin");
   analysisScope.addJarDependency("../evaluation/coref/java_cup_runtime.jar");
-  
-  log.activate
-  debug.activate
-  debug.activateDetailedContexts
 
-  override def result(iteRace: IteRace) = iteRace.races
-
-  @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
+  expectSomeRaces
 }

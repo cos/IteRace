@@ -22,12 +22,12 @@ class TestRelativeMustAlias extends FunSuite with BeforeAndAfter {
   var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
   analysisScope.addBinaryDependency("kingdom");
 
-  def analyze(method: String) = new PointerAnalysis(startClass, method, analysisScope)
+  def analyze(method: String) = new PointerAnalysis(startClass, method, analysisScope, Set())
   val pa = analyze("live()V")
 
   def testMA(expected: Boolean)(message: String, relativeTo: String, p1: (String, String), p2: (String, String)): Unit = {
     test(message) {
-      println("TEST:" + message)
+//      pritln("TEST:" + message)
       val ma = new RelativeMustAliasLevels(pa)
       val n = pa.findNode(relativeTo).get
       val n1 = pa.findNode(p1._1).get

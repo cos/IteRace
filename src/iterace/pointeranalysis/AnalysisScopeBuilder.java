@@ -1,5 +1,7 @@
 package iterace.pointeranalysis;
 
+import iterace.IteRace;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,12 +9,17 @@ import java.util.List;
 import java.util.jar.JarFile;
 
 import com.ibm.wala.classLoader.BinaryDirectoryTreeModule;
+import com.ibm.wala.classLoader.JarFileModule;
 import com.ibm.wala.classLoader.Module;
 import com.ibm.wala.ipa.callgraph.AnalysisScope;
 import com.ibm.wala.util.config.FileOfClasses;
 import com.ibm.wala.util.io.FileProvider;
+import iterace.util.debug;
 
 public class AnalysisScopeBuilder {
+	
+  public static Boolean UNDER_ECLIPSE = true;
+	
 	public List<String> binaryDependencies = new ArrayList<String>();
 	public List<String> jarDependencies = new ArrayList<String>();;
 	public List<String> extensionBinaryDependencies = new ArrayList<String>();;
@@ -21,12 +28,23 @@ public class AnalysisScopeBuilder {
 	public AnalysisScopeBuilder(String jreLibPath) throws IllegalArgumentException, IOException {
 		scope.addToScope(scope.getLoader(AnalysisScope.PRIMORDIAL), new JarFile(jreLibPath));
 	}
+	
+	public File getFile(String path) throws IOException {
+		if(UNDER_ECLIPSE) 
+			return FileProvider.getFile(path, getLoader());
+		else 
+			return new File(path);
+	}
 
 	public void addBinaryDependency(String directory) throws IOException {
-//		System.out.println("Binary: "+directory);
-		File sd = FileProvider.getFile(directory, getLoader());
+		debug("Binary: "+directory);
+	  File sd = getFile(directory);
 		assert sd.isDirectory();
 		scope.addToScope(scope.getLoader(AnalysisScope.APPLICATION), new BinaryDirectoryTreeModule(sd));
+	}
+
+	private void debug(String string) {
+		debug.display(string);
 	}
 
 	private ClassLoader getLoader() {
@@ -34,15 +52,15 @@ public class AnalysisScopeBuilder {
 	}
 	
 	public void addExtensionBinaryDependency(String directory) throws IOException {
-//		System.out.println("Binary extension: "+directory);
-		File sd = FileProvider.getFile(directory, getLoader());
+		debug("Binary extension: "+directory);
+		File sd = getFile(directory);
 		assert sd.isDirectory();
 		scope.addToScope(scope.getLoader(AnalysisScope.EXTENSION), new BinaryDirectoryTreeModule(sd));
 	}
 	
 	public void addJarFolderDependency(String path) throws IOException {
-//		System.out.println("Jar folder: "+path);
-	  File dir = new File(path);
+    debug("Jar folder: "+path);
+	  File dir = getFile(path);
 	  String delim;
 	  
 	  if (path.endsWith("/"))
@@ -69,8 +87,13 @@ public class AnalysisScopeBuilder {
 	}
 
 	public void addJarDependency(String file) throws IOException {
-//		System.out.println("Jar: "+file);
-		Module M = FileProvider.getJarFileModule(file, getLoader());
+		debug("Jar: "+file);
+		Module M;
+		if(UNDER_ECLIPSE)
+			M = FileProvider.getJarFileModule(file, getLoader());
+		else
+			M= new JarFileModule(new JarFile(file, true));
+		
 		scope.addToScope(scope.getLoader(AnalysisScope.APPLICATION), M);
 	}
 	

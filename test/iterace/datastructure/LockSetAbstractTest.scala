@@ -7,6 +7,8 @@ import scala.collection._
 import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.pointeranalysis.RacePointerAnalysis
 import iterace.JavaTest
+import iterace.IteRaceOptions
+import iterace.IteRaceOption
 
 abstract class LockSetAbstractTest(dependencies: List[String], startClass: String) extends JavaTest {
   def analyze(method: String) = {
@@ -14,7 +16,7 @@ abstract class LockSetAbstractTest(dependencies: List[String], startClass: Strin
     analysisScope.setExclusionsFile("walaExclusions.txt");
     for (d <- dependencies) { analysisScope.addBinaryDependency(d); }
 
-    val pa = new RacePointerAnalysis(startClass, method, analysisScope)
+    val pa = new RacePointerAnalysis(startClass, method, analysisScope, IteRaceOptions(IteRaceOption.TwoThreadModel))
     (new LockSet(pa, new MayAliasLockConstructor(pa)), pa)
   }
 

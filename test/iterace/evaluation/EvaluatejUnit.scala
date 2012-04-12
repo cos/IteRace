@@ -16,10 +16,8 @@ import org.junit.Test
 
 
 class EvaluatejUnit extends Evaluate("Ljunit/tests/ParallelAllTests") {
-
-  log.activate
-
+  
   analysisScope.addBinaryDependency("../evaluation/junit/bin");
 
-  @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
+  expectNoRaces
 }

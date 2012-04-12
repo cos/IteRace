@@ -15,15 +15,12 @@ import iterace.util.log
 import org.junit.Test
 
 
-class EvaluateMonteCarlo extends Evaluate("Lmontecarlo/parallel/JGFMonteCarloBench") {
+class EvaluateMonteCarlo extends 
+	Evaluate("Lmontecarlo/parallel/JGFMonteCarloBench", "JGFrun(I)V") {
 
   analysisScope.addBinaryDependency("../evaluation/montecarlo/bin");
 
-  override def result(iteRace: IteRace) = iteRace.races
-
-  log.activate
-
-  @Test def bla = expect("JGFrun(I)V","""
+  expect("""
 Loop: montecarlo.parallel.AppDemo.runParallel(AppDemo.java:178)
 
 Static: montecarlo.parallel.Universal

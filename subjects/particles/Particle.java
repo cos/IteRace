@@ -1,12 +1,12 @@
 package particles;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import extra166y.Ops;
 import extra166y.Ops.Generator;
 import extra166y.Ops.Procedure;
 import extra166y.ParallelArray;
+
 
 public class Particle {
 	public double x, y, m;
@@ -27,8 +27,8 @@ public class Particle {
 			}
 		});
 	}
-
-	public void noRaceOnParameter() {
+	//doesn't make sense as b is null - left if here so I don't mess up other tests
+	public void blabla() {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
 
@@ -44,7 +44,7 @@ public class Particle {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
 
-		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
+		particles.replaceWithGeneratedValueSeq(new Ops.Generator<Particle>() {
 			@Override
 			public Particle op() {
 				return new Particle();
@@ -80,7 +80,7 @@ public class Particle {
 
 		final Particle shared = new Particle();
 
-		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
+		particles.replaceWithGeneratedValueSeq(new Ops.Generator<Particle>() {
 			@Override
 			public Particle op() {
 				Particle particle = new Particle();

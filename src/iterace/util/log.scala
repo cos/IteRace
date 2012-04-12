@@ -3,44 +3,27 @@ package iterace.util
 import scala.collection._
 
 object log {
-  var activeConsole = false
-  var activeTimer = false
-  
-  def activate = {
-    activeConsole = true
-    activeTimer = true
-  }
-  
-  val timers:mutable.LinkedHashMap[String, Long] = mutable.LinkedHashMap()
 
-  def startTimer(name: String) = {
-    if(activeConsole)
-      println("START: "+name)
-    if(activeTimer) {
-    	timers(name) = System.currentTimeMillis();
-    }
+  val timers: mutable.LinkedHashMap[String, Long] = mutable.LinkedHashMap()
+
+  def startTimer(name: String) {
+    debug("START: " + name)
+    timers(name) = System.currentTimeMillis();
   }
-  
-  def endTimer:Unit = if(activeTimer) endTimer(timers.head._1)
-  
-  def endTimer(name:String):Unit = {
-    if(activeConsole)
-      print("DONE: "+name);
-    
-    if(activeTimer) {
-      val endTime = System.currentTimeMillis - timers(name)
-      if(activeConsole)
-      	println(" in "+endTime / 1000 +"."+endTime % 1000+"s")
-    	timers.remove(name)
-    }
-    else
-      if(activeConsole)
-      	println()
+
+  def endTimer: Unit = endTimer(timers.head._1)
+
+  def endTimer(name: String): Unit = {
+    val runtime = System.currentTimeMillis - timers(name)
+    debug("DONE: " + name + " in " + runtime / 1000 + "." + runtime % 1000 + "s")
+    timers.remove(name)
+    entries += (name+"-time" -> runtime.toString())
   }
-  
-  def apply(note: Any) = {
-    if(activeConsole)
-      println(note)
+
+  val entries: mutable.Map[String, String] = mutable.Map()
+
+  def apply(entry: String, value:Any) = {
+     debug(entry +": "+value)
+     entries += (entry -> value.toString)
   }
- 
 }

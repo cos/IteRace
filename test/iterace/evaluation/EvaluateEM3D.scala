@@ -17,9 +17,7 @@ import org.junit.Test
 
 class EvaluateEM3D extends Evaluate("Lem3d/parallelArray/Em3d") {
 
-  log.activate
-
   analysisScope.addBinaryDependency("../evaluation/em3d/bin");
 
-  @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
+  expectNoRaces
 }

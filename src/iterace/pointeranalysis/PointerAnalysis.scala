@@ -14,8 +14,13 @@ import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint
 import com.ibm.wala.ipa.callgraph.AnalysisOptions
 import com.ibm.wala.ipa.callgraph.AnalysisCache
 import com.ibm.wala.ipa.cha.ClassHierarchy
+import iterace.IteRaceOption
 
-class PointerAnalysis(entryClass: String, entryMethod: String, analysisScopeBuilder: AnalysisScopeBuilder) {
+class PointerAnalysis(
+    entryClass: String, 
+    entryMethod: String, 
+    analysisScopeBuilder: AnalysisScopeBuilder,
+    iteRaceOptions: Set[IteRaceOption]) {
   
   /*
    * Below is the analysis initialization
@@ -24,7 +29,7 @@ class PointerAnalysis(entryClass: String, entryMethod: String, analysisScopeBuil
   val cha = ClassHierarchy.make(scope)
   private val options: AnalysisOptions = new AnalysisOptions(scope, entrypoints.asJava)
   val analysisCache = new AnalysisCache()
-  private val builder = new CallGraphBuilder(options, analysisCache, cha, scope)
+  private val builder = new CallGraphBuilder(options, analysisCache, cha, scope, iteRaceOptions.toSet)
   val callGraph = builder.makeCallGraph(options);
   private val pointerAnalysis = builder.getPointerAnalysis();
   val heap = pointerAnalysis.getHeapGraph()

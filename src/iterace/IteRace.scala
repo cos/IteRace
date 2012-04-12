@@ -19,52 +19,55 @@ import iterace.stage._
 import iterace.pointeranalysis._
 import iterace.datastructure.LockSet
 import iterace.datastructure.MayAliasLockConstructor
+import iterace.IteRaceOption._
+import iterace.util.debug
 
 class IteRace private (
   startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
   options: Set[IteRaceOption]) {
 
-  log.startTimer("pointer analysis");
-  val pa = new RacePointerAnalysis(startClass, startMethod, analysisScope)
+  debug("Options: "+options.mkString(", "))
+  
+  log.startTimer("pointer-analysis");
+  val pa = new RacePointerAnalysis(startClass, startMethod, analysisScope, options)
   import pa._
   log.endTimer
 
-  log.startTimer("possible races")
+  log.startTimer("potential-races")
   private val potentialRaces = new PotentialRaces(pa)()
   log.endTimer
+  log("potential-races",potentialRaces.size)
+//  potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
 
-  log(potentialRaces.prettyPrint())
-  log("potential races : " + potentialRaces.size)
-  
   private var currentRaces = potentialRaces
 
   val filterByLockMayAlias = new FilterByLockMayAlias(pa, new LockSet(pa, new MayAliasLockConstructor(pa)))
+
+  if (options(DeepSynchronized)) {
+    log.startTimer("deep-locked")
+    currentRaces = filterByLockMayAlias(currentRaces)
+    log.endTimer
+    log("deep-locked",currentRaces.size)
+  }
+
+  if (options(IteRaceOption.BubbleUp)) {
+    log.startTimer("bubble-up")
+    currentRaces = stage.BubbleUp(pa)(currentRaces)
+    log.endTimer
+    log("bubble-up",currentRaces.size)
+  }
+
+  if (options(AppLevelSynchronized)) {
+    log.startTimer("app-locked")
+    currentRaces = filterByLockMayAlias(currentRaces)
+    log.endTimer
+    log("app-locked", currentRaces.size)
+  }
   
-  if (options(FilterByLockMayAlias)) {
-    log.startTimer("lock may alias")
-    currentRaces = filterByLockMayAlias(currentRaces)
-    log.endTimer
-    log("lock may alias resulted in : " + currentRaces.size + " races")
-  }
-
-  if (options(BubbleUp)) {
-    log.startTimer("bubble up")
-    currentRaces = BubbleUp(pa)(currentRaces)
-    log.endTimer
-    log("bubble up resulted in : " + currentRaces.size + " races")
-  }
-
-  if (options(FilterByLockMayAlias)) {
-    log.startTimer("lock may alias")
-    currentRaces = filterByLockMayAlias(currentRaces)
-    log.endTimer
-    log("lock may alias resulted in : " + currentRaces.size + " races")
-  }
-
   val races = currentRaces
 
-  log(" \n\n ******************************************************** \n\n  ")
-  log(races.prettyPrint)
+  debug(" \n\n ******************************************************** \n\n  ")
+  //  log(races.prettyPrint)
 }
 
 object IteRace {
@@ -72,11 +75,9 @@ object IteRace {
     startClass: String,
     startMethod: String,
     analysisScope: AnalysisScopeBuilder,
-    options: Set[IteRaceOption] = Set(FilterByLockMayAlias, BubbleUp)) =
+    options: Set[IteRaceOption] = Set(DeepSynchronized, IteRaceOption.BubbleUp)) =
     new IteRace(startClass, startMethod, analysisScope, options)
 }
-
-trait IteRaceOption
 
 class AnalysisException(m: String) extends Throwable {
 

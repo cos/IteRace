@@ -12,14 +12,16 @@ import org.junit.Rule
 import iterace.IteRace
 import iterace.util.log
 import org.junit.Test
-import iterace.IteRaceOption
+import iterace.IteRaceOptions
+import iterace.stage.FilterByLockMayAlias
+import iterace.util.debug
 
 
 class EvaluateBH extends Evaluate("LbarnesHut/ParallelBarneshut") {
-  
-  log.activate
 
+  debug.activate
+  
   analysisScope.addBinaryDependency("../evaluation/barnesHut/bin");
 
-  @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
+  expectNoRaces
 }

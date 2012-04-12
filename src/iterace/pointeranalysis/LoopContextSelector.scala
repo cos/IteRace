@@ -24,8 +24,9 @@ import iterace.datastructure.threadSafeOnClosure
 import iterace.datastructure.generatesSafeObjects
 import iterace.util.WALAConversions._
 import iterace.datastructure.movesObjectsAround
+import iterace.IteRaceOption
 
-class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
+class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
   // this is the context for all the nodes in the loop iterations
   private class LoopContext(val l: CGNode, val parallel: Boolean, val alphaIteration: Boolean) extends Context {
     val loop = Loop(l, parallel)
@@ -93,7 +94,11 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
         val invoke = invocations.head
         val defAndUses = (invoke.uses ++ Iterable(invoke.getDef())).toSet
 
-        val alphaIteration = !(defAndUses & e0Vals).isEmpty
+        val alphaIteration =
+          if (options.contains(IteRaceOption.TwoThreadModel))
+            !(defAndUses & e0Vals).isEmpty
+          else
+            true
 
         val sequential = caller.getMethod().getSelector().toString().matches(".*Seq.*")
 
@@ -105,13 +110,14 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
       // we're inside the loop (the objectKey test is to avoid recursion)
       case c: Context if c.get(Loop) != null => {
         if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
-            return UninterestingContext
-        
-        val addThreadSafe =
-          if (c.get(ThreadSafeOnClosure) == null && threadSafeOnClosure(caller, callee, actualParameters))
-            new DelegatingContext(ThreadSafeContext, c)
-          else
-            c
+          return UninterestingContext
+
+        var newC: Context = c
+
+        newC = if (!c.is(ThreadSafeOnClosure) && threadSafeOnClosure(caller, callee, actualParameters))
+          ThreadSafeContext + c
+        else
+          c
 
         // we are not adding additional context when we know no races can happen from here on
         // and we also know all generated classes from here on are thread-safe
@@ -120,21 +126,24 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
         //    
         // I'll make it more extreme... and simply remove all context from now on Uninteresting
 
-        val addInteresting =
-          if (addThreadSafe.get(Interesting) == null && (generatesSafeObjects(callee) || movesObjectsAround(callee)))
-            new DelegatingContext(InterestingContext, addThreadSafe)
-          else
-            addThreadSafe
+        newC = if (!newC.is(Interesting) && (generatesSafeObjects(callee) || movesObjectsAround(callee)))
+          InterestingContext + newC
+        else
+          newC
 
-        if (addInteresting.get(ThreadSafeOnClosure) != null && addInteresting.get(Interesting) == null)
+        if (newC.is(ThreadSafeOnClosure) && !newC.is(Interesting))
           return UninterestingContext
 
-        val addMembrane =
-          if (c.get(ObjectKey) == null && inApplicationScope(caller) && inPrimordialScope(callee) && actualParameters.size > 1)
-            new DelegatingContext(ObjectContext(actualParameters(0)), addInteresting)
-          else
-            addInteresting
-        addMembrane
+        newC = if (!c.is(AppObject) &&
+          (inApplicationScope(caller) && inPrimordialScope(callee)) && // membrane between app and lib
+          (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
+          actualParameters.size > 1)
+
+          ObjectContext(actualParameters(0)) + newC
+        else
+          newC
+
+        newC
       }
 
       // we're outside the loop
@@ -144,7 +153,7 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
           case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
           case _ =>
             if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
-            	return UninterestingContext
+              return UninterestingContext
             else c
         }
     }
@@ -157,10 +166,10 @@ class LoopContextSelector(options: Set[String], instankeKeyFactory: ZeroXInstanc
 }
 
 case class ObjectItem(o: O) extends ContextItem
-case object ObjectKey extends ContextKey
+case object AppObject extends ContextKey
 case class ObjectContext(o: O) extends Context {
   def get(key: ContextKey): ContextItem = key match {
-    case ObjectKey => ObjectItem(o)
+    case AppObject => ObjectItem(o)
     case _ => null
   }
 }

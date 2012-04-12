@@ -5,10 +5,8 @@ import iterace.util.log
 import iterace.util.debug
 
 class TestKnownThreadSafeWild extends RaceAbstractTest("Lparticles/ParticleUsingLibrary") {
-  
-  log.activate
+ 
   debug.activate
-  debug.activateDetailedContexts
 
   analysisScope.addBinaryDependency("particles");
 

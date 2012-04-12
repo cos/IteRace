@@ -6,6 +6,7 @@ import scala.reflect.BeanProperty
 import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.util.log
 import iterace.stage.StageConstructor
+import iterace.util.debug
 
 abstract class IteRaceTest extends JavaTest {
   val analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar")
@@ -13,7 +14,7 @@ abstract class IteRaceTest extends JavaTest {
   analysisScope.addBinaryDependency("../lib/parallelArray.mock")
   
   def analyze(entryClass: String, entryMethod: String, options: Set[IteRaceOption]) = {
-    log("test: " + entryMethod)
+    debug("test: " + entryMethod)
     IteRace(entryClass, entryMethod, analysisScope, options)
   }
 }

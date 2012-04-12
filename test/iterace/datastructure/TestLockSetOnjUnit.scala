@@ -10,7 +10,5 @@ LockSetAbstractTest(
     List("../evaluation/junit/bin", "../lib/parallelArray.mock"),
     "Ljunit/tests/ParallelAllTests") {
   
-  log.activate
-  
   @Test def allLocks = assertAllLocks("{ L: junit.framework.TestResult: junit.textui.TestRunner.createTestResult(TestRunner.java:105)-outside }","main([Ljava/lang/String;)V")
 }

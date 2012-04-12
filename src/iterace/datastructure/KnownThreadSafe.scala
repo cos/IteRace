@@ -28,6 +28,7 @@ object threadSafeOnClosure extends ContextKey {
     "Ljava/io/FileDescriptor",
     "Ljava/io/FileInputStream",
     "Ljava/io/FilePermission",
+    "Ljava/io/ObjectStreamClass",
 
     "Ljava/io/FilePermission",
 
@@ -48,7 +49,13 @@ object threadSafeOnClosure extends ContextKey {
     "Ljava/lang/Class$EnclosingMethodInfo",
     "Ljava/lang/Method",
     "Ljava/lang/ClassLoader",
+    
+    // lock classes
+    "Ljava/util/concurrent/locks/ReentrantLock",
+    "Ljava/util/concurrent/ConcurrentHashMap$Segment",
+    "Ljava/util/concurrent/locks/AbstractQueuedSynchronizer",
 
+    // date-time classes
     "Ljava/util/Date",
     "Ljava/util/Locale",
     "Ljava/util/Timezone",
@@ -57,12 +64,18 @@ object threadSafeOnClosure extends ContextKey {
 
     "Ljava/util/Properties",
 
+    // math
     "Ljava/lang/Long",
     "Ljava/lang/Integer",
     "Ljava/lang/Character",
     "Ljava/math/BigDecimal",
     "Ljava/math/BigInteger",
+    "Ljava/lang/Boolean",
 
+    // beans
+    "Ljava/beans/PropertyDescriptor",
+    "Ljava/beans/IndexedPropertyDescriptor",
+    
     // regex Pattern class - it is thread-safe
     "Ljava/util/regex/Pattern",
 
@@ -71,6 +84,10 @@ object threadSafeOnClosure extends ContextKey {
     // kind of coarse-grained
     "Ljava/lang/System",
 
+     // soft and weak reference
+    "Ljava/lang/ref/SoftReference",
+    "Ljava/lang/ref/WeakReference",
+    
     // for testing
     "Lparticles/ParticleWithKnownThreadSafe$ThreadSafeOnClosure",
 
@@ -129,8 +146,9 @@ object generatesSafeObjects {
   val classes = immutable.HashSet[String](
     // kind of coarse-grained
     "Ljava/lang/System",
-
     "Ljava/security/Security",
+    
+    "Ljava/io/ObjectStreamClass", // not true
 
     // for testing
     "Lparticles/ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator")
@@ -145,7 +163,19 @@ object generatesSafeObjects {
 object movesObjectsAround {
   val classes = immutable.HashSet[String](
     "Ljava/util/regex/Pattern",
-    "Ljava/util/Vector")
+      // collections
+    "Ljava/util/Collections$SynchronizedCollection",
+    "Ljava/util/Vector",
+    
+    "Ljava/io/ObjectStreamClass",
+    
+    // data structures used by WEKA
+//    "Lweka/core/SparseInstance",
+    
+    // soft and weak reference
+    "Ljava/lang/ref/SoftReference",
+    "Ljava/lang/ref/WeakReference"
+  )
 
   def apply(c: C): Boolean = classes.contains(c.getName.toString)
 
@@ -168,15 +198,16 @@ object doesntMoveObjects {
 object threadSafe {
   val classes = Seq[String](
 
-    "Ljava/util/Vector",
-
-    // lock classes
-    "Ljava/util/concurrent/locks/ReentrantLock",
-
     // for testing
     "Lparticles/ParticleWithKnownThreadSafe$ThreadSafe",
 
-    "somethig at the end")
+    // collections
+    "Ljava/util/Collections$SynchronizedCollection", // not true
+    "Ljava/util/Vector", // not true
+    "Ljava/util/concurrent/ConcurrentHashMap",
+    
+    "somethig at the end"
+  )
 
   /**
    * is the node,i.e., invocation, thread-safe?

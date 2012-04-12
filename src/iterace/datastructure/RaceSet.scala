@@ -1,7 +1,7 @@
 package iterace.datastructure
 
 import iterace.util.WALAConversions._
-import scala.collection._
+import scala.collection.immutable._
 import scala.collection.JavaConverters._
 import iterace.util.S
 import iterace.util._
@@ -12,7 +12,7 @@ import scala.collection.immutable.TreeSet
 import iterace.pointeranalysis.Loop
 import iterace.pointeranalysis.LoopCallSiteContext
 
-abstract sealed class RaceSet extends immutable.Set[Race] with PrettyPrintable {
+abstract sealed class RaceSet extends Set[Race] with PrettyPrintable {
   type This <: RaceSet
 
   override def seq = this
@@ -76,7 +76,7 @@ abstract sealed class LowLevelRaceSet(val l: Loop, val o: O, val alphaAccesses: 
 }
 
 final class FieldRaceSet(l: Loop, o: O, val f: F, alphaAccesses: Set[S[I]], betaAccesses: Set[S[I]])
-  extends LowLevelRaceSet(l, o, alphaAccesses, betaAccesses) with SetLike[Race, FieldRaceSet] {
+  extends LowLevelRaceSet(l, o, alphaAccesses, betaAccesses) with collection.SetLike[Race, FieldRaceSet] {
 
   type This = FieldRaceSet
 
@@ -97,7 +97,7 @@ final class FieldRaceSet(l: Loop, o: O, val f: F, alphaAccesses: Set[S[I]], beta
 }
 
 final class ShallowRaceSet(l: Loop, o: O, alphaAccesses: Set[S[I]], betaAccesses: Set[S[I]])
-  extends LowLevelRaceSet(l, o, alphaAccesses, betaAccesses) with SetLike[Race, ShallowRaceSet] {
+  extends LowLevelRaceSet(l, o, alphaAccesses, betaAccesses) with collection.SetLike[Race, ShallowRaceSet] {
 
   type This = ShallowRaceSet
 
@@ -155,7 +155,7 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
 }
 
 final class ObjectRaceSet(val l: Loop, val o: O, children: Set[LowLevelRaceSet])
-  extends CompositeRaceSet(children) with SetLike[Race, ObjectRaceSet] {
+  extends CompositeRaceSet(children) with collection.SetLike[Race, ObjectRaceSet] {
   type This = ObjectRaceSet
 
   override def getRaceSet(children: Set[LowLevelRaceSet]): This = new ObjectRaceSet(l, o, children)
@@ -176,7 +176,7 @@ final class ObjectRaceSet(val l: Loop, val o: O, children: Set[LowLevelRaceSet])
 }
 
 final class LoopRaceSet(val l: Loop, children: Set[ObjectRaceSet])
-  extends CompositeRaceSet(children) with SetLike[Race, LoopRaceSet] {
+  extends CompositeRaceSet(children) with collection.SetLike[Race, LoopRaceSet] {
   type This = LoopRaceSet
 
   override def getRaceSet(children: Set[ObjectRaceSet]): This = new LoopRaceSet(l, children)
@@ -196,7 +196,7 @@ final class LoopRaceSet(val l: Loop, children: Set[ObjectRaceSet])
 }
 
 final class ProgramRaceSet(children: Set[LoopRaceSet])
-  extends CompositeRaceSet(children) with SetLike[Race, ProgramRaceSet] {
+  extends CompositeRaceSet(children) with collection.SetLike[Race, ProgramRaceSet] {
   type This = ProgramRaceSet
 
   override def getRaceSet(children: Set[LoopRaceSet]): This = new ProgramRaceSet(children)

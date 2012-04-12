@@ -30,6 +30,8 @@ import com.ibm.wala.types.TypeReference
 import com.ibm.wala.classLoader.IClassLoader
 import com.ibm.wala.types.ClassLoaderReference
 import iterace.pointeranalysis.Loop
+import com.ibm.wala.ipa.callgraph.ContextKey
+import com.ibm.wala.ipa.callgraph.DelegatingContext
 
 class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConversionsForP {
   trait Named {
@@ -178,6 +180,14 @@ class WALAConversions extends TypeAliases with WALAConversionsForN with WALAConv
 
   implicit def statementWithLoop(s: S[_]) = new {
     lazy val l: Option[Loop] = getLoopFor(s.n)
+  }
+  
+  implicit def contextWithIs(c: Context) = new {
+    def is(k:ContextKey) = c.get(k) != null
+  }
+  
+  implicit def contextWithAdd(c: Context) = new {
+    def +(addedC:Context):Context = new DelegatingContext(c, addedC)
   }
 
 }

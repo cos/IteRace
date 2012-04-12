@@ -6,7 +6,6 @@ import iterace.util.debug
 
 class TestKnownThreadSafe extends RaceAbstractTest("Lparticles/ParticleWithKnownThreadSafe") {
   
-  log.activate
   debug.activate
 
   analysisScope.addBinaryDependency("particles");

@@ -22,7 +22,7 @@ class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers
       var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
       analysisScope.addBinaryDependency("kingdom");
 
-      val pa = new RacePointerAnalysis(startClass, method + "()V", analysisScope)
+      val pa = new RacePointerAnalysis(startClass, method + "()V", analysisScope, Set())
       val n = pa.findNode(method).get
       pa.statementsReachableFrom(n)
     }

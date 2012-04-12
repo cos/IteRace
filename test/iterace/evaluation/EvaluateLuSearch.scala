@@ -20,7 +20,5 @@ class EvaluateLuSearch extends Evaluate("Lorg/dacapo/lusearch/Search") {
   analysisScope.addBinaryDependency("../evaluation/lusearch/bin");
 	analysisScope.addBinaryDependency("../lib/parallelArray.mock");
 
-  log.activate
-
-  @Test def t = expectNoRaces("main([Ljava/lang/String;)V")
+  expectSomeRaces
 }

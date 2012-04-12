@@ -12,8 +12,6 @@ class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
 
   @Test def vacuouslyNoRace = expectNoRaces
 
-  @Test def noRaceOnParameter = expectNoRaces
-
   /**
    * Is there a problem when the elements are initialized in another forall?
    */
