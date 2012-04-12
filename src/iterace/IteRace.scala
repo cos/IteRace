@@ -26,19 +26,17 @@ class IteRace private (
   startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
   options: Set[IteRaceOption]) {
 
-  debug("Options: "+options.mkString(", "))
-  
+  debug("Options: " + options.mkString(", "))
+
   log.startTimer("pointer-analysis");
   val pa = new RacePointerAnalysis(startClass, startMethod, analysisScope, options)
   import pa._
   log.endTimer
-
   log.startTimer("potential-races")
   private val potentialRaces = new PotentialRaces(pa)()
   log.endTimer
-  log("potential-races",potentialRaces.size)
+  log("potential-races", potentialRaces.size)
   potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
-
   private var currentRaces = potentialRaces
 
   val filterByLockMayAlias = new FilterByLockMayAlias(pa, new LockSet(pa, new MayAliasLockConstructor(pa)))
@@ -47,14 +45,14 @@ class IteRace private (
     log.startTimer("deep-locked")
     currentRaces = filterByLockMayAlias(currentRaces)
     log.endTimer
-    log("deep-locked",currentRaces.size)
+    log("deep-locked", currentRaces.size)
   }
 
   if (options(IteRaceOption.BubbleUp)) {
     log.startTimer("bubble-up")
     currentRaces = stage.BubbleUp(pa)(currentRaces)
     log.endTimer
-    log("bubble-up",currentRaces.size)
+    log("bubble-up", currentRaces.size)
   }
 
   if (options(AppLevelSynchronized)) {
@@ -63,11 +61,11 @@ class IteRace private (
     log.endTimer
     log("app-locked", currentRaces.size)
   }
-  
+
   val races = currentRaces
-  
+
   debug(log.entries)
-  		//  log(races.prettyPrint)
+  //  log(races.prettyPrint)
   debug(" \n\n ******************************************************** \n\n  ")
 }
 
