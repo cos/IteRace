@@ -1,7 +1,0 @@
-{
-  "List(2-threads-model)": {
-    "pointer-analysis-time": "24683",
-    "potential-races": "0",
-    "potential-races-time": "95"
-  }
-}
