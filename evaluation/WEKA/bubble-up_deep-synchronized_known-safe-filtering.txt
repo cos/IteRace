@@ -1,0 +1,60 @@
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+class iterace.evaluation.EvaluateBH
+Binary: ../evaluation/barnesHut/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateEM3D
+Binary: ../evaluation/em3d/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluatejUnit
+Binary: ../evaluation/junit/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateLuSearch
+Binary: ../evaluation/lusearch/bin
+Binary: ../lib/parallelArray.mock
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateMonteCarlo
+Binary: ../evaluation/montecarlo/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateOldCoref
+Binary: ../evaluation/coref/bin
+Jar: ../evaluation/coref/java_cup_runtime.jar
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateWEKA
+Jar: ../evaluation/weka/lib/java-cup.jar
+Jar: ../evaluation/weka/lib/JFlex.jar
+Jar: ../evaluation/weka/lib/junit.jar
+Binary: ../evaluation/weka/bin
+iterace.evaluation.EvaluateWEKA@c79809
+Set(bubble-up, deep-synchronized, known-safe-filtering)
+15171@concurrencer
+test: main([Ljava/lang/String;)V
+Options: bubble-up, deep-synchronized, known-safe-filtering
+START: pointer-analysis
+DONE: pointer-analysis in 33.124s
+START: potential-races
+DONE: potential-races in 2.176s
+potential-races: 58142
+START: locksets
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@19872ad     ---- 12
+DONE: locksets in 45.997s
+START: deep-synchronized
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@19872ad     ---- 12
+DONE: deep-synchronized in 45.426s
+deep-synchronized: 56248
+START: bubble-up
+DONE: bubble-up in 0.746s
+bubble-up: 16015
+races: 16015
+Map(races -> 16015, bubble-up -> 16015, bubble-up-time -> 746, deep-synchronized -> 56248, deep-synchronized-time -> 45426, locksets-time -> 45997, potential-races -> 58142, potential-races-time -> 2176, pointer-analysis-time -> 33124)
+ 
+
+ ******************************************************** 
+
+  
+Map(pointer-analysis-time -> 33124, bubble-up -> 16015, races -> 16015, locksets-time -> 45997, deep-synchronized -> 56248, deep-synchronized-time -> 45426, potential-races -> 58142, bubble-up-time -> 746, potential-races-time -> 2176)

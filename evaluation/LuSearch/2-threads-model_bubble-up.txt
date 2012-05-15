@@ -1,0 +1,56 @@
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+class iterace.evaluation.EvaluateBH
+Binary: ../evaluation/barnesHut/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateEM3D
+Binary: ../evaluation/em3d/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluatejUnit
+Binary: ../evaluation/junit/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateLuSearch
+Binary: ../evaluation/lusearch/bin
+Binary: ../lib/parallelArray.mock
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateMonteCarlo
+Binary: ../evaluation/montecarlo/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateOldCoref
+Binary: ../evaluation/coref/bin
+Jar: ../evaluation/coref/java_cup_runtime.jar
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateWEKA
+Jar: ../evaluation/weka/lib/java-cup.jar
+Jar: ../evaluation/weka/lib/JFlex.jar
+Jar: ../evaluation/weka/lib/junit.jar
+Binary: ../evaluation/weka/bin
+iterace.evaluation.EvaluateLuSearch@c79809
+Set(2-threads-model, bubble-up)
+12745@concurrencer
+test: main([Ljava/lang/String;)V
+Options: 2-threads-model, bubble-up
+START: pointer-analysis
+DONE: pointer-analysis in 15.457s
+START: potential-races
+DONE: potential-races in 1.255s
+potential-races: 57926
+START: locksets
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@101ac93     ---- 16
+DONE: locksets in 22.908s
+START: bubble-up
+DONE: bubble-up in 7.774s
+bubble-up: 6030873
+races: 6030873
+Map(races -> 6030873, bubble-up -> 6030873, bubble-up-time -> 7774, locksets-time -> 22908, potential-races -> 57926, potential-races-time -> 1255, pointer-analysis-time -> 15457)
+ 
+
+ ******************************************************** 
+
+  
+Map(pointer-analysis-time -> 15457, bubble-up -> 6030873, races -> 6030873, locksets-time -> 22908, potential-races -> 57926, bubble-up-time -> 7774, potential-races-time -> 1255)

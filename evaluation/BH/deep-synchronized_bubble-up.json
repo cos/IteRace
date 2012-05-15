@@ -1,3 +1,1 @@
-
-
-{"pointer-analysis-time": "32727", "potential-races-time": "96", "bubble-up-time": "38", "deep-locked-time": "223", "bubble-up": "81", "deep-locked": "81", "potential-races": "81"}
+{"pointer-analysis-time": "15895", "potential-races-time": "81", "deep-synchronized-time": "44", "races": "81", "bubble-up-time": "20", "bubble-up": "81", "locksets-time": "84", "deep-synchronized": "81", "potential-races": "81"}

@@ -136,14 +136,17 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         if (newC.is(ThreadSafeOnClosure) && !newC.is(Interesting))
           return UninterestingContext
 
-        newC = if (!c.is(AppObject) &&
-          (inApplicationScope(caller) && inPrimordialScope(callee)) && // membrane between app and lib
-          (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
-          actualParameters.size > 1)
+        // app-lib membrane sensitivity
+        if (options(IteRaceOption.BubbleUp)) {
+          newC = if (!c.is(AppObject) &&
+            (inApplicationScope(caller) && inPrimordialScope(callee)) && // membrane between app and lib
+            (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
+            actualParameters.size > 1)
 
-          ObjectContext(actualParameters(0)) + newC
-        else
-          newC
+            ObjectContext(actualParameters(0)) + newC
+          else
+            newC
+        }
 
         newC
       }

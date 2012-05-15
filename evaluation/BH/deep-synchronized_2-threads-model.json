@@ -1,3 +1,1 @@
-
-
-{"pointer-analysis-time": "33977", "potential-races-time": "102", "deep-locked-time": "1", "deep-locked": "0", "potential-races": "0"}
+{"pointer-analysis-time": "16897", "potential-races-time": "75", "deep-synchronized-time": "1", "races": "0", "locksets-time": "78", "deep-synchronized": "0", "potential-races": "0"}

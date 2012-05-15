@@ -17,7 +17,7 @@ import iterace.util.log
 import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.stage._
 import iterace.pointeranalysis._
-import iterace.datastructure.LockSet
+import iterace.datastructure.LockSets
 import iterace.datastructure.MayAliasLockConstructor
 import iterace.IteRaceOption._
 import iterace.util.debug
@@ -39,13 +39,18 @@ class IteRace private (
   potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
   private var currentRaces = potentialRaces
 
-  val filterByLockMayAlias = new FilterByLockMayAlias(pa, new LockSet(pa, new MayAliasLockConstructor(pa)))
+  log.startTimer("locksets")
+  val lockSetMapping = new LockSets(pa, new MayAliasLockConstructor(pa))
+  log.endTimer
+//  log("locks",)
+  
+  val filterByLockMayAlias = new FilterByLockMayAlias(pa, lockSetMapping)
 
   if (options(DeepSynchronized)) {
-    log.startTimer("deep-locked")
+    log.startTimer("deep-synchronized")
     currentRaces = filterByLockMayAlias(currentRaces)
     log.endTimer
-    log("deep-locked", currentRaces.size)
+    log("deep-synchronized", currentRaces.size)
   }
 
   if (options(IteRaceOption.BubbleUp)) {
@@ -56,17 +61,18 @@ class IteRace private (
   }
 
   if (options(AppLevelSynchronized)) {
-    log.startTimer("app-locked")
+    log.startTimer("app-level-synchronized")
     currentRaces = filterByLockMayAlias(currentRaces)
     log.endTimer
-    log("app-locked", currentRaces.size)
+    log("app-level-synchronized", currentRaces.size)
   }
 
   val races = currentRaces
+  log("races", races.size)
 
   debug(log.entries)
-  //  log(races.prettyPrint)
   debug(" \n\n ******************************************************** \n\n  ")
+  debug(races.prettyPrint)
 }
 
 object IteRace {

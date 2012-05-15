@@ -1,0 +1,57 @@
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+class iterace.evaluation.EvaluateBH
+Binary: ../evaluation/barnesHut/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateEM3D
+Binary: ../evaluation/em3d/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluatejUnit
+Binary: ../evaluation/junit/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateLuSearch
+Binary: ../evaluation/lusearch/bin
+Binary: ../lib/parallelArray.mock
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateMonteCarlo
+Binary: ../evaluation/montecarlo/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateOldCoref
+Binary: ../evaluation/coref/bin
+Jar: ../evaluation/coref/java_cup_runtime.jar
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateWEKA
+Jar: ../evaluation/weka/lib/java-cup.jar
+Jar: ../evaluation/weka/lib/JFlex.jar
+Jar: ../evaluation/weka/lib/junit.jar
+Binary: ../evaluation/weka/bin
+iterace.evaluation.EvaluateWEKA@c79809
+Set(app-level-synchronized, known-safe-filtering)
+15436@concurrencer
+test: main([Ljava/lang/String;)V
+Options: app-level-synchronized, known-safe-filtering
+START: pointer-analysis
+DONE: pointer-analysis in 19.978s
+START: potential-races
+DONE: potential-races in 0.906s
+potential-races: 8974
+START: locksets
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@3e97cd     ---- 12
+DONE: locksets in 17.352s
+START: app-level-synchronized
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@3e97cd     ---- 12
+DONE: app-level-synchronized in 14.306s
+app-level-synchronized: 8853
+races: 8853
+Map(races -> 8853, app-level-synchronized -> 8853, app-level-synchronized-time -> 14306, locksets-time -> 17352, potential-races -> 8974, potential-races-time -> 906, pointer-analysis-time -> 19978)
+ 
+
+ ******************************************************** 
+
+  
+Map(pointer-analysis-time -> 19978, races -> 8853, app-level-synchronized-time -> 14306, locksets-time -> 17352, app-level-synchronized -> 8853, potential-races -> 8974, potential-races-time -> 906)

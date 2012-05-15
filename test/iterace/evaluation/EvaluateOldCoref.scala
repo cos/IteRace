@@ -21,5 +21,7 @@ class EvaluateOldCoref extends Evaluate("LLBJ2/nlp/coref/ClusterMerger") {
   analysisScope.addBinaryDependency("../evaluation/coref/bin");
   analysisScope.addJarDependency("../evaluation/coref/java_cup_runtime.jar");
   
+  
+  
   expectNoRaces
 }

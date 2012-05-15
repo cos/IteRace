@@ -1,0 +1,57 @@
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+class iterace.evaluation.EvaluateBH
+Binary: ../evaluation/barnesHut/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateEM3D
+Binary: ../evaluation/em3d/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluatejUnit
+Binary: ../evaluation/junit/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateLuSearch
+Binary: ../evaluation/lusearch/bin
+Binary: ../lib/parallelArray.mock
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateMonteCarlo
+Binary: ../evaluation/montecarlo/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateOldCoref
+Binary: ../evaluation/coref/bin
+Jar: ../evaluation/coref/java_cup_runtime.jar
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateWEKA
+Jar: ../evaluation/weka/lib/java-cup.jar
+Jar: ../evaluation/weka/lib/JFlex.jar
+Jar: ../evaluation/weka/lib/junit.jar
+Binary: ../evaluation/weka/bin
+iterace.evaluation.EvaluateOldCoref@c79809
+Set(deep-synchronized, 2-threads-model)
+14858@concurrencer
+test: main([Ljava/lang/String;)V
+Options: deep-synchronized, 2-threads-model
+START: pointer-analysis
+DONE: pointer-analysis in 19.354s
+START: potential-races
+DONE: potential-races in 1.20s
+potential-races: 258708
+START: locksets
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@89dd     ---- 4
+DONE: locksets in 8.955s
+START: deep-synchronized
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@89dd     ---- 4
+DONE: deep-synchronized in 57.224s
+deep-synchronized: 258673
+races: 258673
+Map(races -> 258673, deep-synchronized -> 258673, deep-synchronized-time -> 57224, locksets-time -> 8955, potential-races -> 258708, potential-races-time -> 1020, pointer-analysis-time -> 19354)
+ 
+
+ ******************************************************** 
+
+  
+Map(pointer-analysis-time -> 19354, races -> 258673, locksets-time -> 8955, deep-synchronized -> 258673, deep-synchronized-time -> 57224, potential-races -> 258708, potential-races-time -> 1020)

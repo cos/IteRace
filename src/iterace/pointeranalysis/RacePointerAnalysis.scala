@@ -10,7 +10,7 @@ import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.properties.WalaProperties
 import iterace.util.ArrayContents
 import com.ibm.wala.util.collections.Filter
-import iterace.datastructure.LockSet
+import iterace.datastructure.LockSets
 import iterace.datastructure.Lock
 import iterace.IteRaceOption
 
@@ -98,7 +98,7 @@ class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope
     }
   }
 
-  var lockMapping: Option[LockSet] = None
+  var lockMapping: Option[LockSets] = None
 
   implicit def sWithLockSet[T <: I](s: S[T]) = new {
     lazy val lockset: Option[Set[Lock]] = lockMapping map { _.getLockSet(s) }

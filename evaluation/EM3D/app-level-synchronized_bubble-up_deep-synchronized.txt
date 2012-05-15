@@ -1,0 +1,67 @@
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+class iterace.evaluation.EvaluateBH
+Binary: ../evaluation/barnesHut/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateEM3D
+Binary: ../evaluation/em3d/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluatejUnit
+Binary: ../evaluation/junit/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateLuSearch
+Binary: ../evaluation/lusearch/bin
+Binary: ../lib/parallelArray.mock
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateMonteCarlo
+Binary: ../evaluation/montecarlo/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateOldCoref
+Binary: ../evaluation/coref/bin
+Jar: ../evaluation/coref/java_cup_runtime.jar
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateWEKA
+Jar: ../evaluation/weka/lib/java-cup.jar
+Jar: ../evaluation/weka/lib/JFlex.jar
+Jar: ../evaluation/weka/lib/junit.jar
+Binary: ../evaluation/weka/bin
+iterace.evaluation.EvaluateEM3D@c79809
+Set(deep-synchronized, app-level-synchronized, bubble-up)
+17314@concurrencer
+test: main([Ljava/lang/String;)V
+Options: deep-synchronized, app-level-synchronized, bubble-up
+START: pointer-analysis
+DONE: pointer-analysis in 6.978s
+START: potential-races
+DONE: potential-races in 0.61s
+potential-races: 4
+START: locksets
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@1cebc9f     ---- 1
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@1342a67     ---- 1
+DONE: locksets in 0.45s
+START: deep-synchronized
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@1cebc9f     ---- 1
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@1342a67     ---- 1
+DONE: deep-synchronized in 0.22s
+deep-synchronized: 4
+START: bubble-up
+DONE: bubble-up in 0.17s
+bubble-up: 4
+START: app-level-synchronized
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@1cebc9f     ---- 1
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@1342a67     ---- 1
+DONE: app-level-synchronized in 0.9s
+app-level-synchronized: 4
+races: 4
+Map(races -> 4, app-level-synchronized -> 4, app-level-synchronized-time -> 9, bubble-up -> 4, bubble-up-time -> 17, deep-synchronized -> 4, deep-synchronized-time -> 22, locksets-time -> 45, potential-races -> 4, potential-races-time -> 61, pointer-analysis-time -> 6978)
+ 
+
+ ******************************************************** 
+
+  
+Map(pointer-analysis-time -> 6978, bubble-up -> 4, races -> 4, app-level-synchronized-time -> 9, locksets-time -> 45, app-level-synchronized -> 4, deep-synchronized -> 4, deep-synchronized-time -> 22, potential-races -> 4, bubble-up-time -> 17, potential-races-time -> 61)

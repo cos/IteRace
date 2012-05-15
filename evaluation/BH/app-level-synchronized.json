@@ -1,3 +1,1 @@
-
-
-{"app-locked": "81", "pointer-analysis-time": "30969", "potential-races-time": "94", "app-locked-time": "223", "potential-races": "81"}
+{"app-level-synchronized-time": "47", "pointer-analysis-time": "14995", "potential-races-time": "79", "races": "81", "app-level-synchronized": "81", "locksets-time": "78", "potential-races": "81"}

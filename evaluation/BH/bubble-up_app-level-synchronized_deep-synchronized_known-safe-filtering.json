@@ -1,3 +1,1 @@
-
-
-{"app-locked": "81", "pointer-analysis-time": "31252", "potential-races-time": "94", "app-locked-time": "68", "bubble-up-time": "87", "deep-locked-time": "217", "bubble-up": "81", "deep-locked": "81", "potential-races": "81"}
+{"app-level-synchronized-time": "33", "pointer-analysis-time": "18598", "potential-races-time": "79", "deep-synchronized-time": "43", "races": "81", "bubble-up-time": "20", "bubble-up": "81", "app-level-synchronized": "81", "locksets-time": "75", "deep-synchronized": "81", "potential-races": "81"}

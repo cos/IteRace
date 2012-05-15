@@ -3,10 +3,12 @@ package iterace.stage
 import org.junit.Test
 import iterace.util.log
 import org.junit.Ignore
+import iterace.IteRaceOptions
 
 class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
 
 //  log.activate
+//  override val options = IteRaceOptions.all
 
   analysisScope.addBinaryDependency("particles")
 
@@ -208,6 +210,7 @@ particles.Particle: particles.Particle.raceOnArray(Particle.java:460)
    (b)  particles.Particle$33.op(Particle$33.java:465)
 """)
 
+  @Test def example = expect("")
   /*
   @Test def raceInLibrary = expect("""
   ....

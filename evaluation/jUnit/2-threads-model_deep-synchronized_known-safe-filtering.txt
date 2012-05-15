@@ -1,0 +1,98 @@
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+class iterace.evaluation.EvaluateBH
+Binary: ../evaluation/barnesHut/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateEM3D
+Binary: ../evaluation/em3d/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluatejUnit
+Binary: ../evaluation/junit/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateLuSearch
+Binary: ../evaluation/lusearch/bin
+Binary: ../lib/parallelArray.mock
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateMonteCarlo
+Binary: ../evaluation/montecarlo/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateOldCoref
+Binary: ../evaluation/coref/bin
+Jar: ../evaluation/coref/java_cup_runtime.jar
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateWEKA
+Jar: ../evaluation/weka/lib/java-cup.jar
+Jar: ../evaluation/weka/lib/JFlex.jar
+Jar: ../evaluation/weka/lib/junit.jar
+Binary: ../evaluation/weka/bin
+iterace.evaluation.EvaluatejUnit@3bc473
+Set(2-threads-model, deep-synchronized, known-safe-filtering)
+11484@concurrencer
+test: main([Ljava/lang/String;)V
+Options: 2-threads-model, deep-synchronized, known-safe-filtering
+START: pointer-analysis
+DONE: pointer-analysis in 8.176s
+START: potential-races
+DONE: potential-races in 0.234s
+potential-races: 24
+java.util.ArrayList: junit.framework.TestResult.<init>(TestResult.java:25)
+ .elementData
+   (a)  java.util.ArrayList.ensureCapacity(ArrayList.java:167)
+   (b)  java.util.ArrayList.add(ArrayList.java:352)
+        java.util.ArrayList.ensureCapacity(ArrayList.java:160)
+        java.util.ArrayList.ensureCapacity(ArrayList.java:162)
+        java.util.ArrayList.ensureCapacity(ArrayList.java:167) [2x]
+ .modCount
+   (a)  java.util.ArrayList.ensureCapacity(ArrayList.java:159)
+   (b)  java.util.ArrayList.ensureCapacity(ArrayList.java:159) [2x]
+ .size
+   (a)  java.util.ArrayList.add(ArrayList.java:352)
+   (b)  java.util.ArrayList.add(ArrayList.java:351)
+        java.util.ArrayList.add(ArrayList.java:352) [2x]
+java.lang.Object: java.util.ArrayList.<init>(ArrayList.java:112)
+ .[*]
+   (a)  java.util.ArrayList.add(ArrayList.java:352)
+   (b)  java.util.ArrayList.add(ArrayList.java:352)
+java.util.ArrayList: junit.framework.TestResult.<init>(TestResult.java:26)
+ .elementData
+   (a)  java.util.ArrayList.ensureCapacity(ArrayList.java:167)
+   (b)  java.util.ArrayList.add(ArrayList.java:352)
+        java.util.ArrayList.ensureCapacity(ArrayList.java:160)
+        java.util.ArrayList.ensureCapacity(ArrayList.java:162)
+        java.util.ArrayList.ensureCapacity(ArrayList.java:167) [2x]
+ .modCount
+   (a)  java.util.ArrayList.ensureCapacity(ArrayList.java:159)
+   (b)  java.util.ArrayList.ensureCapacity(ArrayList.java:159) [2x]
+ .size
+   (a)  java.util.ArrayList.add(ArrayList.java:352)
+   (b)  java.util.ArrayList.add(ArrayList.java:351)
+        java.util.ArrayList.add(ArrayList.java:352) [2x]
+junit.framework.TestResult: junit.textui.TestRunner.createTestResult(TestRunner.java:105)
+ .fRunTests
+   (a)  junit.framework.TestResult.startTest(TestResult.java:152)
+   (b)  junit.framework.TestResult.startTest(TestResult.java:152) [2x]
+java.lang.Object: java.util.Arrays.copyOf(Arrays.java:2760)
+ .[*]
+   (a)  java.util.ArrayList.add(ArrayList.java:352)
+   (b)  java.util.ArrayList.add(ArrayList.java:352)
+START: locksets
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@b05236     ---- 2
+DONE: locksets in 2.224s
+START: deep-synchronized
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@b05236     ---- 2
+DONE: deep-synchronized in 1.230s
+deep-synchronized: 0
+races: 0
+Map(races -> 0, deep-synchronized -> 0, deep-synchronized-time -> 1230, locksets-time -> 2224, potential-races -> 24, potential-races-time -> 234, pointer-analysis-time -> 8176)
+ 
+
+ ******************************************************** 
+
+  
+
+Map(pointer-analysis-time -> 8176, races -> 0, locksets-time -> 2224, deep-synchronized -> 0, deep-synchronized-time -> 1230, potential-races -> 24, potential-races-time -> 234)

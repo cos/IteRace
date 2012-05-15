@@ -1,0 +1,60 @@
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+class iterace.evaluation.EvaluateBH
+Binary: ../evaluation/barnesHut/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateEM3D
+Binary: ../evaluation/em3d/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluatejUnit
+Binary: ../evaluation/junit/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateLuSearch
+Binary: ../evaluation/lusearch/bin
+Binary: ../lib/parallelArray.mock
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateMonteCarlo
+Binary: ../evaluation/montecarlo/bin
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateOldCoref
+Binary: ../evaluation/coref/bin
+Jar: ../evaluation/coref/java_cup_runtime.jar
+/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar
+Binary: ../lib/parallelArray.mock
+class iterace.evaluation.EvaluateWEKA
+Jar: ../evaluation/weka/lib/java-cup.jar
+Jar: ../evaluation/weka/lib/JFlex.jar
+Jar: ../evaluation/weka/lib/junit.jar
+Binary: ../evaluation/weka/bin
+iterace.evaluation.EvaluateEM3D@1ce784b
+Set(deep-synchronized, 2-threads-model, bubble-up)
+17132@concurrencer
+test: main([Ljava/lang/String;)V
+Options: deep-synchronized, 2-threads-model, bubble-up
+START: pointer-analysis
+DONE: pointer-analysis in 6.932s
+START: potential-races
+DONE: potential-races in 0.55s
+potential-races: 0
+START: locksets
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@bf5555     ---- 1
+locksets-lattice-size   ----    Node: < Application, Lextra166y/ParallelArray, apply(Lextra166y/Ops$Procedure;)V > Context: iterace.pointeranalysis.LoopCallSiteContext@6c1a82     ---- 1
+DONE: locksets in 0.47s
+START: deep-synchronized
+DONE: deep-synchronized in 0.1s
+deep-synchronized: 0
+START: bubble-up
+DONE: bubble-up in 0.5s
+bubble-up: 0
+races: 0
+Map(races -> 0, bubble-up -> 0, bubble-up-time -> 5, deep-synchronized -> 0, deep-synchronized-time -> 1, locksets-time -> 47, potential-races -> 0, potential-races-time -> 55, pointer-analysis-time -> 6932)
+ 
+
+ ******************************************************** 
+
+  
+Map(pointer-analysis-time -> 6932, bubble-up -> 0, races -> 0, locksets-time -> 47, deep-synchronized -> 0, deep-synchronized-time -> 1, potential-races -> 0, bubble-up-time -> 5, potential-races-time -> 55)
