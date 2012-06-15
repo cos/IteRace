@@ -32,7 +32,7 @@ public class AnalysisScopeBuilder {
 	
 	public File getFile(String path) throws IOException {
 		if(UNDER_ECLIPSE) 
-			return FileProvider.getFile(path, getLoader());
+			return new FileProvider().getFile(path, getLoader());
 		else 
 			return new File(path);
 	}
@@ -91,7 +91,7 @@ public class AnalysisScopeBuilder {
 		debug("Jar: "+file);
 		Module M;
 		if(UNDER_ECLIPSE)
-			M = FileProvider.getJarFileModule(file, getLoader());
+			M = new FileProvider().getJarFileModule(file, getLoader());
 		else
 			M= new JarFileModule(new JarFile(file, true));
 		
