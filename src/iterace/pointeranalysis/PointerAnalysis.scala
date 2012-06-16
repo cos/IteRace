@@ -25,7 +25,7 @@ class PointerAnalysis(
   /*
    * Below is the analysis initialization
    */
-  val scope: AnalysisScope = analysisScopeBuilder.getAnalysisScope();
+  val scope: AnalysisScope = analysisScopeBuilder.scope;
   val cha = ClassHierarchy.make(scope)
   private val analysisOptions: AnalysisOptions = new AnalysisOptions(scope, entrypoints.asJava)
   val analysisCache = new AnalysisCache()
