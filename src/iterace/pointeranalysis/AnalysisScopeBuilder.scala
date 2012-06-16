@@ -30,7 +30,7 @@ class AnalysisScopeBuilder(jreLibPath: String, exclusionsFile: String) {
   
   scope.setExclusions(FileOfClasses.createFileOfClasses(new File(exclusionsFile)));
 
-  def getFile(path: String) =
+  private def getFile(path: String) =
     if (UNDER_ECLIPSE)
       new FileProvider().getFile(path, getLoader())
     else

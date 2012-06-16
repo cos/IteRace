@@ -7,9 +7,9 @@ import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.util.log
 import iterace.stage.StageConstructor
 import iterace.util.debug
-import iterace.evaluation.HasAnalysisScope
+import iterace.evaluation.SubjectScope
 
-abstract class IteRaceTest extends JavaTest with HasAnalysisScope {
+abstract class IteRaceTest extends JavaTest with SubjectScope {
 
   analysisScope.addBinaryDependency("../lib/parallelArray.mock")
 
