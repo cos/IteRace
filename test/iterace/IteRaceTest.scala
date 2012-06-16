@@ -7,10 +7,9 @@ import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.util.log
 import iterace.stage.StageConstructor
 import iterace.util.debug
+import iterace.evaluation.HasAnalysisScope
 
-abstract class IteRaceTest extends JavaTest {
-
-  val analysisScope = AnalysisScopeBuilder("walaExclusions.txt")
+abstract class IteRaceTest extends JavaTest with HasAnalysisScope {
 
   analysisScope.addBinaryDependency("../lib/parallelArray.mock")
 

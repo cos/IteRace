@@ -16,11 +16,7 @@ import iterace.IteRaceOption
 import org.junit.Test
 
 
-class EvaluateEM3D extends Evaluate("Lem3d/parallelArray/Em3d") {
-
-  analysisScope.addBinaryDependency("../evaluation/em3d/bin");
-  
-  options = Set[IteRaceOption]().toSet
-  
+class EvaluateEM3D extends Evaluate("Lem3d/parallelArray/Em3d") with EM3DScope {  
+  options = Set[IteRaceOption]().toSet 
   expectNoRaces
 }

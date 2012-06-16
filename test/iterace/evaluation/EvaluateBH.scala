@@ -17,11 +17,7 @@ import iterace.stage.FilterByLockMayAlias
 import iterace.util.debug
 
 
-class EvaluateBH extends Evaluate("LbarnesHut/ParallelBarneshut") {
-
-  debug.activate
-  
-  analysisScope.addBinaryDependency("../evaluation/barnesHut/bin");
-
+class EvaluateBH extends Evaluate("LbarnesHut/ParallelBarneshut") with BHScope {
+  debug.activate  
   expectNoRaces
 }
