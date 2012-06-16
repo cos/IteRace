@@ -19,7 +19,7 @@ class TestRelativeMustAlias extends FunSuite with BeforeAndAfter {
   @Rule val testName = new TestName();
   val startClass = "Lkingdom/Animals"
 
-  var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
+  var analysisScope = AnalysisScopeBuilder("walaExclusions.txt");
   analysisScope.addBinaryDependency("kingdom");
 
   def analyze(method: String) = new PointerAnalysis(startClass, method, analysisScope, Set())

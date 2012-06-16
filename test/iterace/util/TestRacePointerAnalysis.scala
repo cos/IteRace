@@ -19,7 +19,7 @@ class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers
   describe("instructionsReachableFrom") {
 
     def getReachableFrom(method: String) = {
-      var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
+      var analysisScope = AnalysisScopeBuilder("walaExclusions.txt");
       analysisScope.addBinaryDependency("kingdom");
 
       val pa = new RacePointerAnalysis(startClass, method + "()V", analysisScope, Set())

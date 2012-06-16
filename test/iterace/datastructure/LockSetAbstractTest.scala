@@ -12,8 +12,7 @@ import iterace.IteRaceOption
 
 abstract class LockSetAbstractTest(dependencies: List[String], startClass: String) extends JavaTest {
   def analyze(method: String) = {
-    var analysisScope = new AnalysisScopeBuilder("/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar");
-    analysisScope.setExclusionsFile("walaExclusions.txt");
+    var analysisScope = AnalysisScopeBuilder("walaExclusions.txt");
     for (d <- dependencies) { analysisScope.addBinaryDependency(d); }
 
     val pa = new RacePointerAnalysis(startClass, method, analysisScope, IteRaceOptions(IteRaceOption.TwoThreadModel))

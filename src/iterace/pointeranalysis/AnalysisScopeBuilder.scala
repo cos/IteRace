@@ -17,22 +17,18 @@ import scala.collection._
 import scala.collection.JavaConverters._
 
 object AnalysisScopeBuilder {
-  def apply = new AnalysisScopeBuilder(if (System.getProperty("os.name").contains("Linux"))
+  def apply(exclussionsFile: String) = new AnalysisScopeBuilder(if (System.getProperty("os.name").contains("Linux"))
     "/usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/rt.jar"
   else
-    "/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar")
+    "/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar", exclussionsFile)
 }
 
-class AnalysisScopeBuilder(jreLibPath: String) {
-
+class AnalysisScopeBuilder(jreLibPath: String, exclusionsFile: String) {
   val UNDER_ECLIPSE = true;
-
-  val binaryDependencies = mutable.MutableList[String]()
-  val jarDependencies = mutable.MutableList[String]()
-  val extensionBinaryDependencies = mutable.MutableList[String]()
   val scope = AnalysisScope.createJavaAnalysisScope()
-
   scope.addToScope(scope.getLoader(AnalysisScope.PRIMORDIAL), new JarFile(jreLibPath));
+  
+  scope.setExclusions(FileOfClasses.createFileOfClasses(new File(exclusionsFile)));
 
   def getFile(path: String) =
     if (UNDER_ECLIPSE)
@@ -91,7 +87,4 @@ class AnalysisScopeBuilder(jreLibPath: String) {
     scope.addToScope(scope.getLoader(AnalysisScope.APPLICATION), M);
   }
 
-  def setExclusionsFile(file: String) {
-    scope.setExclusions(FileOfClasses.createFileOfClasses(new File(file)));
-  }
 }
