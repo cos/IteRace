@@ -22,9 +22,7 @@ import scala.collection.JavaConverters._
 import java.lang.management.ManagementFactory
 import java.io.File
 
-abstract class Evaluate (
-  entryClass: String,
-  entryMethod: String = "main([Ljava/lang/String;)V") extends IteRaceTest {
+abstract class Evaluate extends IteRaceTest {
 
   debug.activate
   debug(this.getClass().toString())

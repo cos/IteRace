@@ -15,7 +15,7 @@ import iterace.util.log
 import org.junit.Test
 
 
-class EvaluateLuSearch extends Evaluate("Lorg/dacapo/lusearch/Search") with LuSearchScope {
+class EvaluateLuSearch extends Evaluate with LuSearchScope {
 
 
 

@@ -5,8 +5,10 @@ import iterace.util.log
 import org.junit.Ignore
 import iterace.IteRaceOptions
 
-class TestPotentialRaces extends RaceAbstractTest("Lparticles/Particle") {
+class TestPotentialRaces extends RaceAbstractTest {
 
+  val entryClass = "Lparticles/Particle"
+  
 //  log.activate
 //  override val options = IteRaceOptions.all
 

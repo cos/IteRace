@@ -9,13 +9,13 @@ import iterace.IteRace
 import iterace.IteRaceOption
 import iterace.util.debug
 
-abstract class RaceAbstractTest(startClass: String) extends IteRaceTest {
+abstract class RaceAbstractTest extends IteRaceTest {
   
   debug.activate
   
   val options: Set[IteRaceOption] = Set(IteRaceOption.TwoThreadModel)
   
-  def analyze(method: String) = super.analyze(startClass, method, options)
+  def analyze(method: String) = super.analyze(entryClass, method, options)
   
   def printRaces(races: ProgramRaceSet): String = "\n" + races.prettyPrint + "\n"
 

@@ -16,7 +16,7 @@ import iterace.util.debug
 import iterace.IteRaceOption
 
 
-class EvaluateOldCoref extends Evaluate("LLBJ2/nlp/coref/ClusterMerger") with OldCorefScope {
+class EvaluateOldCoref extends Evaluate with OldCorefScope {
 
 
   

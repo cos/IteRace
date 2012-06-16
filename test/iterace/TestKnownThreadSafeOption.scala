@@ -5,7 +5,9 @@ import iterace.stage.RaceAbstractTest
 import org.junit.Test
 
 
-class TestKnownThreadSafeOption extends RaceAbstractTest("Lparticles/Particle") {
+class TestKnownThreadSafeOption extends RaceAbstractTest {
+  
+  val entryClass = "Lparticles/Particle"
 
   analysisScope.addBinaryDependency("particles");
 

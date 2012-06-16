@@ -9,10 +9,11 @@ import iterace.IteRaceOptions
  * Tests Particle.class (the same as TestPossibleRaces) but after the may-alias lock filter
  */
 
+class TestRacesOnParticleOneThread extends RaceAbstractTest {
 
-class TestRacesOnParticleOneThread extends  RaceAbstractTest("Lparticles/Particle") {
+  val entryClass = "Lparticles/Particle"
   override val options = IteRaceOptions()
-  
+
   analysisScope.addBinaryDependency("particles")
 
   @Test def vacuouslyNoRace = expectNoRaces

@@ -16,7 +16,7 @@ import iterace.util.log
 import org.junit.Test
 
 
-class EvaluatejUnit extends Evaluate("Ljunit/tests/ParallelAllTests") with JUnitScope {
+class EvaluatejUnit extends Evaluate with JUnitScope {
   
 
 

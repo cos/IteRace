@@ -6,9 +6,11 @@ import iterace.util.debug
 import iterace.IteRaceOptions
 import iterace.IteRaceOption
 
-class TestKnownThreadSafeOff extends RaceAbstractTest("Lparticles/ParticleWithKnownThreadSafe") {
+class TestKnownThreadSafeOff extends RaceAbstractTest {
   
   override val options = IteRaceOptions(IteRaceOption.TwoThreadModel)
+  
+  val entryClass = "Lparticles/ParticleWithKnownThreadSafe"
   
   debug.activate
 

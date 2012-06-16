@@ -17,7 +17,7 @@ import iterace.stage.FilterByLockMayAlias
 import iterace.util.debug
 
 
-class EvaluateBH extends Evaluate("LbarnesHut/ParallelBarneshut") with BHScope {
+class EvaluateBH extends Evaluate with BHScope {
   debug.activate  
   expectNoRaces
 }

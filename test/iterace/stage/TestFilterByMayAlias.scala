@@ -7,7 +7,9 @@ import iterace.IteRaceOption
 import iterace.IteRaceOptions
 
 
-class TestFilterByMayAlias extends RaceAbstractTest("Lparticles/ParticleWithLocks") {
+class TestFilterByMayAlias extends RaceAbstractTest {
+  
+  val entryClass = "Lparticles/ParticleWithLocks"
   
   override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.DeepSynchronized)
 

@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.Assert._
 
 class TestRaceSet extends IteRaceTest {
+  val entryClass = "Lparticles/Particle"
   analysisScope.addBinaryDependency("particles")
   
   @Test def bla:Unit = {

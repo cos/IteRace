@@ -15,7 +15,7 @@ import iterace.util.log
 import org.junit.Test
 
 
-class EvaluateWEKA extends Evaluate("Lweka/clusterers/EM") with WEKAScope {
+class EvaluateWEKA extends Evaluate with WEKAScope {
 
 
 

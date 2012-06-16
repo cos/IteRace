@@ -14,11 +14,7 @@ import iterace.util.log
 
 import org.junit.Test
 
-
-class EvaluateMonteCarlo extends 
-	Evaluate("Lmontecarlo/parallel/JGFMonteCarloBench", "JGFrun(I)V") with MonteCarloScope {
-
-
+class EvaluateMonteCarlo extends Evaluate with MonteCarloScope {
 
   expect("""
 Loop: montecarlo.parallel.AppDemo.runParallel(AppDemo.java:178)

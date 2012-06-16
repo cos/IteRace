@@ -6,8 +6,9 @@ import iterace.IteRaceOption._
 import iterace.IteRaceOptions
 import iterace.IteRaceOption
 
-class TestBubbleUp extends RaceAbstractTest("Lparticles/ParticleUsingLibrary") {
+class TestBubbleUp extends RaceAbstractTest {
  
+  val entryClass = "Lparticles/ParticleUsingLibrary"
   override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.BubbleUp)
 
   analysisScope.addBinaryDependency("particles");
