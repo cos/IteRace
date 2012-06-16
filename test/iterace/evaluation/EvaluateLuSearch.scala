@@ -15,10 +15,9 @@ import iterace.util.log
 import org.junit.Test
 
 
-class EvaluateLuSearch extends Evaluate("Lorg/dacapo/lusearch/Search") {
+class EvaluateLuSearch extends Evaluate("Lorg/dacapo/lusearch/Search") with LuSearchScope {
 
-  analysisScope.addBinaryDependency("../evaluation/lusearch/bin");
-	analysisScope.addBinaryDependency("../lib/parallelArray.mock");
+
 
   expectSomeRaces
 }

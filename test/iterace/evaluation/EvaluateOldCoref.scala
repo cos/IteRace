@@ -16,10 +16,9 @@ import iterace.util.debug
 import iterace.IteRaceOption
 
 
-class EvaluateOldCoref extends Evaluate("LLBJ2/nlp/coref/ClusterMerger") {
+class EvaluateOldCoref extends Evaluate("LLBJ2/nlp/coref/ClusterMerger") with OldCorefScope {
 
-  analysisScope.addBinaryDependency("../evaluation/coref/bin");
-  analysisScope.addJarDependency("../evaluation/coref/java_cup_runtime.jar");
+
   
   
   

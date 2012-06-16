@@ -15,12 +15,9 @@ import iterace.util.log
 import org.junit.Test
 
 
-class EvaluateWEKA extends Evaluate("Lweka/clusterers/EM") {
+class EvaluateWEKA extends Evaluate("Lweka/clusterers/EM") with WEKAScope {
 
-  analysisScope.addJarDependency("../evaluation/weka/lib/java-cup.jar");
-  analysisScope.addJarDependency("../evaluation/weka/lib/JFlex.jar");
-  analysisScope.addJarDependency("../evaluation/weka/lib/junit.jar");
-  analysisScope.addBinaryDependency("../evaluation/weka/bin");
+
 
   expectNoRaces
 }

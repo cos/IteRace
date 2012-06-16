@@ -16,9 +16,9 @@ import iterace.util.log
 import org.junit.Test
 
 
-class EvaluatejUnit extends Evaluate("Ljunit/tests/ParallelAllTests") {
+class EvaluatejUnit extends Evaluate("Ljunit/tests/ParallelAllTests") with JUnitScope {
   
-  analysisScope.addBinaryDependency("../evaluation/junit/bin");
+
 
   expectNoRaces
 }

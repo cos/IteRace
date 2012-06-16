@@ -16,9 +16,9 @@ import org.junit.Test
 
 
 class EvaluateMonteCarlo extends 
-	Evaluate("Lmontecarlo/parallel/JGFMonteCarloBench", "JGFrun(I)V") {
+	Evaluate("Lmontecarlo/parallel/JGFMonteCarloBench", "JGFrun(I)V") with MonteCarloScope {
 
-  analysisScope.addBinaryDependency("../evaluation/montecarlo/bin");
+
 
   expect("""
 Loop: montecarlo.parallel.AppDemo.runParallel(AppDemo.java:178)
