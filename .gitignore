@@ -1,7 +1,5 @@
 .DS_Store
 .cache
-.project
-.classpath
 /bin/
 /.settings/
 IteRace.iml
