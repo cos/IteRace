@@ -15,6 +15,7 @@ import com.ibm.wala.util.io.FileProvider
 import iterace.util.debug
 import scala.collection._
 import scala.collection.JavaConverters._
+import com.ibm.wala.util.strings.Atom
 
 object AnalysisScopeBuilder {
   def apply(exclussionsFile: String) = new AnalysisScopeBuilder(if (System.getProperty("os.name").contains("Linux"))
@@ -36,11 +37,11 @@ class AnalysisScopeBuilder(jreLibPath: String, exclusionsFile: String) {
     else
       new File(path)
 
-  def addBinaryDependency(directory: String) {
+  def addBinaryDependency(directory: String, analysisScope: Atom = AnalysisScope.APPLICATION) {
     debug("Binary: " + directory);
     val sd = getFile(directory);
     assert(sd.isDirectory())
-    scope.addToScope(scope.getLoader(AnalysisScope.APPLICATION),
+    scope.addToScope(scope.getLoader(analysisScope),
       new BinaryDirectoryTreeModule(sd));
   }
 
