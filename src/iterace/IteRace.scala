@@ -36,7 +36,7 @@ class IteRace private (
   private val potentialRaces = new PotentialRaces(pa)()
   log.endTimer
   log("potential-races", potentialRaces.size)
-  potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
+//  potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
   private var currentRaces = potentialRaces
 
   log.startTimer("locksets")
