@@ -16,6 +16,10 @@ public class Particle {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public synchronized void safeNothing() {
+		this.origin = new Particle();
+	}
 
 	public void vacuouslyNoRace() {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],

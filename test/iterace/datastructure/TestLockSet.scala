@@ -38,6 +38,9 @@ class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallel
 
   @Test def synchronizedMethodLockSet = assertLockSet("synchronizedMethod", "xyz",
     "{ L: particles.ParticleWithLocks$14: particles.ParticleWithLocks.synchronizedMethod(ParticleWithLocks.java:282)-outside }")
+    
+  @Test def synchronizedOnObjectMethod = assertLockSet("synchronizedOnObjectMethod", "origin",
+    "{ L: particles.Particle: particles.ParticleWithLocks$15.op(ParticleWithLocks$15.java:300)-alpha }")
 
   @Test def synchronizedStaticMethod = assertLockSet("xyz", "{ L: particles.ParticleWithLocks }")
   

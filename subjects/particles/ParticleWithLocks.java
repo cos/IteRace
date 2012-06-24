@@ -287,6 +287,22 @@ public class ParticleWithLocks {
 			}
 		});
 	}
+	
+	public void synchronizedOnObjectMethod() {
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
+				ParallelArray.defaultExecutor());
+
+		final ParticleWithLocks shared = new ParticleWithLocks();
+
+		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
+			@Override
+			public Particle op() {
+				Particle p = new Particle();
+				p.safeNothing();
+				return new Particle();
+			}
+		});
+	}
 
 	public void synchronizedStaticMethod() {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
