@@ -101,16 +101,10 @@ class LockSets(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
 
   def getLockSet[T <: I](s: S[T]): Set[Lock] = getLockSetMapping(s.l.get)(s)
 
-  val cachedFunctions: Map[Loop, S[I] => immutable.Set[Lock]] = mutable.ListMap()
+  val cachedFunctions: mutable.Map[Loop, S[I] => immutable.Set[Lock]] = mutable.ListMap()
 
   def getLockSetMapping(l: Loop): S[I] => immutable.Set[Lock] =
-    if (cachedFunctions.contains(l))
-      cachedFunctions(l)
-    else {
-      val newF = getLockSetMapping(l, getLocks(l))
-      cachedFunctions + (l -> newF)
-      newF
-    }
+    cachedFunctions.getOrElseUpdate(l, { getLockSetMapping(l, getLocks(l)) })
 
   private def getLockSetMapping(l: Loop, s: Set[Lock]): S[I] => immutable.Set[Lock] = {
     val locksDomain = new UnorderedDomain[Lock, SS]()
