@@ -14,5 +14,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lib.parallelArray.mock"/>
 	<classpathentry kind="lib" path="lib/dispatch-json_2.9.1-0.8.8.jar"/>
 	<classpathentry kind="lib" path="lib/sjson.jar" sourcepath="lib/sjson_2.9.1-0.17-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WALAFacade"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
