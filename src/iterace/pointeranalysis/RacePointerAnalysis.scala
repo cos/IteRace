@@ -8,11 +8,12 @@ import scala.collection._
 import wala.S
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.properties.WalaProperties
-import iterace.util.ArrayContents
+import wala.ArrayContents
 import com.ibm.wala.util.collections.Filter
 import iterace.datastructure.LockSets
 import iterace.datastructure.Lock
 import iterace.IteRaceOption
+import wala.AnalysisScopeBuilder
 
 class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder, options: Set[IteRaceOption])
   extends PointerAnalysis(startClass, startMethod, analysisScope, options) {

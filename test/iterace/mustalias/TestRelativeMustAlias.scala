@@ -10,7 +10,7 @@ import scala.collection.mutable._
 import org.scalatest.FunSuite
 import org.junit.rules.TestName
 import org.junit.Rule
-import iterace.pointeranalysis.AnalysisScopeBuilder
+import wala.AnalysisScopeBuilder
 import iterace.pointeranalysis.PointerAnalysis
 
 

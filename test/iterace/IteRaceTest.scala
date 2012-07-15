@@ -3,11 +3,12 @@ import org.junit.Test
 import org.junit.Rule
 import org.junit.rules.TestName
 import scala.reflect.BeanProperty
-import iterace.pointeranalysis.AnalysisScopeBuilder
-import iterace.util.log
+import wala.AnalysisScopeBuilder
+import util._
 import iterace.stage.StageConstructor
 import iterace.evaluation.SubjectScope
 import _root_.util.debug
+import _root_.util.JavaTest
 
 abstract class IteRaceTest extends JavaTest with SubjectScope {
 

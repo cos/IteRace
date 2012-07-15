@@ -4,9 +4,9 @@ import org.scalatest.BeforeAndAfter
 import wala.WALAConversions._
 import org.junit.Assert._
 import scala.collection._
-import iterace.pointeranalysis.AnalysisScopeBuilder
+import wala.AnalysisScopeBuilder
 import iterace.pointeranalysis.RacePointerAnalysis
-import iterace.JavaTest
+import util.JavaTest
 import iterace.IteRaceOptions
 import iterace.IteRaceOption
 

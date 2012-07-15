@@ -10,7 +10,7 @@ import iterace.IteRaceOption._
 import iterace.IteRace
 import scala.io._
 import java.io.FileWriter
-import iterace.util.log
+import util.log
 import sjson.json._
 import DefaultProtocol._
 import JsonSerialization._
@@ -21,6 +21,7 @@ import scala.collection.JavaConverters._
 import java.lang.management.ManagementFactory
 import java.io.File
 import util.debug
+import util.log
 
 abstract class Evaluate extends IteRaceTest {
 

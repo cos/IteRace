@@ -33,8 +33,7 @@ import com.ibm.wala.ssa.SSAAbstractInvokeInstruction
 import com.ibm.wala.util.graph.GraphUtil
 import com.ibm.wala.ipa.callgraph.impl.PartialCallGraph
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
-import iterace.util.log
-import util.debug
+import util._
 
 abstract class Lock extends PrettyPrintable
 

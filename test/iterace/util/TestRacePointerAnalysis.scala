@@ -8,7 +8,7 @@ import wala.WALAConversions._
 import org.junit.Assert._
 import org.scalatest.FunSuite
 import org.scalatest.matchers.MustMatchers
-import iterace.pointeranalysis.AnalysisScopeBuilder
+import wala.AnalysisScopeBuilder
 import iterace.pointeranalysis.RacePointerAnalysis
 
 

@@ -1,7 +1,6 @@
 package iterace.stage
 
 import org.junit.Test
-import iterace.util.log
 import iterace.IteRaceTest
 import iterace.datastructure.ProgramRaceSet
 import org.junit.Assert._

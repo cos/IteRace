@@ -15,6 +15,7 @@ import com.ibm.wala.ipa.callgraph.AnalysisOptions
 import com.ibm.wala.ipa.callgraph.AnalysisCache
 import com.ibm.wala.ipa.cha.ClassHierarchy
 import iterace.IteRaceOption
+import wala.AnalysisScopeBuilder
 
 class PointerAnalysis(
     entryClass: String, 

@@ -11,7 +11,6 @@ import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
 import org.junit.Test
-import iterace.util.log
 import iterace.IteRaceOption
 
 

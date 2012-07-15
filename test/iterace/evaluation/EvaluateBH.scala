@@ -10,7 +10,6 @@ import scala.collection._
 import org.scalatest.FunSuite
 import org.junit.Rule
 import iterace.IteRace
-import iterace.util.log
 import org.junit.Test
 import iterace.IteRaceOptions
 import iterace.stage.FilterByLockMayAlias

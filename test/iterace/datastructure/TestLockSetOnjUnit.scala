@@ -3,7 +3,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.junit.Test
 import org.junit.Ignore
-import iterace.util.log
+
 
 class TestLockSetOnjUnit extends 
 LockSetAbstractTest(

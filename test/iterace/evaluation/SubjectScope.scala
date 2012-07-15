@@ -1,6 +1,6 @@
 package iterace.evaluation
 
-import iterace.pointeranalysis.AnalysisScopeBuilder
+import wala.AnalysisScopeBuilder
 
 trait SubjectScope {
   val analysisScope =  AnalysisScopeBuilder("walaExclusions.txt")

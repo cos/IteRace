@@ -1,7 +1,7 @@
 package iterace.stage
 
 import org.junit.Test
-import iterace.util.log
+
 import org.junit.Ignore
 import iterace.IteRaceOptions
 

@@ -13,14 +13,13 @@ import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
 import com.ibm.wala.dataflow.IFDS.PathEdge
 import com.ibm.wala.properties.WalaProperties
-import iterace.util.log
-import iterace.pointeranalysis.AnalysisScopeBuilder
+import wala.AnalysisScopeBuilder
 import iterace.stage._
 import iterace.pointeranalysis._
 import iterace.datastructure.LockSets
 import iterace.datastructure.MayAliasLockConstructor
 import iterace.IteRaceOption._
-import _root_.util.debug
+import _root_.util._
 
 class IteRace private (
   startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
