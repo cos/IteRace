@@ -3,7 +3,7 @@ package iterace.pointeranalysis
 import scala.util.matching.Regex
 import scala.collection.JavaConverters._
 import scala.collection._
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import com.ibm.wala.properties.WalaProperties
 import com.ibm.wala.ipa.callgraph.AnalysisScope
 import com.ibm.wala.ipa.callgraph.Entrypoint

@@ -2,8 +2,8 @@ package iterace.stage
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.util.graph.impl.GraphInverter
 import com.ibm.wala.util.collections.Filter
-import iterace.util.S
-import iterace.util.WALAConversions._
+import wala.S
+import wala.WALAConversions._
 import iterace.util.crossProduct
 import scala.collection.JavaConverters._
 import scala.collection._
@@ -13,9 +13,10 @@ import iterace.datastructure.ShallowRace
 import iterace.datastructure.LowLevelRaceSet
 import iterace.datastructure.ShallowRaceSet
 import iterace.datastructure.FieldRaceSet
-import iterace.util.O
-import iterace.util.StaticClassObject
+import wala.O
+import wala.StaticClassObject
 import iterace.IteRaceOption
+import iterace.datastructure.isActuallyLibraryCode
 
 class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   import pa._
@@ -77,13 +78,13 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   private val bubbledUp: mutable.Map[S[I], Set[S[I]]] = mutable.Map()
 
   def bubbleUp(s: S[I]): Set[S[I]] = {
-    if (inApplicationScope(s.n))
+    if (inApplicationScope(s.n) && !isActuallyLibraryCode(s.n))
       return Set(s)
 
     bubbledUp.getOrElseUpdate(s, {
       val nodesInPrimordial = DFS.getReachableNodes(GraphInverter.invert(callGraph), Seq(s.n).asJava,
         new Filter[N]() {
-          def accepts(n: N) = inPrimordialScope(n)
+          def accepts(n: N) = inPrimordialScope(n) || isActuallyLibraryCode(n)
         }) asScala
 
       val invokeSs = (for (

@@ -3,9 +3,9 @@ package iterace.pointeranalysis
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import scala.collection._
-import iterace.util.S
+import wala.S
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.properties.WalaProperties
 import iterace.util.ArrayContents

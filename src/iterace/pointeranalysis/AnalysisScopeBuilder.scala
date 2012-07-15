@@ -12,7 +12,7 @@ import com.ibm.wala.classLoader.Module
 import com.ibm.wala.ipa.callgraph.AnalysisScope
 import com.ibm.wala.util.config.FileOfClasses
 import com.ibm.wala.util.io.FileProvider
-import iterace.util.debug
+import util.debug
 import scala.collection._
 import scala.collection.JavaConverters._
 import com.ibm.wala.util.strings.Atom

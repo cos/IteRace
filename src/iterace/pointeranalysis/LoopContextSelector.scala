@@ -9,7 +9,7 @@ import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.EmptyIntSet
 import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ssa.SSAPutInstruction
@@ -22,9 +22,10 @@ import scala.collection._
 import com.ibm.wala.ipa.callgraph.DelegatingContext
 import iterace.datastructure.threadSafeOnClosure
 import iterace.datastructure.generatesSafeObjects
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import iterace.datastructure.movesObjectsAround
 import iterace.IteRaceOption
+import iterace.datastructure.isActuallyLibraryCode
 
 class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
   // this is the context for all the nodes in the loop iterations
@@ -139,7 +140,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         // app-lib membrane sensitivity
         if (options(IteRaceOption.BubbleUp)) {
           newC = if (!c.is(AppObject) &&
-            (inApplicationScope(caller) && inPrimordialScope(callee)) && // membrane between app and lib
+            (inApplicationScope(caller) && !isActuallyLibraryCode(caller) && inPrimordialScope(callee)|| isActuallyLibraryCode(callee)) && // membrane between app and lib
             (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
             actualParameters.size > 1)
 

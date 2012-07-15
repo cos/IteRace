@@ -4,7 +4,7 @@ import com.ibm.wala.ssa.SSAPhiInstruction
 import com.ibm.wala.ssa.SSAInvokeInstruction
 import scala.collection.JavaConversions._
 import scala.collection._
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import com.ibm.wala.analysis.pointers.HeapGraph
 import com.ibm.wala.ssa.SSAPutInstruction
 import iterace.pointeranalysis.PointerAnalysis

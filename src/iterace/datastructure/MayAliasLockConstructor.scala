@@ -1,8 +1,8 @@
 package iterace.datastructure
 
 import iterace.pointeranalysis.PointerAnalysis
-import iterace.util.WALAConversions._
-import iterace.util.O
+import wala.WALAConversions._
+import wala.O
 import iterace.pointeranalysis.Iteration
 
 class MayAliasLockConstructor(pa: PointerAnalysis) extends LockConstructor {

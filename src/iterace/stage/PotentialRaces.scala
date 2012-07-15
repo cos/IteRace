@@ -2,7 +2,7 @@ package iterace.stage
 import com.ibm.wala.analysis.pointers.HeapGraph
 import scala.collection._
 import scala.collection.JavaConverters._
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.ipa.cfg.ExplodedInterproceduralCFG
 import com.ibm.wala.ssa.SSAPutInstruction
@@ -18,6 +18,9 @@ import iterace.datastructure.ObjectRaceSet
 import iterace.datastructure.LoopRaceSet
 import iterace.datastructure.FieldRaceSet
 import iterace.IteRaceOption
+import wala.S
+import wala.StaticClassObject
+import wala.O
 
 class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
 

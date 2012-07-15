@@ -6,8 +6,8 @@ import scala.reflect.BeanProperty
 import iterace.pointeranalysis.AnalysisScopeBuilder
 import iterace.util.log
 import iterace.stage.StageConstructor
-import iterace.util.debug
 import iterace.evaluation.SubjectScope
+import _root_.util.debug
 
 abstract class IteRaceTest extends JavaTest with SubjectScope {
 

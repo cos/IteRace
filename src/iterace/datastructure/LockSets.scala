@@ -2,7 +2,7 @@ package iterace.datastructure
 
 import scala.collection._
 import scala.collection.JavaConversions._
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import com.ibm.wala.dataflow.IFDS.PartiallyBalancedTabulationProblem
 import com.ibm.wala.dataflow.IFDS.UnorderedDomain
 import com.ibm.wala.dataflow.IFDS.ICFGSupergraph
@@ -25,7 +25,7 @@ import com.ibm.wala.dataflow.IFDS.IFlowFunctionMap
 import com.ibm.wala.dataflow.IFDS.TabulationSolver
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.dataflow.IFDS.IMergeFunction
-import iterace.util.S
+import wala.S
 import iterace.pointeranalysis._
 import com.ibm.wala.util.collections.Filter
 import com.ibm.wala.ssa.SSAInvokeInstruction
@@ -34,7 +34,7 @@ import com.ibm.wala.util.graph.GraphUtil
 import com.ibm.wala.ipa.callgraph.impl.PartialCallGraph
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
 import iterace.util.log
-import iterace.util.debug
+import util.debug
 
 abstract class Lock extends PrettyPrintable
 
@@ -98,6 +98,17 @@ class LockSets(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
           // will add ReentrantLock locks here at some point
         }
       }) flatten)
+
+  //  should move these at some point
+  def getLoopFor(n: N): Option[Loop] =
+    n.c(Loop) match {
+      case l: Loop => Some(l)
+      case _ => None
+    }
+
+  implicit def statementWithLoop(s: S[_]) = new {
+    lazy val l: Option[Loop] = getLoopFor(s.n)
+  }
 
   def getLockSet[T <: I](s: S[T]): Set[Lock] = getLockSetMapping(s.l.get)(s)
 

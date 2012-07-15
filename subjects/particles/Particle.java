@@ -1,19 +1,16 @@
 package particles;
 
 import java.util.HashSet;
-
 import extra166y.Ops;
 import extra166y.Ops.Generator;
 import extra166y.Ops.Procedure;
 import extra166y.ParallelArray;
 
-
 public class Particle {
-	public double x, y, m;
-	Particle origin, origin1;
+	public double x, y, m; Particle origin, origin1;
 
 	public void moveTo(double x, double y) {
-		this.x = x;
+		this.x = x; 
 		this.y = y;
 	}
 	
@@ -24,7 +21,6 @@ public class Particle {
 	public void vacuouslyNoRace() {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
-
 		particles.apply(new Ops.Procedure<Particle>() {
 			@Override
 			public void op(Particle b) {

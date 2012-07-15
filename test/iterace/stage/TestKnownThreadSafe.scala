@@ -2,9 +2,9 @@ package iterace.stage
 
 import org.junit.Test
 import iterace.util.log
-import iterace.util.debug
 import iterace.IteRaceOption
 import iterace.IteRaceOptions
+import util.debug
 
 class TestKnownThreadSafe extends RaceAbstractTest {
   

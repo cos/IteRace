@@ -1,10 +1,10 @@
 package iterace.datastructure
-import iterace.util.S
+import wala.S
 import com.ibm.wala.classLoader.IMethod
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 import com.ibm.wala.ipa.callgraph.CGNode
 import iterace.pointeranalysis.ThreadSafeOnClosure
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import com.ibm.wala.analysis.reflection.InstanceKeyWithNode
 import scala.collection._
 import com.ibm.wala.ipa.callgraph.ContextKey

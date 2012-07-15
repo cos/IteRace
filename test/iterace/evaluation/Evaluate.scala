@@ -14,13 +14,13 @@ import iterace.util.log
 import sjson.json._
 import DefaultProtocol._
 import JsonSerialization._
-import iterace.util.debug
 import scala.actors.Futures._
 import java.util.Timer
 import java.util.TimerTask
 import scala.collection.JavaConverters._
 import java.lang.management.ManagementFactory
 import java.io.File
+import util.debug
 
 abstract class Evaluate extends IteRaceTest {
 

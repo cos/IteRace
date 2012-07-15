@@ -1,9 +1,9 @@
 package iterace.datastructure
 
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import scala.collection.immutable._
 import scala.collection.JavaConverters._
-import iterace.util.S
+import wala.S
 import iterace.util._
 import scala.collection.mutable.{ Builder, SetBuilder }
 import scala.collection.generic.CanBuildFrom

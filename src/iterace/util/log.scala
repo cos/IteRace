@@ -1,6 +1,7 @@
 package iterace.util
 
 import scala.collection._
+import util.debug
 
 object log {
 

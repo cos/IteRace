@@ -4,7 +4,7 @@ import org.junit.runner.RunWith
 import org.scalatest.{ Spec, BeforeAndAfter }
 import org.scalatest.junit.JUnitRunner
 import scala.collection.JavaConversions._
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import org.junit.Assert._
 import scala.collection._
 import org.scalatest.FunSuite
@@ -14,7 +14,7 @@ import iterace.util.log
 import org.junit.Test
 import iterace.IteRaceOptions
 import iterace.stage.FilterByLockMayAlias
-import iterace.util.debug
+import util.debug
 
 
 class EvaluateBH extends Evaluate with BHScope {

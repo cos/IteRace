@@ -2,7 +2,7 @@ package iterace
 import com.ibm.wala.analysis.pointers.HeapGraph
 import scala.collection._
 import scala.collection.JavaConversions._
-import iterace.util.WALAConversions._
+import wala.WALAConversions._
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.ipa.cfg.ExplodedInterproceduralCFG
 import com.ibm.wala.ssa.SSAPutInstruction
@@ -20,7 +20,7 @@ import iterace.pointeranalysis._
 import iterace.datastructure.LockSets
 import iterace.datastructure.MayAliasLockConstructor
 import iterace.IteRaceOption._
-import iterace.util.debug
+import _root_.util.debug
 
 class IteRace private (
   startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,

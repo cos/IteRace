@@ -76,11 +76,11 @@ Loop: particles.Particle.disambiguateFalseRace(Particle.java:189)
 
 particles.Particle: particles.Particle.disambiguateFalseRace(Particle.java:186)
  .x
-   (a)  particles.Particle.moveTo(Particle.java:16)
-   (b)  particles.Particle.moveTo(Particle.java:16)
+   (a)  particles.Particle.moveTo(Particle.java:13)
+   (b)  particles.Particle.moveTo(Particle.java:13)
  .y
-   (a)  particles.Particle.moveTo(Particle.java:17)
-   (b)  particles.Particle.moveTo(Particle.java:17)
+   (a)  particles.Particle.moveTo(Particle.java:14)
+   (b)  particles.Particle.moveTo(Particle.java:14)
 """)
 
   @Test def ignoreFalseRacesInSeqOp = expectNoRaces
@@ -104,11 +104,11 @@ Loop: particles.Particle.raceOnSharedObjectCarriedByArray(Particle.java:259)
 
 particles.Particle: particles.Particle$16.op(Particle$16.java:253)
  .x
-   (a)  particles.Particle.moveTo(Particle.java:16)
-   (b)  particles.Particle.moveTo(Particle.java:16)
+   (a)  particles.Particle.moveTo(Particle.java:13)
+   (b)  particles.Particle.moveTo(Particle.java:13)
  .y
-   (a)  particles.Particle.moveTo(Particle.java:17)
-   (b)  particles.Particle.moveTo(Particle.java:17)
+   (a)  particles.Particle.moveTo(Particle.java:14)
+   (b)  particles.Particle.moveTo(Particle.java:14)
 """)
 
   @Test def raceBecauseOfDirectArrayLoad = expect("""
@@ -212,7 +212,7 @@ particles.Particle: particles.Particle.raceOnArray(Particle.java:460)
    (b)  particles.Particle$33.op(Particle$33.java:465)
 """)
 
-  @Test def example = expect("")
+//  @Test def example = expect("")
   /*
   @Test def raceInLibrary = expect("""
   ....
