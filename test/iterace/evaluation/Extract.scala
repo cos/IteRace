@@ -89,6 +89,8 @@ object tableAllRaces extends App {
       printStuffByFeature(feature(args.tail.head.head), r => { r.races }, formatRaceInt, maxOfRaces)
     case "time-feature" =>
       printStuffByFeature(feature(args.tail.head.head), r => { r.time }, formatTimeInt, app => { 600000 })
+    case "sync-effect" => 
+      effectOfSynchronizationLevel(r => {r.races}, formatRaceInt, maxOfRaces)
   }
 
   def printStuff(f: R => Int, format: Int => String, max: String => Int) = {
@@ -162,6 +164,48 @@ object tableAllRaces extends App {
     println(" \\\\")
   }
 
+  def effectOfSynchronizationLevel(func: R => Int, format: Int => String, max: String => Int) = {
+    var count = 0
+    
+    val baseline = negative(S.s) intersect negative(S.a)
+    val sOnly = positive(S.s) intersect negative(S.a)
+    val aOnly = negative(S.s) intersect positive(S.a)
+    val both = positive(S.s) intersect positive(S.a)
+    
+    // !!! reversed - positive is native and the other way around
+    val bigResults = baseline zip sOnly zip aOnly zip both map {
+      case (((base,s), a), both) => {
+        println("\\texttt{" + base + "-" + s + "/"+ a + "/" + both+ "}")
+        val allNormalizedForScenario = for (app <- apps) yield {
+          val rbase = find(data(app), base)
+          val rs = find(data(app), s)
+          val ra = find(data(app), a)
+          val rboth = find(data(app), both)
+
+          
+          val strs = if (rbase.isDefined && rs.isDefined)
+            format(func(rbase.get) - func(rs.get))
+          else
+            "-"
+            
+          val stra = if (rbase.isDefined && ra.isDefined)
+            format(func(rbase.get) - func(ra.get))
+          else
+            "-"
+            
+           val strboth = if (rbase.isDefined && rboth.isDefined)
+            format(func(rbase.get) - func(rboth.get))
+          else
+            "-"
+            
+          print(" & " + strs+"/"+stra+"/"+strboth)
+        }
+        println(" \\\\")
+      }
+    }
+    hline
+  }
+
   def positive(feature: String) = powerset.filter {
     case s: S if s(feature) => true
     case _ => false
@@ -175,7 +219,7 @@ object differences extends App {
 
   val data = readData()
 
-  val feature = args.head
+  //  val feature = args.head
 
   for ((projectName, projectData) <- data) {
     println(projectName + ":" + projectData.size)
