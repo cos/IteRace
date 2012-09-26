@@ -3,3 +3,7 @@
 /bin/
 /.settings/
 IteRace.iml
+
+/.classpath
+/.project
+target/
