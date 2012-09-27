@@ -14,7 +14,7 @@ import iterace.datastructure.LowLevelRaceSet
 import iterace.datastructure.ShallowRaceSet
 import iterace.datastructure.FieldRaceSet
 import wala.O
-import wala.StaticClassObject
+import wala.extra.StaticClassObject
 import iterace.IteRaceOption
 import iterace.datastructure.isActuallyLibraryCode
 

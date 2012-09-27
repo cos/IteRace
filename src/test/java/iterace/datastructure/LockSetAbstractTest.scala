@@ -6,13 +6,15 @@ import org.junit.Assert._
 import scala.collection._
 import wala.AnalysisScopeBuilder
 import iterace.pointeranalysis.RacePointerAnalysis
-import util.JavaTest
 import iterace.IteRaceOptions
 import iterace.IteRaceOption
+import sppa.util.JavaTest
+import com.typesafe.config.ConfigFactory
 
 abstract class LockSetAbstractTest(dependencies: List[String], startClass: String) extends JavaTest {
   def analyze(method: String) = {
-    var analysisScope = AnalysisScopeBuilder("walaExclusions.txt");
+    val conf = ConfigFactory.load("local.conf")
+    var analysisScope = AnalysisScopeBuilder(conf.getString("wala.jre-lib-path"), "walaExclusions.txt");
     for (d <- dependencies) { analysisScope.addBinaryDependency(d); }
 
     val pa = new RacePointerAnalysis(startClass, method, analysisScope, IteRaceOptions(IteRaceOption.TwoThreadModel))
@@ -22,7 +24,7 @@ abstract class LockSetAbstractTest(dependencies: List[String], startClass: Strin
   /**
    * Test set of all found locks
    */
-  def assertAllLocks(result: String, entry:String = testName.getMethodName()): Unit = {
+  def assertAllLocks(result: String, entry: String = testName.getMethodName()): Unit = {
     val (lockSet, pa) = analyze(entry + "()V")
     import pa._
     val theLoop = parLoops.head

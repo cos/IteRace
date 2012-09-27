@@ -12,14 +12,15 @@ import org.junit.rules.TestName
 import org.junit.Rule
 import wala.AnalysisScopeBuilder
 import iterace.pointeranalysis.PointerAnalysis
-
+import com.typesafe.config.ConfigFactory
 
 class TestRelativeMustAlias extends FunSuite with BeforeAndAfter {
 
   @Rule val testName = new TestName();
   val startClass = "Lkingdom/Animals"
 
-  var analysisScope = AnalysisScopeBuilder("walaExclusions.txt");
+  val conf = ConfigFactory.load("local.conf")
+  var analysisScope = AnalysisScopeBuilder(conf.getString("wala.jre-lib-path"), "walaExclusions.txt");
   analysisScope.addBinaryDependency("kingdom");
 
   def analyze(method: String) = new PointerAnalysis(startClass, method, analysisScope, Set())
@@ -27,7 +28,7 @@ class TestRelativeMustAlias extends FunSuite with BeforeAndAfter {
 
   def testMA(expected: Boolean)(message: String, relativeTo: String, p1: (String, String), p2: (String, String)): Unit = {
     test(message) {
-//      pritln("TEST:" + message)
+      //      pritln("TEST:" + message)
       val ma = new RelativeMustAliasLevels(pa)
       val n = pa.findNode(relativeTo).get
       val n1 = pa.findNode(p1._1).get

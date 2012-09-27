@@ -32,8 +32,8 @@ import com.ibm.wala.ssa.SSAInvokeInstruction
 import com.ibm.wala.ssa.SSAAbstractInvokeInstruction
 import com.ibm.wala.util.graph.GraphUtil
 import com.ibm.wala.ipa.callgraph.impl.PartialCallGraph
+import sppa.util._
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
-import util._
 
 abstract class Lock extends PrettyPrintable
 
@@ -42,6 +42,7 @@ object LockSets {
 }
 
 object IExplodedBasicBlock {
+  import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
   def unapply(bb: IExplodedBasicBlock): Option[(I)] = {
     Some(bb.getInstruction())
   }

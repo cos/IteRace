@@ -7,8 +7,8 @@ import wala.AnalysisScopeBuilder
 import util._
 import iterace.stage.StageConstructor
 import iterace.evaluation.SubjectScope
-import _root_.util.debug
-import _root_.util.JavaTest
+import sppa.util.debug
+import sppa.util.JavaTest
 
 abstract class IteRaceTest extends JavaTest with SubjectScope {
 

@@ -10,7 +10,7 @@ import org.scalatest.FunSuite
 import org.scalatest.matchers.MustMatchers
 import wala.AnalysisScopeBuilder
 import iterace.pointeranalysis.RacePointerAnalysis
-
+import com.typesafe.config.ConfigFactory
 
 class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers {
 
@@ -19,7 +19,8 @@ class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers
   describe("instructionsReachableFrom") {
 
     def getReachableFrom(method: String) = {
-      var analysisScope = AnalysisScopeBuilder("walaExclusions.txt");
+      val conf = ConfigFactory.load("local.conf")
+      var analysisScope = AnalysisScopeBuilder(conf.getString("wala.jre-lib-path"), "walaExclusions.txt");
       analysisScope.addBinaryDependency("kingdom");
 
       val pa = new RacePointerAnalysis(startClass, method + "()V", analysisScope, Set())

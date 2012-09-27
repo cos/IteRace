@@ -6,7 +6,7 @@ import iterace.datastructure.ProgramRaceSet
 import org.junit.Assert._
 import iterace.IteRace
 import iterace.IteRaceOption
-import util.debug
+import sppa.util.debug
 
 abstract class RaceAbstractTest extends IteRaceTest {
   

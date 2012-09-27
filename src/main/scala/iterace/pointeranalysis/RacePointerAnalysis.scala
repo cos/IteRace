@@ -8,7 +8,7 @@ import scala.collection._
 import wala.S
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.properties.WalaProperties
-import wala.ArrayContents
+import wala.extra.ArrayContents
 import com.ibm.wala.util.collections.Filter
 import iterace.datastructure.LockSets
 import iterace.datastructure.Lock

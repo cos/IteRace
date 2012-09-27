@@ -3,7 +3,7 @@ package iterace.stage
 import org.junit.Test
 import iterace.IteRaceOptions
 import iterace.IteRaceOption
-import util.debug
+import sppa.util.debug
 
 class TestKnownThreadSafeOff extends RaceAbstractTest {
   

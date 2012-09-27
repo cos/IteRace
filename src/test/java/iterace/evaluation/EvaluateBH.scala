@@ -13,7 +13,7 @@ import iterace.IteRace
 import org.junit.Test
 import iterace.IteRaceOptions
 import iterace.stage.FilterByLockMayAlias
-import util.debug
+import sppa.util.debug
 
 
 class EvaluateBH extends Evaluate with BHScope {

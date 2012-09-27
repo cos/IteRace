@@ -19,7 +19,7 @@ import iterace.pointeranalysis._
 import iterace.datastructure.LockSets
 import iterace.datastructure.MayAliasLockConstructor
 import iterace.IteRaceOption._
-import _root_.util._
+import sppa.util._
 
 class IteRace private (
   startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
