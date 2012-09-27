@@ -25,6 +25,11 @@ class IteRace private (
   startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
   options: Set[IteRaceOption]) {
 
+  def this(startClass: String,
+    startMethod: String,
+    analysisScope: AnalysisScopeBuilder) =
+    this(startClass, startMethod, analysisScope, Set(DeepSynchronized, IteRaceOption.BubbleUp))
+
   debug("Options: " + options.mkString(", "))
 
   log.startTimer("pointer-analysis");
@@ -35,14 +40,14 @@ class IteRace private (
   private val potentialRaces = new PotentialRaces(pa)()
   log.endTimer
   log("potential-races", potentialRaces.size)
-//  potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
+  //  potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
   private var currentRaces = potentialRaces
 
   log.startTimer("locksets")
   val lockSetMapping = new LockSets(pa, new MayAliasLockConstructor(pa))
   log.endTimer
-//  log("locks",)
-  
+  //  log("locks",)
+
   val filterByLockMayAlias = new FilterByLockMayAlias(pa, lockSetMapping)
 
   if (options(DeepSynchronized)) {
@@ -79,8 +84,13 @@ object IteRace {
     startClass: String,
     startMethod: String,
     analysisScope: AnalysisScopeBuilder,
-    options: Set[IteRaceOption] = Set(DeepSynchronized, IteRaceOption.BubbleUp)) =
+    options: Set[IteRaceOption]) =
     new IteRace(startClass, startMethod, analysisScope, options)
+
+  def apply(startClass: String,
+    startMethod: String,
+    analysisScope: AnalysisScopeBuilder) =
+    new IteRace(startClass, startMethod, analysisScope, Set(DeepSynchronized, IteRaceOption.BubbleUp))
 }
 
 class AnalysisException(m: String) extends Throwable {
