@@ -154,7 +154,7 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
   def getLowLevelRaceSets: Set[LowLevelRaceSet]
 }
 
-final class ObjectRaceSet(val l: Loop, val o: O, children: Set[LowLevelRaceSet])
+final class ObjectRaceSet(val l: Loop, val o: O, override val children: Set[LowLevelRaceSet])
   extends CompositeRaceSet(children) with collection.SetLike[Race, ObjectRaceSet] {
   type This = ObjectRaceSet
 
