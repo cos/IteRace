@@ -55,6 +55,14 @@ class PointerAnalysis(
     val p = (".*" + pattern + ".*")
     callGraph.asScala.find(n => n.getMethod.toString().matches(p))
   }
+  
+    /**
+   * find a call graph node that matches .*pattern.*
+   */
+  def findNodes(pattern: String): Iterable[N] = {
+    val p = (".*" + pattern + ".*")
+    callGraph.asScala.filter(n => n.getMethod.toString().matches(p))
+  }
 
   /**
    * p.pt is the set of abstract objects pointed by p
