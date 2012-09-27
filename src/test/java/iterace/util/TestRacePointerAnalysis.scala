@@ -1,7 +1,7 @@
 package iterace.util;
 
 import org.junit.runner.RunWith
-import org.scalatest.{ Spec, BeforeAndAfter }
+import org.scalatest.{ FunSpec, BeforeAndAfter }
 import org.scalatest.junit.JUnitRunner
 import scala.collection.JavaConversions._
 import wala.WALAConversions._
@@ -12,7 +12,7 @@ import wala.AnalysisScopeBuilder
 import iterace.pointeranalysis.RacePointerAnalysis
 import com.typesafe.config.ConfigFactory
 
-class TestRacePointerAnalysis extends Spec with BeforeAndAfter with MustMatchers {
+class TestRacePointerAnalysis extends FunSpec with BeforeAndAfter with MustMatchers {
 
   val startClass = "Lkingdom/Dog"
 
