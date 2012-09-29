@@ -4,20 +4,20 @@ import org.scalatest.BeforeAndAfter
 import wala.WALAConversions._
 import org.junit.Assert._
 import scala.collection._
-import wala.AnalysisScopeBuilder
 import iterace.pointeranalysis.RacePointerAnalysis
 import iterace.IteRaceOptions
 import iterace.IteRaceOption
 import sppa.util.JavaTest
 import com.typesafe.config.ConfigFactory
+import wala.AnalysisOptions
+import wala.AnalysisScope.Dependency
 
-abstract class LockSetAbstractTest(dependencies: List[String], startClass: String) extends JavaTest {
+abstract class LockSetAbstractTest(val dependencies: List[Dependency], startClass: String) extends JavaTest {
   def analyze(method: String) = {
-    val conf = ConfigFactory.load("local.conf")
-    var analysisScope = AnalysisScopeBuilder(conf.getString("wala.jre-lib-path"), "walaExclusions.txt");
-    for (d <- dependencies) { analysisScope.addBinaryDependency(d); }
-
-    val pa = new RacePointerAnalysis(startClass, method, analysisScope, IteRaceOptions(IteRaceOption.TwoThreadModel))
+    val pa = new RacePointerAnalysis(AnalysisOptions(
+      entrypoints = Seq((startClass, method)),
+      dependencies = this.dependencies),
+      IteRaceOptions(IteRaceOption.TwoThreadModel))
     (new LockSets(pa, new MayAliasLockConstructor(pa)), pa)
   }
 

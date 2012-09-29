@@ -3,8 +3,9 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.junit.Test
 import org.junit.Ignore
+import wala.AnalysisScope.Dependency
 
-class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallelArray.mock"), "Lparticles/ParticleWithLocks") {
+class TestLockSet extends LockSetAbstractTest(List(Dependency("particles"), Dependency("../lib/parallelArray.mock")), "Lparticles/ParticleWithLocks") {
   @Test def noLocks = assertAllLocks("{  }")
   @Test def synchronizedMethod = assertAllLocks("{ L: particles.ParticleWithLocks$14: particles.ParticleWithLocks.synchronizedMethod(ParticleWithLocks.java:282)-outside }")
 
@@ -38,14 +39,14 @@ class TestLockSet extends LockSetAbstractTest(List("particles", "../lib/parallel
 
   @Test def synchronizedMethodLockSet = assertLockSet("synchronizedMethod", "xyz",
     "{ L: particles.ParticleWithLocks$14: particles.ParticleWithLocks.synchronizedMethod(ParticleWithLocks.java:282)-outside }")
-    
+
   @Test def synchronizedOnObjectMethod = assertLockSet("synchronizedOnObjectMethod", "origin",
     "{ L: particles.Particle: particles.ParticleWithLocks$15.op(ParticleWithLocks$15.java:300)-alpha }")
 
   @Test def synchronizedStaticMethod = assertLockSet("xyz", "{ L: particles.ParticleWithLocks }")
-  
+
   @Ignore @Test def reenterantLock = assertAllLocks("{ L: particles.ParticleWithLocks$16.op(ParticleWithLocks$16.java:319)-outside }")
-  
+
   @Ignore @Test def reenterantLockSet = assertLockSet("reenterantLock", "xyz", "yyy")
   // @Test def xxx = assertLockSet("xyz", "yyy")
   // @Test def xxx = assertLockSet("xyz", "yyy")

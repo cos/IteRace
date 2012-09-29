@@ -10,8 +10,6 @@ class TestBubbleUp extends RaceAbstractTest {
   val entryClass = "Lparticles/ParticleUsingLibrary"
   override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.BubbleUp)
 
-  analysisScope.addBinaryDependency("particles");
-
   @Test def raceOnArrayList = expect("""
 Loop: particles.ParticleUsingLibrary.raceOnArrayList(ParticleUsingLibrary.java:92)
 

@@ -12,8 +12,6 @@ class TestPotentialRaces extends RaceAbstractTest {
 //  log.activate
 //  override val options = IteRaceOptions.all
 
-  analysisScope.addBinaryDependency("particles")
-
   @Test def vacuouslyNoRace = expectNoRaces
 
   /**

@@ -12,8 +12,6 @@ class TestFilterByMayAlias extends RaceAbstractTest {
   
   override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.DeepSynchronized)
 
-  analysisScope.addBinaryDependency("particles");
-  
   @Test def vacuouslyNoRace = expectNoRaces
 
   @Test def noLocks = expect(

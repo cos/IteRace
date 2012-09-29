@@ -44,11 +44,11 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
   private val races = new ProgramRaceSet(parLoops map (l => {
     val alphaWrites = statementsReachableFrom(l.alphaIterationN).
       filter(s => s.i.isInstanceOf[PutI] || s.i.isInstanceOf[ArrayStoreI]).
-      filter(s => !options.contains(IteRaceOption.KnownSafeFiltering) || !threadSafe(s))
+      filter(s => !iteraceOptions.contains(IteRaceOption.KnownSafeFiltering) || !threadSafe(s))
 
     val betaAccesses = statementsReachableFrom(l.betaIterationN).
       filter(s => s.i.isInstanceOf[AccessI] || s.i.isInstanceOf[ArrayReferenceI]).
-      filter(s => !options.contains(IteRaceOption.KnownSafeFiltering) || !threadSafe(s))
+      filter(s => !iteraceOptions.contains(IteRaceOption.KnownSafeFiltering) || !threadSafe(s))
 
     // it is enough to consider object created outside and in the the first iteration
     // so, filter out the objects created in the second iteration. they are duplicates of the first iteration 

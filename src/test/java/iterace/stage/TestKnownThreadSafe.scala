@@ -13,8 +13,6 @@ class TestKnownThreadSafe extends RaceAbstractTest {
   
   debug.activate
 
-  analysisScope.addBinaryDependency("particles");
-
   @Test def simpleKnownThreadSafe = expectNoRaces
   
   @Test def racePastKnownThreadSafe = expect("""

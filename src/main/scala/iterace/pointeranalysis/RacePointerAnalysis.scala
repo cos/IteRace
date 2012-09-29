@@ -8,15 +8,21 @@ import scala.collection._
 import wala.S
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.properties.WalaProperties
-import wala.extra.ArrayContents
 import com.ibm.wala.util.collections.Filter
 import iterace.datastructure.LockSets
 import iterace.datastructure.Lock
 import iterace.IteRaceOption
-import wala.AnalysisScopeBuilder
+import com.ibm.wala.ipa.callgraph.AnalysisScope
+import wala.extra.arrayContents
+import wala.FlexibleCallGraphBuilder
+import com.ibm.wala.ipa.cha.ClassHierarchy
+import wala.AnalysisOptions
+import com.ibm.wala.ipa.callgraph.ContextSelector
 
-class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder, options: Set[IteRaceOption])
-  extends PointerAnalysis(startClass, startMethod, analysisScope, options) {
+class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteRaceOption])
+  extends FlexibleCallGraphBuilder(options) {
+
+  override def cs: ContextSelector = new LoopContextSelector(iteraceOptions, instanceKeys)
 
   lazy val allInstructions = {
     callGraph.map(n => n.getIR().iterateAllInstructions().map(i => (n, i))).flatten.toSet
@@ -49,18 +55,18 @@ class RacePointerAnalysis(startClass: String, startMethod: String, analysisScope
       }).get
 
     lazy val betaIterationN =
-      if (options.contains(IteRaceOption.TwoThreadModel))
+      if (iteraceOptions.contains(IteRaceOption.TwoThreadModel))
         callGraph.getSuccNodes(l.n).find(n => n.c(Iteration) match {
           case BetaIteration => true
           case _ => false
         }).get
       else
-      	alphaIterationN
+        alphaIterationN
   }
 
   implicit def iWithField(i: I) = new {
     lazy val f: Option[F] = i match {
-      case i: ArrayReferenceI => Some(ArrayContents.v)
+      case i: ArrayReferenceI => Some(arrayContents)
       case i: AccessI => Option(cha.resolveField(i.getDeclaredField()))
       case _ => None
     }

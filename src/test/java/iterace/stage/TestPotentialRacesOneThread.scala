@@ -14,8 +14,6 @@ class TestRacesOnParticleOneThread extends RaceAbstractTest {
   val entryClass = "Lparticles/Particle"
   override val options = IteRaceOptions()
 
-  analysisScope.addBinaryDependency("particles")
-
   @Test def vacuouslyNoRace = expectNoRaces
 
   /**

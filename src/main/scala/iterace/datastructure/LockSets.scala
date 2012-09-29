@@ -58,7 +58,7 @@ trait LockConstructor {
 class LockSets(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
   import pa._
 
-  val supergraph = ICFGSupergraph.make(callGraph, pa.analysisCache)
+  val supergraph = ICFGSupergraph.make(callGraph, cache)
   //    val filterdCallGraph = PartialCallGraph.make(callGraph,callGraph.getEntrypointNodes())
 
   /**

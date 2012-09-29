@@ -1,11 +1,11 @@
 package iterace.datastructure
 
-import iterace.pointeranalysis.PointerAnalysis
 import wala.WALAConversions._
 import wala.O
 import iterace.pointeranalysis.Iteration
+import iterace.pointeranalysis.RacePointerAnalysis
 
-class MayAliasLockConstructor(pa: PointerAnalysis) extends LockConstructor {
+class MayAliasLockConstructor(pa: RacePointerAnalysis) extends LockConstructor {
   import pa._
 
   def apply(p: P) = if (p.pt.size == 1) Some(OLock(p.pt.head)) else None

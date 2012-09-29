@@ -13,8 +13,6 @@ class TestKnownThreadSafeWild extends RaceAbstractTest {
   
   debug.activate
 
-  analysisScope.addBinaryDependency("particles");
-
   @Test def noRaceWhenPrintln = expectNoRaces
   @Test def noRaceOnPattern = expectNoRaces
   @Test def noRaceOnSafeMatcher = expectNoRaces

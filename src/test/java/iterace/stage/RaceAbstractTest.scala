@@ -7,10 +7,13 @@ import org.junit.Assert._
 import iterace.IteRace
 import iterace.IteRaceOption
 import sppa.util.debug
+import wala.AnalysisScope.Dependency
 
 abstract class RaceAbstractTest extends IteRaceTest {
   
   debug.activate
+  
+  dependencies += Dependency("target")
   
   val options: Set[IteRaceOption] = Set(IteRaceOption.TwoThreadModel)
   

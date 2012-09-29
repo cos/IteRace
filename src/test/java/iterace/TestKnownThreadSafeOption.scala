@@ -3,13 +3,13 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import iterace.stage.RaceAbstractTest
 import org.junit.Test
-
+import wala.AnalysisScope.Dependency
 
 class TestKnownThreadSafeOption extends RaceAbstractTest {
-  
+
   val entryClass = "Lparticles/Particle"
 
-  analysisScope.addBinaryDependency("particles");
+  dependencies += Dependency("particles");
 
   @Test def noRaceOnStringConcatenation = expectNoRaces
   @Test def noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape = expect("""

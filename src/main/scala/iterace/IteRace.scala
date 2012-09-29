@@ -13,27 +13,27 @@ import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
 import com.ibm.wala.dataflow.IFDS.PathEdge
 import com.ibm.wala.properties.WalaProperties
-import wala.AnalysisScopeBuilder
 import iterace.stage._
 import iterace.pointeranalysis._
 import iterace.datastructure.LockSets
 import iterace.datastructure.MayAliasLockConstructor
 import iterace.IteRaceOption._
 import sppa.util._
+import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
+import wala.AnalysisOptions
 
 class IteRace private (
-  startClass: String, startMethod: String, analysisScope: AnalysisScopeBuilder,
-  options: Set[IteRaceOption]) {
+  options: AnalysisOptions,
+  iteRaceOptions: Set[IteRaceOption]) {
 
-  def this(startClass: String,
-    startMethod: String,
-    analysisScope: AnalysisScopeBuilder) =
-    this(startClass, startMethod, analysisScope, Set(DeepSynchronized, IteRaceOption.BubbleUp))
+  def this(options: AnalysisOptions) =
+    this(options, Set(DeepSynchronized, IteRaceOption.BubbleUp))
 
-  debug("Options: " + options.mkString(", "))
+  debug("Options: " + iteRaceOptions.mkString(", "))
 
   log.startTimer("pointer-analysis");
-  val pa = new RacePointerAnalysis(startClass, startMethod, analysisScope, options)
+
+  val pa = new RacePointerAnalysis(options, iteRaceOptions)
   import pa._
   log.endTimer
   log.startTimer("potential-races")
@@ -50,21 +50,21 @@ class IteRace private (
 
   val filterByLockMayAlias = new FilterByLockMayAlias(pa, lockSetMapping)
 
-  if (options(DeepSynchronized)) {
+  if (iteRaceOptions(DeepSynchronized)) {
     log.startTimer("deep-synchronized")
     currentRaces = filterByLockMayAlias(currentRaces)
     log.endTimer
     log("deep-synchronized", currentRaces.size)
   }
 
-  if (options(IteRaceOption.BubbleUp)) {
+  if (iteRaceOptions(IteRaceOption.BubbleUp)) {
     log.startTimer("bubble-up")
     currentRaces = stage.BubbleUp(pa)(currentRaces)
     log.endTimer
     log("bubble-up", currentRaces.size)
   }
 
-  if (options(AppLevelSynchronized)) {
+  if (iteRaceOptions(AppLevelSynchronized)) {
     log.startTimer("app-level-synchronized")
     currentRaces = filterByLockMayAlias(currentRaces)
     log.endTimer
@@ -80,17 +80,9 @@ class IteRace private (
 }
 
 object IteRace {
-  def apply(
-    startClass: String,
-    startMethod: String,
-    analysisScope: AnalysisScopeBuilder,
-    options: Set[IteRaceOption]) =
-    new IteRace(startClass, startMethod, analysisScope, options)
+  def apply(options: AnalysisOptions, iteRaceoOptions: Set[IteRaceOption]) = new IteRace(options, iteRaceoOptions)
 
-  def apply(startClass: String,
-    startMethod: String,
-    analysisScope: AnalysisScopeBuilder) =
-    new IteRace(startClass, startMethod, analysisScope, Set(DeepSynchronized, IteRaceOption.BubbleUp))
+  def apply(options: AnalysisOptions) = new IteRace(options, Set(DeepSynchronized, IteRaceOption.BubbleUp))
 }
 
 class AnalysisException(m: String) extends Throwable {

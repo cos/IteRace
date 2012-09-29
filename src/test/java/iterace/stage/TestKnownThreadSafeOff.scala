@@ -13,8 +13,6 @@ class TestKnownThreadSafeOff extends RaceAbstractTest {
   
   debug.activate
 
-  analysisScope.addBinaryDependency("particles");
-
   @Test def simpleKnownThreadSafe = expect("""
 Loop: particles.ParticleWithKnownThreadSafe.simpleKnownThreadSafe(ParticleWithKnownThreadSafe.java:20)
 

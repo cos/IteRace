@@ -1,36 +1,41 @@
 package iterace.evaluation
 
+import wala.AnalysisScope._
+
 trait BHScope extends SubjectScope {
-  analysisScope.addBinaryDependency("../evaluation/barnesHut/bin")
+  dependencies += Dependency("../evaluation/barnesHut/bin")
   val entryClass = "LbarnesHut/ParallelBarneshut"
 }
 trait EM3DScope extends SubjectScope {
-  analysisScope.addBinaryDependency("../evaluation/em3d/bin")
+  dependencies += Dependency("../evaluation/em3d/bin")
   val entryClass = "Lem3d/parallelArray/Em3d"
 }
 trait JUnitScope extends SubjectScope {
-  analysisScope.addBinaryDependency("../evaluation/junit/bin")
+  dependencies += Dependency("../evaluation/junit/bin")
   val entryClass = "Ljunit/tests/ParallelAllTests"
 }
 trait LuSearchScope extends SubjectScope {
-  analysisScope.addBinaryDependency("../evaluation/lusearch/bin")
-  analysisScope.addBinaryDependency("../lib/parallelArray.mock")
+  dependencies ++= Seq(Dependency("../evaluation/lusearch/bin"), Dependency("../lib/parallelArray.mock"))
   val entryClass = "Lorg/dacapo/lusearch/Search"
 }
 trait MonteCarloScope extends SubjectScope {
-  analysisScope.addBinaryDependency("../evaluation/montecarlo/bin")
+  dependencies ++= Seq(Dependency("../evaluation/montecarlo/bin"))
   val entryClass = "Lmontecarlo/parallel/JGFMonteCarloBench"
   override val entryMethod = "JGFrun(I)V"
 }
 trait OldCorefScope extends SubjectScope {
-  analysisScope.addBinaryDependency("../evaluation/coref/bin");
-  analysisScope.addJarDependency("../evaluation/coref/java_cup_runtime.jar");
+  dependencies ++= Seq(
+    Dependency("../evaluation/coref/bin"),
+    Dependency("../evaluation/coref/java_cup_runtime.jar", DependencyNature.Jar))
+
   val entryClass = "LLBJ2/nlp/coref/ClusterMerger"
 }
 trait WEKAScope extends SubjectScope {
-  analysisScope.addJarDependency("../evaluation/weka/lib/java-cup.jar")
-  analysisScope.addJarDependency("../evaluation/weka/lib/JFlex.jar")
-  analysisScope.addJarDependency("../evaluation/weka/lib/junit.jar")
-  analysisScope.addBinaryDependency("../evaluation/weka/bin")
   val entryClass = "Lweka/clusterers/EM"
+
+  dependencies ++= Seq(
+    Dependency("../evaluation/weka/lib/java-cup.jar", DependencyNature.Jar),
+    Dependency("../evaluation/weka/lib/JFlex.jar", DependencyNature.Jar),
+    Dependency("../evaluation/weka/lib/junit.jar", DependencyNature.Jar),
+    Dependency("../evaluation/weka/bin"))
 }
