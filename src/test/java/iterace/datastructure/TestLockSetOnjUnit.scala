@@ -3,7 +3,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.junit.Test
 import org.junit.Ignore
-import wala.AnalysisScope.Dependency
+import wala.Dependency
 
 class TestLockSetOnjUnit extends LockSetAbstractTest(
   List(Dependency("../evaluation/junit/bin"), Dependency("../lib/parallelArray.mock")),

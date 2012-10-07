@@ -3,7 +3,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.junit.Test
 import org.junit.Ignore
-import wala.AnalysisScope.Dependency
+import wala.Dependency
 
 class TestLockSet extends LockSetAbstractTest(List(Dependency("particles"), Dependency("../lib/parallelArray.mock")), "Lparticles/ParticleWithLocks") {
   @Test def noLocks = assertAllLocks("{  }")

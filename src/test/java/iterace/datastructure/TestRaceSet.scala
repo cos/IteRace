@@ -4,7 +4,7 @@ import iterace.IteRaceTest
 import iterace.stage.StageConstructor
 import org.junit.Test
 import org.junit.Assert._
-import wala.AnalysisScope.Dependency
+import wala.Dependency
 
 class TestRaceSet extends IteRaceTest {
   val entryClass = "Lparticles/Particle"

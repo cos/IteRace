@@ -7,7 +7,7 @@ import org.junit.Assert._
 import iterace.IteRace
 import iterace.IteRaceOption
 import sppa.util.debug
-import wala.AnalysisScope.Dependency
+import wala.Dependency
 
 abstract class RaceAbstractTest extends IteRaceTest {
   

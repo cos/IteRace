@@ -65,11 +65,10 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
     override def toString = "Interesting"
   }
 
+  private val opsPattern = ".*Ops.*".r
+  private val parallelArrayPattern = ".*ParallelArray.*".r
   // Describes how contexts are chosen
   def getCalleeTarget(caller: CGNode, site: CallSiteReference, callee: IMethod, actualParameters: Array[InstanceKey]): Context = {
-
-    val opsPattern = ".*Ops.*".r
-    val parallelArrayPattern = ".*ParallelArray.*".r
 
     //    if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
     //    	return UninterestingContext
@@ -140,7 +139,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         // app-lib membrane sensitivity
         if (options(IteRaceOption.BubbleUp)) {
           newC = if (!c.is(AppObject) &&
-            (inApplicationScope(caller) && !isActuallyLibraryCode(caller) && inPrimordialScope(callee)|| isActuallyLibraryCode(callee)) && // membrane between app and lib
+            (inApplicationScope(caller) && !isActuallyLibraryCode(caller) && inPrimordialScope(callee) || isActuallyLibraryCode(callee)) && // membrane between app and lib
             (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
             actualParameters.size > 1)
 
@@ -156,7 +155,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
       case c: Context if c.get(Loop) == null =>
         callee match {
           case M(C(_, "ParallelArray"), opsPattern()) => new LoopCallSiteContext(caller, site)
-          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
+          //          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())            
           case _ =>
             if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
               return UninterestingContext

@@ -9,7 +9,6 @@ import iterace.evaluation.SubjectScope
 import sppa.util.debug
 import sppa.util.JavaTest
 import wala.AnalysisOptions
-import wala.AnalysisScope.Dependency
 
 abstract class IteRaceTest extends JavaTest with SubjectScope {
   def analyze(entryClass: String, entryMethod: String, options: Set[IteRaceOption]) = {

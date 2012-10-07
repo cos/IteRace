@@ -23,7 +23,10 @@ abstract sealed class RaceSet extends Set[Race] with PrettyPrintable {
   /**
    * Aid for compact pretty printing
    */
-  def printSameSet(p: (String, Set[_])) = p._1 + (if (p._2.size > 1) " [" + level + p._2.size + "x]" else "")
+  def printSameSet(p: (String, Set[_])) = p match {
+    case (groupName: String, set: Set[_]) =>
+      groupName + (if (set.size > 1) " [" + level + set.size + "x]" else "")
+  }
   def level: String
 }
 
@@ -56,11 +59,13 @@ abstract sealed class LowLevelRaceSet(val l: Loop, val o: O, val alphaAccesses: 
   override def foreach[U](f: (Race) => U): Unit = races.foreach(f)
   override def size = alphaAccesses.size * betaAccesses.size
 
-  override def prettyPrint: String = {
+  override def prettyPrint: String = prettyPrint({ _ => "" })
+
+  def prettyPrint(decorator: S[I] => String): String = {
     if (races.isEmpty)
       "empty raceset"
 
-    def printAccesses(accs: Set[S[I]]) = (accs groupBy { _.prettyPrint } map (printSameSet)).toList.sorted.reduce(_ + "\n        " + _)
+    def printAccesses(accs: Set[S[I]]) = (accs groupBy { a => a.prettyPrint + decorator(a) } map (printSameSet)).toList.sorted.reduce(_ + "\n        " + _)
 
     val aString = printAccesses(alphaAccesses)
     val bString = printAccesses(betaAccesses)
@@ -71,7 +76,7 @@ abstract sealed class LowLevelRaceSet(val l: Loop, val o: O, val alphaAccesses: 
     case that: LowLevelRaceSet => this.alphaAccesses == that.alphaAccesses && this.betaAccesses == that.betaAccesses
     case _ => false
   }
-  
+
   override def level = ""
 }
 
@@ -171,7 +176,7 @@ final class ObjectRaceSet(val l: Loop, val o: O, override val children: Set[LowL
 
   override def hashCode = l.hashCode() * 97 + o.hashCode()
   def getLowLevelRaceSets: Set[LowLevelRaceSet] = children
-  
+
   override def level = "Object - "
 }
 
@@ -204,7 +209,7 @@ final class ProgramRaceSet(children: Set[LoopRaceSet])
   override def getChild(r: Race) = new LoopRaceSet(r.l, Set.empty) + r
 
   def getLowLevelRaceSets: Set[LowLevelRaceSet] = children flatMap { _.getLowLevelRaceSets }
-  
+
   override def level = "Program - "
 }
 

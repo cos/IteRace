@@ -82,7 +82,7 @@ class IteRace private (
 object IteRace {
   def apply(options: AnalysisOptions, iteRaceoOptions: Set[IteRaceOption]) = new IteRace(options, iteRaceoOptions)
 
-  def apply(options: AnalysisOptions) = new IteRace(options, Set(DeepSynchronized, IteRaceOption.BubbleUp))
+  def apply(options: AnalysisOptions) = new IteRace(options, IteRaceOptions.all)
 }
 
 class AnalysisException(m: String) extends Throwable {

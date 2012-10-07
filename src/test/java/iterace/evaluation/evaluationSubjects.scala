@@ -1,6 +1,8 @@
 package iterace.evaluation
 
 import wala.AnalysisScope._
+import wala.Dependency
+import wala.DependencyNature
 
 trait BHScope extends SubjectScope {
   dependencies += Dependency("../evaluation/barnesHut/bin")

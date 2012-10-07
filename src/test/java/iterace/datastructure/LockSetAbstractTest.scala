@@ -10,7 +10,7 @@ import iterace.IteRaceOption
 import sppa.util.JavaTest
 import com.typesafe.config.ConfigFactory
 import wala.AnalysisOptions
-import wala.AnalysisScope.Dependency
+import wala.Dependency
 
 abstract class LockSetAbstractTest(val dependencies: List[Dependency], startClass: String) extends JavaTest {
   def analyze(method: String) = {
