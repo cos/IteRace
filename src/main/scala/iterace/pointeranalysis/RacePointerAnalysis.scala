@@ -24,10 +24,6 @@ class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteR
 
   override def cs: ContextSelector = new LoopContextSelector(iteraceOptions, instanceKeys)
 
-  lazy val allInstructions = {
-    callGraph.map(n => n.getIR().iterateAllInstructions().map(i => (n, i))).flatten.toSet
-  }
-
   // we return an interable but we know it is actually a set
   def statementsReachableFrom(n: N, filter: N => Boolean = null): Iterable[S[I]] = {
     val reachableNs = if (filter == null)
