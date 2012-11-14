@@ -16,7 +16,7 @@ abstract class LockSetAbstractTest(val dependencies: List[Dependency], startClas
   def analyze(method: String) = {
     val pa = new RacePointerAnalysis(AnalysisOptions(
       entrypoints = Seq((startClass, method)),
-      dependencies = this.dependencies),
+      dependencies = this.dependencies)(ConfigFactory.load),
       IteRaceOptions(IteRaceOption.TwoThreadModel))
     (new LockSets(pa, new MayAliasLockConstructor(pa)), pa)
   }

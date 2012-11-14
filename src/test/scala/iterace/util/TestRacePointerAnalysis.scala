@@ -20,7 +20,7 @@ class TestRacePointerAnalysis extends FunSpec with BeforeAndAfter with MustMatch
   describe("instructionsReachableFrom") {
 
     def getReachableFrom(method: String) = {
-      val pa = new RacePointerAnalysis(AnalysisOptions(Seq((startClass, method + "()V")), Seq(Dependency("kingdom"))), Set())
+      val pa = new RacePointerAnalysis(AnalysisOptions(Seq((startClass, method + "()V")), Seq(Dependency("kingdom")))(ConfigFactory.load), Set())
       val n = pa.findNode(method).get
       pa.statementsReachableFrom(n)
     }
