@@ -8,11 +8,11 @@ import iterace.IteRaceOption
 class TestPotentialRaces extends RaceAbstractTest {
 
   val entryClass = "Lparticles/Particle"
-    
+
   override def options = Set(IteRaceOption.TwoThreadModel)
-  
-//  log.activate
-//  override val options = IteRaceOptions.all
+
+  //  log.activate
+  //  override val options = IteRaceOptions.all
 
   @Test def vacuouslyNoRace = expectNoRaces
 
@@ -142,7 +142,7 @@ particles.Particle: particles.Particle$20.op(Particle$20.java:306)
    (b)  particles.Particle$22.op(Particle$22.java:320)
 """)
 
-  @Test @Ignore def noRaceIfFlowSensitive =  expectNoRaces 
+  @Test @Ignore def noRaceIfFlowSensitive = expectNoRaces
 
   @Test def raceOnDifferntArrayIterationOneLoop = expect("""
 Loop: particles.Particle.raceOnDifferntArrayIterationOneLoop(Particle.java:367)
@@ -212,7 +212,16 @@ particles.Particle: particles.Particle.raceOnArray(Particle.java:460)
    (b)  particles.Particle$33.op(Particle$33.java:465)
 """)
 
-//  @Test def example = expect("")
+  @Test def noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape = expect("""
+Loop: particles.Particle.noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape(Particle.java:445)
+
+particles.Particle: particles.Particle.noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape(Particle.java:443)
+ .origin
+   (a)  particles.Particle$32.op(Particle$32.java:449)
+   (b)  particles.Particle$32.op(Particle$32.java:449)
+""")
+
+  //  @Test def example = expect("")
   /*
   @Test def raceInLibrary = expect("""
   ....
