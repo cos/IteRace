@@ -27,26 +27,31 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigParseOptions
 import com.typesafe.config.ConfigResolveOptions
 
-abstract class Evaluate extends JavaTest {
+class Evaluate extends JavaTest {
 
   debug.activate
   debug(this.getClass().toString())
 
   var options: Set[IteRaceOption] = IteRaceOptions.all
 
-  def result: String = IteRace(AnalysisOptions(), options).races.prettyPrint()
+  def result: String = {
+    val subjectsConfig = ConfigFactory.load("subjects")
+    implicit val config = subjectsConfig.getConfig("evaluation." + testName.getMethodName()) withFallback
+      subjectsConfig withFallback
+      ConfigFactory.load
+    println(config.root.render)
+    IteRace(AnalysisOptions(), options).races.prettyPrint()
+  }
 
-  def expectNoRaces { toRun = () => { assertEquals("", result) } }
-  def expectSomeRaces { toRun = () => { assertNotSame("", result) } }
-  def expect(printedRaces: String) { toRun = () => { assertEquals(printedRaces, "\n" + result + "\n") } }
+  def expectNoRaces { assertEquals("", result) }
+  def expectSomeRaces { assertNotSame("", result) }
+  def expect(printedRaces: String) { assertEquals(printedRaces, "\n" + result + "\n") }
 
-  var toRun: () => Unit = expectNoRaces _
-
-  @Test def bh { expectNoRaces }
-  @Test def em3d { expectNoRaces }
-  @Test def junit { expectNoRaces }
-  @Test def lusearch { expectSomeRaces }
-  @Test def montecarlo {
+  @Test def BH { expectNoRaces }
+  @Test def EM3D { expectNoRaces }
+  @Test def jUnit { expectNoRaces }
+  @Test def LuSearch { expectSomeRaces }
+  @Test def MonteCarlo {
     expect("""
 Loop: montecarlo.parallel.AppDemo.runParallel(AppDemo.java:178)
 
@@ -57,10 +62,8 @@ Static: montecarlo.parallel.Universal
 """)
   }
 
-  @Test def oldcoref { expectNoRaces }
-  @Test def weka { expectNoRaces }
-
-  @Test def t { toRun() }
+  @Test def OldCoref { expectNoRaces }
+  @Test def WEKA { expectNoRaces }
 }
 
 object Evaluate extends App {
@@ -164,4 +167,3 @@ object EvaluateAll extends App {
 
   }
 }
-  //  val uglyClassPath = "/Applications/eclipse/plugins/*.jar:/Applications/eclipse/plugins/org.eclipse.core.runtime_3.7.0.v20110110.jar:/Applications/eclipse/plugins/org.eclipse.osgi_3.7.2.v20120110-1415.jar:/Applications/eclipse/plugins/org.eclipse.equinox.weaving.hook_1.0.0.v20100503.jar:/Applications/eclipse/plugins/org.eclipse.equinox.common_3.6.0.v20110523.jar:/Applications/eclipse/plugins/org.eclipse.core.jobs_3.5.101.v20120113-1953.jar:/Applications/eclipse/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505/runtime_registry_compatibility.jar:/Applications/eclipse/plugins/org.eclipse.equinox.registry_3.5.101.R37x_v20110810-1611.jar:/Applications/eclipse/plugins/org.eclipse.equinox.preferences_3.4.2.v20120111-2020.jar:/Applications/eclipse/plugins/org.eclipse.core.contenttype_3.4.100.v20110423-0524.jar:/Applications/eclipse/plugins/org.eclipse.equinox.app_1.3.100.v20110321.jar:/Applications/eclipse/plugins/org.eclipse.core.resources_3.7.101.v20120125-1505.jar"
