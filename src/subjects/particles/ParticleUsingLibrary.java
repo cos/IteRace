@@ -3,7 +3,6 @@ package particles;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import extra166y.Ops;
 import extra166y.ParallelArray;
 
@@ -81,8 +80,7 @@ public class ParticleUsingLibrary {
 			}
 		});
 	}
-	
-	
+
 	public void raceOnArrayList() {
 		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
 				ParallelArray.defaultExecutor());
