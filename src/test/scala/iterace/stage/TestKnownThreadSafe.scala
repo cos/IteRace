@@ -20,11 +20,11 @@ Loop: particles.ParticleWithKnownThreadSafe.racePastKnownThreadSafe(ParticleWith
 
 particles.Particle: particles.ParticleWithKnownThreadSafe.racePastKnownThreadSafe(ParticleWithKnownThreadSafe.java:33)
  .x
-   (a)  particles.Particle.moveTo(Particle.java:16)
-   (b)  particles.Particle.moveTo(Particle.java:16)
+   (a)  particles.Particle.moveTo(Particle.java:13)
+   (b)  particles.Particle.moveTo(Particle.java:13)
  .y
-   (a)  particles.Particle.moveTo(Particle.java:17)
-   (b)  particles.Particle.moveTo(Particle.java:17)
+   (a)  particles.Particle.moveTo(Particle.java:14)
+   (b)  particles.Particle.moveTo(Particle.java:14)
 """)
 
 	@Test def noRaceOnTransitiveClosureVerySimple = expectNoRaces

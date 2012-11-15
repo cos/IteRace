@@ -5,7 +5,7 @@ import org.junit.Test
 import org.junit.Ignore
 import wala.Dependency
 
-class TestLockSet extends LockSetAbstractTest(List(Dependency("particles"), Dependency("../lib/parallelArray.mock")), "Lparticles/ParticleWithLocks") {
+class TestLockSet extends LockSetAbstractTest("Lparticles/ParticleWithLocks") {
   @Test def noLocks = assertAllLocks("{  }")
   @Test def synchronizedMethod = assertAllLocks("{ L: particles.ParticleWithLocks$14: particles.ParticleWithLocks.synchronizedMethod(ParticleWithLocks.java:282)-outside }")
 

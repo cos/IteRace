@@ -31,11 +31,11 @@ Static: particles.ParticleWithKnownThreadSafe$ThreadSafe
    (b)  particles.ParticleWithKnownThreadSafe$ThreadSafe.moveParticle(ParticleWithKnownThreadSafe$ThreadSafe.java:131)
 particles.Particle: particles.ParticleWithKnownThreadSafe.racePastKnownThreadSafe(ParticleWithKnownThreadSafe.java:33)
  .x
-   (a)  particles.Particle.moveTo(Particle.java:16)
-   (b)  particles.Particle.moveTo(Particle.java:16)
+   (a)  particles.Particle.moveTo(Particle.java:13)
+   (b)  particles.Particle.moveTo(Particle.java:13)
  .y
-   (a)  particles.Particle.moveTo(Particle.java:17)
-   (b)  particles.Particle.moveTo(Particle.java:17)
+   (a)  particles.Particle.moveTo(Particle.java:14)
+   (b)  particles.Particle.moveTo(Particle.java:14)
 """)
 
 	@Test def noRaceOnTransitiveClosureVerySimple = expect("""
@@ -56,11 +56,11 @@ Static: particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure
    (b)  particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure.moveParticle(ParticleWithKnownThreadSafe$ThreadSafeOnClosure.java:117)
 particles.Particle: particles.ParticleWithKnownThreadSafe.noRaceOnTransitiveClosure(ParticleWithKnownThreadSafe.java:61)
  .x
-   (a)  particles.Particle.moveTo(Particle.java:16)
-   (b)  particles.Particle.moveTo(Particle.java:16)
+   (a)  particles.Particle.moveTo(Particle.java:13)
+   (b)  particles.Particle.moveTo(Particle.java:13)
  .y
-   (a)  particles.Particle.moveTo(Particle.java:17)
-   (b)  particles.Particle.moveTo(Particle.java:17)
+   (a)  particles.Particle.moveTo(Particle.java:14)
+   (b)  particles.Particle.moveTo(Particle.java:14)
 """)
 	
 	@Test def noRaceOnSafeObject = expect("""
@@ -68,11 +68,11 @@ Loop: particles.ParticleWithKnownThreadSafe.noRaceOnSafeObject(ParticleWithKnown
 
 particles.Particle: particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.getSafeParticle(ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.java:105)
  .x
-   (a)  particles.Particle.moveTo(Particle.java:16)
-   (b)  particles.Particle.moveTo(Particle.java:16)
+   (a)  particles.Particle.moveTo(Particle.java:13)
+   (b)  particles.Particle.moveTo(Particle.java:13)
  .y
-   (a)  particles.Particle.moveTo(Particle.java:17)
-   (b)  particles.Particle.moveTo(Particle.java:17)
+   (a)  particles.Particle.moveTo(Particle.java:14)
+   (b)  particles.Particle.moveTo(Particle.java:14)
 """)
 	
 	@Test def raceOnSafeObjectAccessedDirectly = expect("""

@@ -5,9 +5,7 @@ import org.junit.Test
 import org.junit.Ignore
 import wala.Dependency
 
-class TestLockSetOnjUnit extends LockSetAbstractTest(
-  List(Dependency("../evaluation/junit/bin"), Dependency("../lib/parallelArray.mock")),
-  "Ljunit/tests/ParallelAllTests") {
+class TestLockSetOnjUnit extends LockSetAbstractTest("Ljunit/tests/ParallelAllTests") {
 
-  @Test def allLocks = assertAllLocks("{ L: junit.framework.TestResult: junit.textui.TestRunner.createTestResult(TestRunner.java:105)-outside }", "main([Ljava/lang/String;)V")
+  @Test @Ignore("Requires junit. Link back when possible.") def allLocks = assertAllLocks("{ L: junit.framework.TestResult: junit.textui.TestRunner.createTestResult(TestRunner.java:105)-outside }", "main([Ljava/lang/String;)V")
 }

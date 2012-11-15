@@ -30,8 +30,9 @@ class IteRace private (
     this(options, Set(DeepSynchronized, IteRaceOption.BubbleUp))
 
   debug("Options: " + iteRaceOptions.mkString(", "))
-
+  
   log.startTimer("pointer-analysis");
+ 
 
   val pa = new RacePointerAnalysis(options, iteRaceOptions)
   import pa._
@@ -76,7 +77,7 @@ class IteRace private (
 
   debug(log.entries)
   debug(" \n\n ******************************************************** \n\n  ")
-  debug(races.prettyPrint)
+  debug(races.prettyPrint())
 }
 
 object IteRace {

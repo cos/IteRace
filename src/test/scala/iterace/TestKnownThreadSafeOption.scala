@@ -7,9 +7,9 @@ import wala.Dependency
 
 class TestKnownThreadSafeOption extends RaceAbstractTest {
 
-  val entryClass = "Lparticles/Particle"
+  override def entryClass = "Lparticles/Particle"
 
-  dependencies += Dependency("particles");
+  override def options = Set(IteRaceOption.TwoThreadModel)
 
   @Test def noRaceOnStringConcatenation = expectNoRaces
   @Test def noRaceOnObjectsFromTheCurrentIterationThatHaveOrWillEscape = expect("""

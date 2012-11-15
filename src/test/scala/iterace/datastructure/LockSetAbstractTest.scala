@@ -12,12 +12,12 @@ import com.typesafe.config.ConfigFactory
 import wala.AnalysisOptions
 import wala.Dependency
 
-abstract class LockSetAbstractTest(val dependencies: List[Dependency], startClass: String) extends JavaTest {
+abstract class LockSetAbstractTest(startClass: String) extends JavaTest {
   def analyze(method: String) = {
-    val pa = new RacePointerAnalysis(AnalysisOptions(
-      entrypoints = Seq((startClass, method)),
-      dependencies = this.dependencies)(ConfigFactory.load),
+    implicit val config = ConfigFactory.load("test")
+    val pa = new RacePointerAnalysis(AnalysisOptions(startClass, method),
       IteRaceOptions(IteRaceOption.TwoThreadModel))
+    
     (new LockSets(pa, new MayAliasLockConstructor(pa)), pa)
   }
 

@@ -4,7 +4,6 @@ import org.junit.Test
 import org.junit.Assert._
 import iterace.IteRaceOption._
 import iterace.IteRaceOption
-import iterace.IteRaceTest
 import iterace.IteRaceOptions
 import iterace.IteRaceOption._
 import iterace.IteRace
@@ -21,17 +20,21 @@ import scala.collection.JavaConverters._
 import java.lang.management.ManagementFactory
 import java.io.File
 import sppa.util.debug
+import wala.AnalysisOptions
+import com.typesafe.config.ConfigFactory
+import sppa.util.JavaTest
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigParseOptions
+import com.typesafe.config.ConfigResolveOptions
 
-abstract class Evaluate extends IteRaceTest {
+abstract class Evaluate extends JavaTest {
 
   debug.activate
   debug(this.getClass().toString())
 
   var options: Set[IteRaceOption] = IteRaceOptions.all
 
-  def analyze(options: Set[IteRaceOption]): IteRace = analyze(entryClass, entryMethod, options)
-
-  def result: String = analyze(entryClass, entryMethod, options).races.prettyPrint
+  def result: String = IteRace(AnalysisOptions(), options).races.prettyPrint()
 
   def expectNoRaces { toRun = () => { assertEquals("", result) } }
   def expectSomeRaces { toRun = () => { assertNotSame("", result) } }
@@ -39,27 +42,36 @@ abstract class Evaluate extends IteRaceTest {
 
   var toRun: () => Unit = expectNoRaces _
 
+  @Test def bh { expectNoRaces }
+  @Test def em3d { expectNoRaces }
+  @Test def junit { expectNoRaces }
+  @Test def lusearch { expectSomeRaces }
+  @Test def montecarlo {
+    expect("""
+Loop: montecarlo.parallel.AppDemo.runParallel(AppDemo.java:178)
+
+Static: montecarlo.parallel.Universal
+ .UNIVERSAL_DEBUG
+   (a)  montecarlo.parallel.Universal.<init>(Universal.java:63)
+   (b)  montecarlo.parallel.Universal.<init>(Universal.java:63)
+""")
+  }
+
+  @Test def oldcoref { expectNoRaces }
+  @Test def weka { expectNoRaces }
+
   @Test def t { toRun() }
 }
 
 object Evaluate extends App {
-  val subjectMap = Map(
-    "BH" -> new EvaluateBH,
-    "EM3D" -> new EvaluateEM3D,
-    "jUnit" -> new EvaluatejUnit,
-    "LuSearch" -> new EvaluateLuSearch,
-    "MonteCarlo" -> new EvaluateMonteCarlo,
-    "Coref" -> new EvaluateOldCoref,
-    "WEKA" -> new EvaluateWEKA)
 
   val arguments = List.fromArray(args)
 
   val subjectName = arguments.head
-  val subject = subjectMap(subjectName)
   val optionNames = arguments.tail
   val options = IteRaceOptions(optionNames map { IteRaceOption(_) })
 
-  println(subject)
+  println(subjectName)
   println(options)
 
   val pidWrite = new FileWriter("theprocessid.txt")
@@ -67,7 +79,11 @@ object Evaluate extends App {
   pidWrite.write(ManagementFactory.getRuntimeMXBean().getName().split('@').head)
   pidWrite.close()
 
-  val iteRace = subject.analyze(options)
+  val subjectsConfig = ConfigFactory.load("subjects", ConfigParseOptions.defaults.setAllowMissing(false), ConfigResolveOptions.defaults)
+
+  val iteRace = IteRace(AnalysisOptions()(
+    subjectsConfig.getConfig("evaluation.subjects." + subjectName) withFallback
+      subjectsConfig.getConfig("evaluation") withFallback subjectsConfig), options)
 
   val fw = new FileWriter(EvalUtil.fileName(subjectName, optionNames) + ".json")
 

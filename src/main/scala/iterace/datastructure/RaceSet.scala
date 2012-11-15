@@ -12,7 +12,7 @@ import scala.collection.immutable.TreeSet
 import iterace.pointeranalysis.Loop
 import iterace.pointeranalysis.LoopCallSiteContext
 
-abstract sealed class RaceSet extends Set[Race] with PrettyPrintable {
+abstract sealed class RaceSet extends Set[Race] {
   type This <: RaceSet
 
   override def seq = this
@@ -20,6 +20,7 @@ abstract sealed class RaceSet extends Set[Race] with PrettyPrintable {
   override def +(r: Race): This
   override def -(r: Race): This
 
+  val noDecorator: S[I] => String = { _ => "" }
   /**
    * Aid for compact pretty printing
    */
@@ -28,6 +29,8 @@ abstract sealed class RaceSet extends Set[Race] with PrettyPrintable {
       groupName + (if (set.size > 1) " [" + level + set.size + "x]" else "")
   }
   def level: String
+  
+  def prettyPrint(decorator: S[I] => String = noDecorator): String
 }
 
 object RaceSet {
@@ -43,7 +46,7 @@ object RaceSet {
 }
 
 abstract sealed class LowLevelRaceSet(val l: Loop, val o: O, val alphaAccesses: Set[S[I]], val betaAccesses: Set[S[I]])
-  extends RaceSet with PrettyPrintable {
+  extends RaceSet {
 
   lazy val races = crossProduct(alphaAccesses, betaAccesses) map {
     case (s1: S[I], s2: S[I]) => getRace(s1, s2)
@@ -59,9 +62,7 @@ abstract sealed class LowLevelRaceSet(val l: Loop, val o: O, val alphaAccesses: 
   override def foreach[U](f: (Race) => U): Unit = races.foreach(f)
   override def size = alphaAccesses.size * betaAccesses.size
 
-  override def prettyPrint: String = prettyPrint({ _ => "" })
-
-  def prettyPrint(decorator: S[I] => String): String = {
+  def prettyPrint(decorator: S[I] => String = noDecorator): String = {
     if (races.isEmpty)
       "empty raceset"
 
@@ -91,7 +92,7 @@ final class FieldRaceSet(l: Loop, o: O, val f: F, alphaAccesses: Set[S[I]], beta
     case r: RaceOnField => r.l == l && r.o == o && r.f == f
     case _ => false
   }
-  override def prettyPrint: String = " ." + f.getName() + "\n" + super.prettyPrint()
+  override def prettyPrint(decorator: S[I] => String = noDecorator): String = " ." + f.getName() + "\n" + super.prettyPrint(decorator)
 
   override def equals(other: Any) = other match {
     case that: FieldRaceSet => this.l == that.l && this.o == that.o && this.f == that.f && super.equals(that)
@@ -113,7 +114,7 @@ final class ShallowRaceSet(l: Loop, o: O, alphaAccesses: Set[S[I]], betaAccesses
     case _ => false
   }
 
-  override def prettyPrint: String = " application level\n" + super.prettyPrint()
+  override def prettyPrint(decorator: S[I] => String = noDecorator): String = " application level\n" + super.prettyPrint(decorator)
 
   override def equals(other: Any) = other match {
     case that: ShallowRaceSet => this.l == that.l && this.o == that.o && super.equals(that)
@@ -146,7 +147,7 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
   override def foreach[U](f: (Race) => U): Unit = children.foreach({ _.foreach(f) })
   override def size = children.toList map { _.size } reduceOption { _ + _ } getOrElse 0
 
-  override def prettyPrint = children.groupBy(_.prettyPrint).map(printSameSet).
+  override def prettyPrint(decorator: S[I] => String = noDecorator) = children.groupBy(_.prettyPrint(decorator)).map(printSameSet).
     toList.sorted.reduceOption(_ + "\n" + _).getOrElse("")
 
   def getRaceSet(children: Set[Child]): This
@@ -167,7 +168,7 @@ final class ObjectRaceSet(val l: Loop, val o: O, override val children: Set[LowL
   override def accepts(r: Race) = r.l == l && r.o == o
   override def getChild(r: Race) = RaceSet(r)
 
-  override def prettyPrint = o.prettyPrint() + "\n" + super.prettyPrint
+  override def prettyPrint(decorator: S[I] => String = noDecorator) = o.prettyPrint() + "\n" + super.prettyPrint(decorator)
 
   override def equals(other: Any) = other match {
     case that: ObjectRaceSet => this.l == that.l && this.o == that.o && super.equals(that)
@@ -188,8 +189,8 @@ final class LoopRaceSet(val l: Loop, children: Set[ObjectRaceSet])
   override def accepts(r: Race) = r.l == l
   override def getChild(r: Race) = new ObjectRaceSet(l, r.o, Set.empty) + r
 
-  override def prettyPrint =
-    "Loop: " + l.n.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint + "\n\n" + super.prettyPrint
+  override def prettyPrint(decorator: S[I] => String = noDecorator) =
+    "Loop: " + l.n.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint + "\n\n" + super.prettyPrint(decorator)
 
   override def equals(other: Any) = other match {
     case that: LoopRaceSet => this.l == that.l && super.equals(that)
