@@ -85,7 +85,7 @@ object Evaluate extends App {
   val subjectsConfig = ConfigFactory.load("subjects", ConfigParseOptions.defaults.setAllowMissing(false), ConfigResolveOptions.defaults)
 
   val iteRace = IteRace(AnalysisOptions()(
-    subjectsConfig.getConfig("evaluation.subjects." + subjectName) withFallback
+    subjectsConfig.getConfig("evaluation." + subjectName) withFallback
       subjectsConfig.getConfig("evaluation") withFallback subjectsConfig), options)
 
   val fw = new FileWriter(EvalUtil.fileName(subjectName, optionNames) + ".json")
