@@ -10,3 +10,7 @@ unmanagedSourceDirectories in Test <+= sourceDirectory / "subjects"
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
 
 EclipseKeys.withSource := true
+
+mainClass in Test := Some("iterace.evaluation.Evaluate")
+
+fork in Test := true
