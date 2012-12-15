@@ -68,7 +68,7 @@ Static: montecarlo.parallel.Universal
 
 object Evaluate extends App {
 
-  val arguments = List.fromArray(args)
+  val arguments = args.toList
 
   val subjectName = arguments.head
   val optionNames = arguments.tail
