@@ -31,8 +31,6 @@ class Evaluate extends JavaTest {
   debug.activate
   debug(this.getClass().toString())
 
-  var options: Set[IteRaceOption] = IteRaceOptions.all
-
   def result: String = {
     val subjectsConfig = ConfigFactory.load("subjects")
     implicit val config = subjectsConfig.getConfig("evaluation." + testName.getMethodName()) withFallback
