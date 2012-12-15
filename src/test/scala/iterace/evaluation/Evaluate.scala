@@ -14,8 +14,6 @@ import sjson.json._
 import DefaultProtocol._
 import JsonSerialization._
 import scala.actors.Futures._
-import java.util.Timer
-import java.util.TimerTask
 import scala.collection.JavaConverters._
 import java.lang.management.ManagementFactory
 import java.io.File
@@ -23,6 +21,7 @@ import sppa.util.debug
 import wala.AnalysisOptions
 import com.typesafe.config.ConfigFactory
 import sppa.util.JavaTest
+import sppa.util.Timer
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigParseOptions
 import com.typesafe.config.ConfigResolveOptions
@@ -77,18 +76,20 @@ object Evaluate extends App {
   println(subjectName)
   println(options)
 
-  val pidWrite = new FileWriter("theprocessid.txt")
-  println(ManagementFactory.getRuntimeMXBean().getName())
-  pidWrite.write(ManagementFactory.getRuntimeMXBean().getName().split('@').head)
-  pidWrite.close()
-
   val subjectsConfig = ConfigFactory.load("subjects", ConfigParseOptions.defaults.setAllowMissing(false), ConfigResolveOptions.defaults)
+
+  val fw = new FileWriter(EvalUtil.fileName(subjectName, optionNames) + ".json")
+  
+  Timer(60000)({
+    System.err.println("Timeout")
+    fw.close()
+    sys.exit()
+  })
 
   val iteRace = IteRace(AnalysisOptions()(
     subjectsConfig.getConfig("evaluation." + subjectName) withFallback
       subjectsConfig.getConfig("evaluation") withFallback subjectsConfig), options)
 
-  val fw = new FileWriter(EvalUtil.fileName(subjectName, optionNames) + ".json")
 
   println(log.entries.toMap)
   fw.write("" + tojson(log.entries.toMap)); fw.close()
