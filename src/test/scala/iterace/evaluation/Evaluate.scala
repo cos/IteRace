@@ -37,7 +37,7 @@ class Evaluate extends JavaTest {
       subjectsConfig withFallback
       ConfigFactory.load
     println(config.root.render)
-    IteRace(AnalysisOptions(), options).races.prettyPrint()
+    IteRace(AnalysisOptions()).races.prettyPrint()
   }
 
   def expectNoRaces { assertEquals("", result) }
@@ -76,8 +76,10 @@ object Evaluate extends App {
 
   val subjectsConfig = ConfigFactory.load("subjects", ConfigParseOptions.defaults.setAllowMissing(false), ConfigResolveOptions.defaults)
 
-  val fw = new FileWriter(EvalUtil.fileName(subjectName, optionNames) + ".json")
-  
+  val resultsFile = "IteRace/" + EvalUtil.fileName(subjectName, optionNames) + ".json"
+  println((new File(resultsFile)).getAbsolutePath())
+  val fw = new FileWriter(resultsFile)
+
   Timer(60000)({
     System.err.println("Timeout")
     fw.close()
@@ -87,7 +89,6 @@ object Evaluate extends App {
   val iteRace = IteRace(AnalysisOptions()(
     subjectsConfig.getConfig("evaluation." + subjectName) withFallback
       subjectsConfig.getConfig("evaluation") withFallback subjectsConfig), options)
-
 
   println(log.entries.toMap)
   fw.write("" + tojson(log.entries.toMap)); fw.close()
