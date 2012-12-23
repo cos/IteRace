@@ -74,7 +74,7 @@ object Evaluate extends App {
   println(subjectName)
   println(options)
 
-  val subjectsConfig = ConfigFactory.load("subjects", ConfigParseOptions.defaults.setAllowMissing(false), ConfigResolveOptions.defaults)
+  val subjectsConfig = ConfigFactory.load(subjectName, ConfigParseOptions.defaults.setAllowMissing(false), ConfigResolveOptions.defaults)
 
   val resultsFile = EvalUtil.fileName(subjectName, optionNames) + ".json"
   println((new File(resultsFile)).getAbsolutePath())
@@ -86,12 +86,11 @@ object Evaluate extends App {
     sys.exit()
   })
 
-  val iteRace = IteRace(AnalysisOptions()(
-    subjectsConfig.getConfig("evaluation." + subjectName) withFallback
-      subjectsConfig.getConfig("evaluation") withFallback subjectsConfig), options)
+  val iteRace = IteRace(AnalysisOptions()(subjectsConfig), options)
 
   println(log.entries.toMap)
   fw.write("" + tojson(log.entries.toMap)); fw.close()
+  sys.exit(0)
 }
 
 object EvalUtil {
