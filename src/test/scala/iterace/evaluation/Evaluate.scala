@@ -76,7 +76,7 @@ object Evaluate extends App {
 
   val subjectsConfig = ConfigFactory.load("subjects", ConfigParseOptions.defaults.setAllowMissing(false), ConfigResolveOptions.defaults)
 
-  val resultsFile = "IteRace/" + EvalUtil.fileName(subjectName, optionNames) + ".json"
+  val resultsFile = EvalUtil.fileName(subjectName, optionNames) + ".json"
   println((new File(resultsFile)).getAbsolutePath())
   val fw = new FileWriter(resultsFile)
 
