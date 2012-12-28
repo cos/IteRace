@@ -2,14 +2,13 @@ package iterace.stage
 
 import org.junit.Test
 import org.junit.Ignore
-import iterace.IteRaceOptions
 import iterace.IteRaceOption
 
 class TestPotentialRaces extends RaceAbstractTest {
 
   val entryClass = "Lparticles/Particle"
 
-  override def options = Set(IteRaceOption.TwoThreadModel)
+  override def options = Set(IteRaceOption.TwoThreads)
 
   //  log.activate
   //  override val options = IteRaceOptions.all

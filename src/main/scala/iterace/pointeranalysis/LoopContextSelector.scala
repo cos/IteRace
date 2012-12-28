@@ -95,7 +95,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         val defAndUses = (invoke.uses ++ Iterable(invoke.getDef())).toSet
 
         val alphaIteration =
-          if (options.contains(IteRaceOption.TwoThreadModel))
+          if (options.contains(IteRaceOption.TwoThreads))
             !(defAndUses & e0Vals).isEmpty
           else
             true
@@ -114,7 +114,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
 
         var newC: Context = c
 
-        if (options(IteRaceOption.KnownSafeFiltering)) {
+        if (options(IteRaceOption.Filtering)) {
           newC = if (!c.is(ThreadSafeOnClosure) && threadSafeOnClosure(caller, callee, actualParameters))
             ThreadSafeContext + c
           else

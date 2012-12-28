@@ -51,7 +51,7 @@ class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteR
       }).get
 
     lazy val betaIterationN =
-      if (iteraceOptions.contains(IteRaceOption.TwoThreadModel))
+      if (iteraceOptions.contains(IteRaceOption.TwoThreads))
         callGraph.getSuccNodes(l.n).find(n => n.c(Iteration) match {
           case BetaIteration => true
           case _ => false

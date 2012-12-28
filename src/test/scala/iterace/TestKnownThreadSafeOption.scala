@@ -9,7 +9,7 @@ class TestKnownThreadSafeOption extends RaceAbstractTest {
 
   override def entryClass = "Lparticles/ParticleUsingLibrary"
     
-  override def options = Set(IteRaceOption.TwoThreadModel, IteRaceOption.KnownSafeFiltering)
+  override def options = Set(IteRaceOption.TwoThreads, IteRaceOption.Filtering)
 
   @Test def noRaceOnStringConcatenation = expectNoRaces
   @Test def noRaceWhenPrintln = expectNoRaces;

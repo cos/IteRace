@@ -1,13 +1,12 @@
 package iterace.stage
 
 import org.junit.Test
-import iterace.IteRaceOptions
 import iterace.IteRaceOption
 import sppa.util.debug
 
 class TestKnownThreadSafeOff extends RaceAbstractTest {
   
-  override val options = IteRaceOptions(IteRaceOption.TwoThreadModel)
+  override val options = Set[IteRaceOption](IteRaceOption.TwoThreads)
   
   val entryClass = "Lparticles/ParticleWithKnownThreadSafe"
   

@@ -1,7 +1,6 @@
 package iterace.stage
 
 import org.junit.Test
-import iterace.IteRaceOptions
 import iterace.IteRaceOption
 import sppa.util.debug
 
@@ -9,7 +8,7 @@ class TestKnownThreadSafeWild extends RaceAbstractTest {
   
   val entryClass = "Lparticles/ParticleUsingLibrary"
  
-  override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.KnownSafeFiltering)
+  override val options = Set[IteRaceOption](IteRaceOption.TwoThreads, IteRaceOption.Filtering)
   
   debug.activate
 

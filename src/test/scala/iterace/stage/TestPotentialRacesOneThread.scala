@@ -3,7 +3,6 @@ package iterace.stage
 import org.junit.Test
 
 import iterace.IteRaceOption
-import iterace.IteRaceOptions
 
 /**
  * Tests Particle.class (the same as TestPotentialRaces) without the two-thread-model 
@@ -12,7 +11,7 @@ import iterace.IteRaceOptions
 class TestRacesOnParticleOneThread extends RaceAbstractTest {
 
   val entryClass = "Lparticles/Particle"
-  override val options = IteRaceOptions()
+  override val options = Set[IteRaceOption]()
 
   @Test def vacuouslyNoRace = expectNoRaces
 

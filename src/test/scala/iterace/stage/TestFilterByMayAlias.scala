@@ -3,14 +3,13 @@ package iterace.stage
 import org.junit.Test
 import iterace.IteRaceOption._
 import iterace.IteRaceOption
-import iterace.IteRaceOptions
 
 
 class TestFilterByMayAlias extends RaceAbstractTest {
   
   val entryClass = "Lparticles/ParticleWithLocks"
   
-  override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.DeepSynchronized)
+  override val options = Set[IteRaceOption](IteRaceOption.TwoThreads, IteRaceOption.DeepSynchronized)
 
   @Test def vacuouslyNoRace = expectNoRaces
 

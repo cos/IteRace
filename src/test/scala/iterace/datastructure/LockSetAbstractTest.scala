@@ -5,7 +5,6 @@ import wala.WALAConversions._
 import org.junit.Assert._
 import scala.collection._
 import iterace.pointeranalysis.RacePointerAnalysis
-import iterace.IteRaceOptions
 import iterace.IteRaceOption
 import sppa.util.JavaTest
 import com.typesafe.config.ConfigFactory
@@ -16,7 +15,7 @@ abstract class LockSetAbstractTest(startClass: String) extends JavaTest {
   def analyze(method: String) = {
     implicit val config = ConfigFactory.load("test")
     val pa = new RacePointerAnalysis(AnalysisOptions(startClass, method),
-      IteRaceOptions(IteRaceOption.TwoThreadModel))
+      Set(IteRaceOption.TwoThreads))
     
     (new LockSets(pa, new MayAliasLockConstructor(pa)), pa)
   }

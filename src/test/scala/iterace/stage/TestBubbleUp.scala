@@ -2,14 +2,13 @@ package iterace.stage
 
 import org.junit.Test
 import iterace.IteRaceOption._
-import iterace.IteRaceOptions
 import iterace.IteRaceOption
 import org.junit.Ignore
 
 class TestBubbleUp extends RaceAbstractTest {
  
   val entryClass = "Lparticles/ParticleUsingLibrary"
-  override val options = IteRaceOptions(IteRaceOption.TwoThreadModel, IteRaceOption.BubbleUp)
+  override val options = Set[IteRaceOption](IteRaceOption.TwoThreads, IteRaceOption.BubbleUp)
 
   
   @Test @Ignore("There is some new bug. See Issue #2") def raceOnArrayList = expect("""

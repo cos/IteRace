@@ -65,7 +65,7 @@ class IteRace private (
     log("bubble-up", currentRaces.size)
   }
 
-  if (iteRaceOptions(AppLevelSynchronized)) {
+  if (iteRaceOptions(Synchronized)) {
     log.startTimer("app-level-synchronized")
     currentRaces = filterByLockMayAlias(currentRaces)
     log.endTimer
