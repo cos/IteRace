@@ -28,7 +28,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
         case i: InvokeI if i.isStatic => Set((new StaticClassObject(cha.resolveMethod(i.getDeclaredTarget()).getDeclaringClass()), s))
         case _ => s.refP.get.pt map { (_, s) }
       }) groupBy { _._1 } mapValues { _ map { _._2 } toSet }
-      
+
     // filter out second iteration - look for similar functionality in PotentialRaces if decided 
     // to modify something here
     bigSet filter {
@@ -38,7 +38,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   }
 
   def containsShallowAccess(accesses: Set[S[I]]) =
-    accesses.exists(s => {!s.i.isInstanceOf[AccessI] && !s.i.isInstanceOf[ArrayReferenceI]})
+    accesses.exists(s => { !s.i.isInstanceOf[AccessI] && !s.i.isInstanceOf[ArrayReferenceI] })
 
   // the if is there because we are not interested in the objects that are written but not read
   // so, if an object is pointed by the alphaAcccesses is not pointed by a beta access, we 
@@ -55,7 +55,6 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
       val aGroupedByObject = groupByObject(aAppLevelAccesses)
       val bGroupedByObject = groupByObject(bAppLevelAccesses)
 
-      
       zipByKey(aGroupedByObject, bGroupedByObject) flatMap {
         case (o, (aAccesses, bAccesses)) => {
           val innerSet: Set[LowLevelRaceSet] =
@@ -77,15 +76,17 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
 
   private val bubbledUp: mutable.Map[S[I], Set[S[I]]] = mutable.Map()
 
+  val invertedCallGraph = GraphInverter.invert(callGraph)
+  val libraryCodeFilter = new Filter[N]() {
+    def accepts(n: N) = inPrimordialScope(n) || isActuallyLibraryCode(n)
+  }
+
   def bubbleUp(s: S[I]): Set[S[I]] = {
     if (inApplicationScope(s.n) && !isActuallyLibraryCode(s.n))
       return Set(s)
 
     bubbledUp.getOrElseUpdate(s, {
-      val nodesInPrimordial = DFS.getReachableNodes(GraphInverter.invert(callGraph), Seq(s.n).asJava,
-        new Filter[N]() {
-          def accepts(n: N) = inPrimordialScope(n) || isActuallyLibraryCode(n)
-        }) asScala
+      val nodesInPrimordial = DFS.getReachableNodes(invertedCallGraph, Seq(s.n).asJava, libraryCodeFilter) asScala
 
       val invokeSs = (for (
         n <- nodesInPrimordial;
