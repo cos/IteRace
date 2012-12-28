@@ -30,13 +30,14 @@ import sjson.json._
 import DefaultProtocol._
 import JsonSerialization._
 import java.io.File
+import com.typesafe.config.ConfigException
 
 class IteRace private (
   options: AnalysisOptions,
-  iteRaceOptions: Set[IteRaceOption]) {
+  iteRaceOptions: Set[IteRaceOption], config: Config) {
 
-  def this(options: AnalysisOptions) =
-    this(options, Set(DeepSynchronized, IteRaceOption.BubbleUp))
+  def this(options: AnalysisOptions, config: Config) =
+    this(options, Set(DeepSynchronized, IteRaceOption.BubbleUp), config)
 
   debug("Options: " + iteRaceOptions.mkString(", "))
 
@@ -84,8 +85,14 @@ class IteRace private (
   log("races", races.size)
 
   debug(log.entries)
-//  debug(" \n\n ******************************************************** \n\n  ")
-//  debug(races.prettyPrint())
+  try {
+    val racesFile = config.getString("iterace.races-file")
+    val fw = new FileWriter(racesFile)
+    fw.write(races.prettyPrint())
+    fw.close()
+  } catch {
+    case e: ConfigException.Missing => println(e)
+  }
 }
 
 object IteRace extends App {
@@ -137,14 +144,14 @@ object IteRace extends App {
   }
 
   def apply(config: Config = ConfigFactory.load): IteRace = {
-    IteRace(AnalysisOptions()(config), IteRaceOption(config))
+    new IteRace(AnalysisOptions()(config), IteRaceOption(config), config)
   }
 
   @deprecated("use apply(config) instead")
-  def apply(options: AnalysisOptions, iteRaceoOptions: Set[IteRaceOption]) = new IteRace(options, iteRaceoOptions)
+  def apply(options: AnalysisOptions, iteRaceoOptions: Set[IteRaceOption]) = new IteRace(options, iteRaceoOptions, ConfigFactory.load)
 
   @deprecated("use apply(config) instead")
-  def apply(options: AnalysisOptions) = new IteRace(options, IteRaceOption.values)
+  def apply(options: AnalysisOptions) = new IteRace(options, IteRaceOption.values, ConfigFactory.load)
 }
 
 class AnalysisException(m: String) extends Throwable
