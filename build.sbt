@@ -11,6 +11,8 @@ EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
 
 EclipseKeys.withSource := true
 
-mainClass in Test := Some("iterace.evaluation.Evaluate")
+mainClass := Some("iterace.IteRace")
 
-fork in Test := true
+fork := true
+
+javaOptions += "-Xmx4G" 

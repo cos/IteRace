@@ -21,6 +21,15 @@ import iterace.IteRaceOption._
 import sppa.util._
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 import wala.AnalysisOptions
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigParseOptions
+import com.typesafe.config.ConfigResolveOptions
+import java.io.FileWriter
+import sjson.json._
+import DefaultProtocol._
+import JsonSerialization._
+import java.io.File
 
 class IteRace private (
   options: AnalysisOptions,
@@ -30,9 +39,8 @@ class IteRace private (
     this(options, Set(DeepSynchronized, IteRaceOption.BubbleUp))
 
   debug("Options: " + iteRaceOptions.mkString(", "))
-  
+
   log.startTimer("pointer-analysis");
- 
 
   val pa = new RacePointerAnalysis(options, iteRaceOptions)
   import pa._
@@ -76,16 +84,67 @@ class IteRace private (
   log("races", races.size)
 
   debug(log.entries)
-  debug(" \n\n ******************************************************** \n\n  ")
-  debug(races.prettyPrint())
+//  debug(" \n\n ******************************************************** \n\n  ")
+//  debug(races.prettyPrint())
 }
 
-object IteRace {
+object IteRace extends App {
+
+  println((new File(".")).getAbsolutePath())
+
+  val config = loadConfig
+  val fw = new FileWriter(config.getString("iterace.log-file"))
+  initTimeout
+  val iteRace = apply(config)
+  printLog
+
+  def printLog {
+    println(log.entries.toMap)
+    fw.write("" + tojson(log.entries.toMap)); fw.close()
+    sys.exit(0)
+  }
+
+  private def loadConfig = {
+    val IncludeFileRegex = "configFile=(.*)".r
+    val configFiles = args collect {
+      case arg if IncludeFileRegex.findFirstIn(arg).isDefined => {
+        val IncludeFileRegex(file) = arg.trim
+        file
+      }
+    } map { new File(_) }
+    val includedFileConfigs = configFiles map { ConfigFactory.parseFile(_, ConfigParseOptions.defaults.setAllowMissing(false)) }
+
+    val IncludeRegex = "config=(.*)".r
+    val configs = args collect {
+      case arg if IncludeRegex.findFirstIn(arg).isDefined => {
+        val IncludeRegex(file) = arg.trim
+        file
+      }
+    }
+    val includedConfigs = configs map { ConfigFactory.load(_, ConfigParseOptions.defaults.setAllowMissing(false), ConfigResolveOptions.defaults()) }
+
+    // latter ones take precedence
+    val foldedConfigs = (includedFileConfigs ++ includedConfigs).foldLeft(ConfigFactory.load) { (c1: Config, c2: Config) =>
+      c2 withFallback c1
+    }
+    val commandLineConfig = args collect { case arg if !IncludeRegex.findFirstIn(arg).isDefined => arg } mkString ","
+    ConfigFactory.parseString(commandLineConfig) withFallback foldedConfigs resolve
+  }
+
+  private def initTimeout = Timer(config.getLong("iterace.timeout")) {
+    log("timeout", true)
+    printLog
+  }
+
+  def apply(config: Config = ConfigFactory.load): IteRace = {
+    IteRace(AnalysisOptions()(config), IteRaceOption(config))
+  }
+
+  @deprecated("use apply(config) instead")
   def apply(options: AnalysisOptions, iteRaceoOptions: Set[IteRaceOption]) = new IteRace(options, iteRaceoOptions)
 
-  def apply(options: AnalysisOptions) = new IteRace(options, IteRaceOptions.all)
+  @deprecated("use apply(config) instead")
+  def apply(options: AnalysisOptions) = new IteRace(options, IteRaceOption.values)
 }
 
-class AnalysisException(m: String) extends Throwable {
-
-}
+class AnalysisException(m: String) extends Throwable
