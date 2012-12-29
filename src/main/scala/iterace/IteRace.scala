@@ -97,51 +97,16 @@ class IteRace private (
 
 object IteRace extends App {
 
-  println((new File(".")).getAbsolutePath())
-
-  val config = loadConfig
-  val fw = new FileWriter(config.getString("iterace.log-file"))
-  initTimeout
-  val iteRace = apply(config)
-  printLog
-
-  def printLog {
-    println(log.entries.toMap)
-    fw.write("" + tojson(log.entries.toMap)); fw.close()
-    sys.exit(0)
-  }
-
-  private def loadConfig = {
-    val IncludeFileRegex = "configFile=(.*)".r
-    val configFiles = args collect {
-      case arg if IncludeFileRegex.findFirstIn(arg).isDefined => {
-        val IncludeFileRegex(file) = arg.trim
-        file
-      }
-    } map { new File(_) }
-    val includedFileConfigs = configFiles map { ConfigFactory.parseFile(_, ConfigParseOptions.defaults.setAllowMissing(false)) }
-
-    val IncludeRegex = "config=(.*)".r
-    val configs = args collect {
-      case arg if IncludeRegex.findFirstIn(arg).isDefined => {
-        val IncludeRegex(file) = arg.trim
-        file
-      }
-    }
-    val includedConfigs = configs map { ConfigFactory.load(_, ConfigParseOptions.defaults.setAllowMissing(false), ConfigResolveOptions.defaults()) }
-
-    // latter ones take precedence
-    val foldedConfigs = (includedFileConfigs ++ includedConfigs).foldLeft(ConfigFactory.load) { (c1: Config, c2: Config) =>
-      c2 withFallback c1
-    }
-    val commandLineConfig = args collect { case arg if !IncludeRegex.findFirstIn(arg).isDefined => arg } mkString ","
-    ConfigFactory.parseString(commandLineConfig) withFallback foldedConfigs resolve
-  }
-
-  private def initTimeout = Timer(config.getLong("iterace.timeout")) {
+  val r = new IteRaceRunner(args.toList)
+  Timer(r.config.getLong("iterace.timeout")) {
     log("timeout", true)
-    printLog
+    r.end
+    sys.exit()
   }
+
+  r.run
+
+  sys.exit()
 
   def apply(config: Config = ConfigFactory.load): IteRace = {
     new IteRace(AnalysisOptions()(config), IteRaceOption(config), config)
