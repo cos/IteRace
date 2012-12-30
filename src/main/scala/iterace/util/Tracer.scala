@@ -21,6 +21,7 @@ import com.ibm.wala.util.graph.Graph
 import com.ibm.wala.ipa.slicer.StatementWithInstructionIndex
 import com.ibm.wala.util.graph.GraphUtil
 import com.ibm.wala.util.graph.GraphPrint
+import iterace.datastructure.isActuallyLibraryCode
 
 class Tracer(callGraph: CallGraph, pa: PointerAnalysis) {
   print("Computing SDG... ")
@@ -30,9 +31,11 @@ class Tracer(callGraph: CallGraph, pa: PointerAnalysis) {
   def trace(a: S[I]) = {
     val beforeNodes = DFS.getReachableNodes(GraphInverter.invert(callGraph), Set(a.n).asJava)
 
-    beforeNodes.asScala foreach { n => println("n: " + n) }
+    //    beforeNodes.asScala foreach { n => println("n: " + n) }
 
-    val g = GraphSlicer.prune(callGraph, { n: N => n.c(Iteration) == AlphaIteration }) // todo: also check that it is the same loop
+    val g = GraphSlicer.prune(callGraph, { n: N =>
+      n.c(Iteration) == AlphaIteration && (inApplicationScope(n) && !isActuallyLibraryCode(n))
+    }) // todo: also check that it is the same loop
 
     DotUtil.dotGraph(g, "%x".format(a.hashCode), new NodeDecorator() {
       def getLabel(n: Object) = n.asInstanceOf[N].prettyPrint + " | " + n.hashCode
@@ -41,14 +44,30 @@ class Tracer(callGraph: CallGraph, pa: PointerAnalysis) {
       def getGroup(n: Object) = ""
     }, true)
 
-    val slice = Slicer.computeBackwardSlice(sdg, new NormalStatement(a.n, a.irNo))
-    println("DONE")
+    //    val slice = Slicer.computeBackwardSlice(sdg, new NormalStatement(a.n, a.irNo))
+    //    println("DONE")
 
-    val g1 = GraphSlicer.prune(sdg, { s: Statement =>
-      slice.contains(s) && s.n.c(Iteration) == AlphaIteration // todo: also check that it is the same loop, see: https://github.com/cos/privatization/blob/racefix/src/test/scala/racefix/evaluation/JMolLCDsOverRaces.scala#L122
-    })
+    //    println(slice.size())
+    //    slice.asScala collect { case s: StatementWithInstructionIndex => s } foreach { s => println(s.prettyPrint) }
+    //
+    //    val g1 = GraphSlicer.prune(sdg, { s: Statement =>
+    //      slice.contains(s) && s.n.c(Iteration) == AlphaIteration // todo: also check that it is the same loop, see: https://github.com/cos/privatization/blob/racefix/src/test/scala/racefix/evaluation/JMolLCDsOverRaces.scala#L122
+    //    })
+    //
+    //    dotTrace(g1)
+  }
 
-    dotTrace(g1)
+  def dotHeapGraph() {
+    DotUtil.dotGraph(pa.getHeapGraph(), "heapGraph", new NodeDecorator() {
+      def getLabel(x: Object) = x match {
+        case o: O => o.prettyPrint
+        case p: P => p.prettyPrint
+        case x => x.toString()
+      }
+      def getDecoration(n: Object) = ""
+      def shouldDisplay(n: Object) = true
+      def getGroup(n: Object) = ""
+    }, true)
   }
 
   private def dotTrace(g: Graph[Statement], name: String = "testPlay") {
@@ -60,7 +79,7 @@ class Tracer(callGraph: CallGraph, pa: PointerAnalysis) {
         val ss = s.asInstanceOf[Statement]
         "" + (ss match {
           case s: StatementWithInstructionIndex =>
-            s.getNode().m.lineNoFromIRNo(S(s.getNode(), s.getInstruction()).irNo) 
+            s.getNode().m.lineNoFromIRNo(S(s.getNode(), s.getInstruction()).irNo)
           //            S(s.getNode(), s.getInstruction()).prettyPrint // it is enclosed in the method as a cluster
           case s: HeapStatement =>
             (s match {

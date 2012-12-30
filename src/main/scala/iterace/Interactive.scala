@@ -2,6 +2,11 @@ package iterace
 
 import iterace.util.Tracer
 import wala.S
+import wala.O
+import wala.WALAConversions._
+import scala.collection.JavaConverters._
+import com.ibm.wala.ipa.callgraph.propagation.AbstractFieldPointerKey
+import com.ibm.wala.ipa.callgraph.propagation.PointerKey
 
 object Interactive extends App {
   val r = new IteRaceRunner(args.toList)
@@ -30,6 +35,30 @@ object Interactive extends App {
         val s = intToAccess(n)
         println(s.prettyPrint)
         t.trace(s)
+      }
+      case "o" => {
+        val intToObjects = O.printRepo map { _.swap }
+        val x = readLine.toInt
+        println(intToObjects(x).prettyPrint)
+      }
+      case "op" => {
+        val intToObjects = O.printRepo map { _.swap }
+        val x = readLine.toInt
+        val heap = iteRace.pa.heap
+        heap.getPredNodes(intToObjects(x)).asScala  foreach {
+          case o: O => println(o.prettyPrint)
+          case o: P =>
+          case p: PointerKey => println(p.prettyPrint)
+        }
+      }
+      case "opp" => {
+        val intToObjects = O.printRepo map { _.swap }
+        val x = readLine.toInt
+        val heap = iteRace.pa.heap
+        heap.getPredNodes(intToObjects(x)).asScala flatMap { heap.getPredNodes(_).asScala } foreach {
+          case o: O => println(o.prettyPrint)
+          case p => println(p.toString)
+        }
       }
     }
   } while (l != "q")
