@@ -41,25 +41,26 @@ object Interactive extends App {
         val x = readLine.toInt
         println(intToObjects(x).prettyPrint)
       }
-      case "op" => {
+      case s: String if s.startsWith("opp") => {
+        val x = s.split(" ")(1).toInt
         val intToObjects = O.printRepo map { _.swap }
-        val x = readLine.toInt
-        val heap = iteRace.pa.heap
-        heap.getPredNodes(intToObjects(x)).asScala  foreach {
-          case o: O => println(o.prettyPrint)
-          case o: P =>
-          case p: PointerKey => println(p.prettyPrint)
-        }
-      }
-      case "opp" => {
-        val intToObjects = O.printRepo map { _.swap }
-        val x = readLine.toInt
         val heap = iteRace.pa.heap
         heap.getPredNodes(intToObjects(x)).asScala flatMap { heap.getPredNodes(_).asScala } foreach {
           case o: O => println(o.prettyPrint)
           case p => println(p.toString)
         }
       }
+      case s: String if s.startsWith("op") => {
+        val x = s.split(" ")(1).toInt
+        val intToObjects = O.printRepo map { _.swap }
+        val heap = iteRace.pa.heap
+        heap.getPredNodes(intToObjects(x)).asScala foreach {
+          case o: O => println(o.prettyPrint)
+          case o: P =>
+          case p: PointerKey => println(p.prettyPrint)
+        }
+      }
+      case _ => println("unknown command")
     }
   } while (l != "q")
 
