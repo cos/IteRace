@@ -22,6 +22,7 @@ import com.ibm.wala.ipa.slicer.StatementWithInstructionIndex
 import com.ibm.wala.util.graph.GraphUtil
 import com.ibm.wala.util.graph.GraphPrint
 import iterace.datastructure.isActuallyLibraryCode
+import iterace.datastructure.isActuallyApplicationScope
 
 class Tracer(callGraph: CallGraph, pa: PointerAnalysis) {
   print("Computing SDG... ")
@@ -34,7 +35,7 @@ class Tracer(callGraph: CallGraph, pa: PointerAnalysis) {
     //    beforeNodes.asScala foreach { n => println("n: " + n) }
 
     val g = GraphSlicer.prune(callGraph, { n: N =>
-      n.c(Iteration) == AlphaIteration && (inApplicationScope(n) && !isActuallyLibraryCode(n))
+      n.c(Iteration) == AlphaIteration && isActuallyApplicationScope(n)
     }) // todo: also check that it is the same loop
 
     DotUtil.dotGraph(g, "%x".format(a.hashCode), new NodeDecorator() {

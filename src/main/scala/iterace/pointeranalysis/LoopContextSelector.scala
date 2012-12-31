@@ -26,6 +26,7 @@ import wala.WALAConversions._
 import iterace.datastructure.movesObjectsAround
 import iterace.IteRaceOption
 import iterace.datastructure.isActuallyLibraryCode
+import iterace.datastructure.isActuallyApplicationScope
 
 class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
   // this is the context for all the nodes in the loop iterations
@@ -109,8 +110,8 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
 
       // we're inside the loop (the objectKey test is to avoid recursion)
       case c: Context if c.get(Loop) != null => {
-        if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
-          return UninterestingContext
+        //        if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
+        //          return UninterestingContext
 
         var newC: Context = c
 
@@ -133,13 +134,13 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
             newC
         }
 
-        if (newC.is(ThreadSafeOnClosure) && !newC.is(Interesting))
-          return UninterestingContext
+        //        if (newC.is(ThreadSafeOnClosure) && !newC.is(Interesting))
+        //          return UninterestingContext
 
         // app-lib membrane sensitivity
         if (options(IteRaceOption.BubbleUp)) {
           newC = if (!c.is(AppObject) &&
-            (inApplicationScope(caller) && !isActuallyLibraryCode(caller) && inPrimordialScope(callee) || isActuallyLibraryCode(callee)) && // membrane between app and lib
+            isActuallyApplicationScope(caller) && !isActuallyApplicationScope(callee) && // membrane between app and lib
             (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
             actualParameters.size > 1)
 

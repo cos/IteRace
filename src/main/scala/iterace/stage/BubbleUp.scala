@@ -17,6 +17,7 @@ import wala.O
 import wala.extra.StaticClassObject
 import iterace.IteRaceOption
 import iterace.datastructure.isActuallyLibraryCode
+import iterace.datastructure.isActuallyApplicationScope
 
 class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   import pa._
@@ -78,11 +79,11 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
 
   val invertedCallGraph = GraphInverter.invert(callGraph)
   val libraryCodeFilter = new Filter[N]() {
-    def accepts(n: N) = inPrimordialScope(n) || isActuallyLibraryCode(n)
+    def accepts(n: N) = !isActuallyApplicationScope(n)
   }
 
   def bubbleUp(s: S[I]): Set[S[I]] = {
-    if (inApplicationScope(s.n) && !isActuallyLibraryCode(s.n))
+    if (isActuallyApplicationScope(s.n))
       return Set(s)
 
     bubbledUp.getOrElseUpdate(s, {
@@ -90,7 +91,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
 
       val invokeSs = (for (
         n <- nodesInPrimordial;
-        predN <- callGraph.getPredNodes(n).asScala if (inApplicationScope(predN) && !isActuallyLibraryCode(predN))
+        predN <- callGraph.getPredNodes(n).asScala if (isActuallyApplicationScope(predN))
       ) yield {
         val callSites = callGraph.getPossibleSites(predN, n).asScala
         val invokeIs = callSites map { predN.getIR().getCalls(_) } flatten

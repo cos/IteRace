@@ -173,6 +173,12 @@ object generatesSafeObjects {
   def apply(n: N): Boolean = apply(n.m)
 }
 
+object isActuallyApplicationScope {
+  def apply(c: C): Boolean = inApplicationScope(c) && !isActuallyLibraryCode(c)
+  def apply(m: M): Boolean = inApplicationScope(m) && !isActuallyLibraryCode(m)
+  def apply(n: N): Boolean = inApplicationScope(n) && !isActuallyLibraryCode(n)
+}
+
 object isActuallyLibraryCode {
   /**
    * this are classes that are marked as "application" by WALA by I want them to be library
