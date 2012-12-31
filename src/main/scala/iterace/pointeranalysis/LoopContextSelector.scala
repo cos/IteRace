@@ -27,6 +27,7 @@ import iterace.datastructure.movesObjectsAround
 import iterace.IteRaceOption
 import iterace.datastructure.isActuallyLibraryCode
 import iterace.datastructure.isActuallyApplicationScope
+import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
 
 class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
   // this is the context for all the nodes in the loop iterations
@@ -37,16 +38,17 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
     threadSafeOnClosure: Boolean = false,
     interesting: Boolean = false,
     uninteresting: Boolean = false,
-    appObject: Option[O] = None) extends Context {
+    arguments: Array[Option[O]] = Array()) extends Context {
     val loop = Loop(l, parallel)
     val iteration = if (alphaIteration) AlphaIteration else BetaIteration
+
+    def apply(key: ContextKey) = get(key)
 
     def get(key: ContextKey): ContextItem = key match {
       case Loop => loop
       case Iteration => iteration
       case ThreadSafeOnClosure if threadSafeOnClosure => ThreadSafeOnClosure
       case Interesting if interesting => Interesting
-      case AppObject => appObject map { ObjectItem(_) } getOrElse null
       case _ => null
     }
     override def toString = loop.prettyPrint + "," + (if (alphaIteration) "alpha" else "beta")
@@ -66,7 +68,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
   def getCalleeTarget(caller: CGNode, site: CallSiteReference, callee: IMethod, actualParameters: Array[InstanceKey]): Context = {
 
     //    if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
-    //    	return UninterestingContext
+    //      return UninterestingContext
 
     caller.getContext() match {
 
@@ -131,17 +133,22 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         //        if (newC.is(ThreadSafeOnClosure) && !newC.is(Interesting))
         //          return UninterestingContext
 
-        // app-lib membrane sensitivity
-        if (options(IteRaceOption.BubbleUp)) {
-          newC = if (!c.is(AppObject) &&
-            isActuallyApplicationScope(caller) && !isActuallyApplicationScope(callee) && // membrane between app and lib
-            (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
-            actualParameters.size > 1)
+        newC.copy(arguments = actualParameters map {
+          case o: AllocationSiteInNode if o.getNode().c(Iteration) != c(Iteration) => Some(o)
+          case _ => None
+        })
 
-            newC.copy(appObject = Some(actualParameters(0)))
-          else
-            newC
-        }
+        // app-lib membrane sensitivity
+        //        if (options(IteRaceOption.BubbleUp)) {
+        //          newC = if (!c.is(AppObject) &&
+        //            isActuallyApplicationScope(caller) && !isActuallyApplicationScope(callee) && // membrane between app and lib
+        //            (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
+        //            actualParameters.size > 1)
+        //
+        //            newC.copy(appObject = Some(actualParameters(0)))
+        //          else
+        //            newC
+        //        }
 
         newC
       }
@@ -164,9 +171,6 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
   def isInterestingForUs(callee: M) =
     ContainerUtil.isContainer(callee.getDeclaringClass()) || callee.toString().contains("DateFormat");
 }
-
-case class ObjectItem(o: O) extends ContextItem
-case object AppObject extends ContextKey
 
 // completely uninteresting context
 case object Uninteresting extends ContextKey with ContextItem
