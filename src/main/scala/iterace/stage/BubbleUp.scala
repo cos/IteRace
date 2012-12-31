@@ -90,7 +90,7 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
 
       val invokeSs = (for (
         n <- nodesInPrimordial;
-        predN <- callGraph.getPredNodes(n).asScala if inApplicationScope(predN)
+        predN <- callGraph.getPredNodes(n).asScala if (inApplicationScope(predN) && !isActuallyLibraryCode(predN))
       ) yield {
         val callSites = callGraph.getPossibleSites(predN, n).asScala
         val invokeIs = callSites map { predN.getIR().getCalls(_) } flatten
