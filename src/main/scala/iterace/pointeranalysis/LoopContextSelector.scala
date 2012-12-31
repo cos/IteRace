@@ -30,24 +30,26 @@ import iterace.datastructure.isActuallyApplicationScope
 
 class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
   // this is the context for all the nodes in the loop iterations
-  private class LoopContext(val l: CGNode, val parallel: Boolean, val alphaIteration: Boolean) extends Context {
+  private case class LoopContext(
+    l: CGNode,
+    parallel: Boolean,
+    alphaIteration: Boolean,
+    threadSafeOnClosure: Boolean = false,
+    interesting: Boolean = false,
+    uninteresting: Boolean = false,
+    appObject: Option[O] = None) extends Context {
     val loop = Loop(l, parallel)
     val iteration = if (alphaIteration) AlphaIteration else BetaIteration
 
     def get(key: ContextKey): ContextItem = key match {
       case Loop => loop
       case Iteration => iteration
+      case ThreadSafeOnClosure if threadSafeOnClosure => ThreadSafeOnClosure
+      case Interesting if interesting => Interesting
+      case AppObject => appObject map { ObjectItem(_) } getOrElse null
       case _ => null
     }
     override def toString = loop.prettyPrint + "," + (if (alphaIteration) "alpha" else "beta")
-  }
-
-  private object ThreadSafeContext extends Context {
-    override def get(key: ContextKey) = key match {
-      case ThreadSafeOnClosure => ThreadSafeOnClosure
-      case _ => null
-    }
-    override def toString = "ThreadSafe"
   }
 
   private object UninterestingContext extends Context {
@@ -56,14 +58,6 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
       case _ => null
     }
     override def toString = "Uninteresting"
-  }
-
-  private object InterestingContext extends Context {
-    override def get(key: ContextKey) = key match {
-      case Interesting => Interesting
-      case _ => null
-    }
-    override def toString = "Interesting"
   }
 
   private val opsPattern = ".*Ops.*".r
@@ -109,17 +103,17 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
       }
 
       // we're inside the loop (the objectKey test is to avoid recursion)
-      case c: Context if c.get(Loop) != null => {
+      case c: LoopContext if c.get(Loop) != null => {
         //        if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
         //          return UninterestingContext
 
-        var newC: Context = c
+        var newC: LoopContext = c
 
         if (options(IteRaceOption.Filtering)) {
           newC = if (!c.is(ThreadSafeOnClosure) && threadSafeOnClosure(caller, callee, actualParameters))
-            ThreadSafeContext + c
+            newC.copy(threadSafeOnClosure = true)
           else
-            c
+            newC
 
           // we are not adding additional context when we know no races can happen from here on
           // and we also know all generated classes from here on are thread-safe
@@ -129,7 +123,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
           // I'll make it more extreme... and simply remove all context from now on Uninteresting
 
           newC = if (!newC.is(Interesting) && (generatesSafeObjects(callee) || movesObjectsAround(callee)))
-            InterestingContext + newC
+            newC.copy(interesting = true)
           else
             newC
         }
@@ -144,7 +138,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
             (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
             actualParameters.size > 1)
 
-            ObjectContext(actualParameters(0)) + newC
+            newC.copy(appObject = Some(actualParameters(0)))
           else
             newC
         }
@@ -173,12 +167,6 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
 
 case class ObjectItem(o: O) extends ContextItem
 case object AppObject extends ContextKey
-case class ObjectContext(o: O) extends Context {
-  def get(key: ContextKey): ContextItem = key match {
-    case AppObject => ObjectItem(o)
-    case _ => null
-  }
-}
 
 // completely uninteresting context
 case object Uninteresting extends ContextKey with ContextItem
