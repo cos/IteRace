@@ -18,11 +18,15 @@ import wala.FlexibleCallGraphBuilder
 import com.ibm.wala.ipa.cha.ClassHierarchy
 import wala.AnalysisOptions
 import com.ibm.wala.ipa.callgraph.ContextSelector
+import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 
 class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteRaceOption])
   extends FlexibleCallGraphBuilder(options) {
 
   override def cs: ContextSelector = new LoopContextSelector(iteraceOptions, instanceKeys)
+  
+  // Hooks
+  override def policy = { import ZeroXInstanceKeys._;  ALLOCATIONS }
 
   // we return an interable but we know it is actually a set
   def statementsReachableFrom(n: N, filter: N => Boolean = null): Iterable[S[I]] = {
