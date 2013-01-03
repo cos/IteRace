@@ -35,10 +35,10 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
     l: CGNode,
     parallel: Boolean,
     alphaIteration: Boolean,
+    arguments: List[Boolean] = List(),
     threadSafeOnClosure: Boolean = false,
     interesting: Boolean = false,
-    uninteresting: Boolean = false,
-    arguments: Array[Option[O]] = Array()) extends Context {
+    uninteresting: Boolean = false) extends Context {
     val loop = Loop(l, parallel)
     val iteration = if (alphaIteration) AlphaIteration else BetaIteration
 
@@ -133,10 +133,10 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         //        if (newC.is(ThreadSafeOnClosure) && !newC.is(Interesting))
         //          return UninterestingContext
 
-        newC.copy(arguments = actualParameters map {
-          case o: AllocationSiteInNode if o.getNode().c(Iteration) != c(Iteration) => Some(o)
-          case _ => None
-        })
+        newC = newC.copy(arguments = actualParameters map {
+          case o: AllocationSiteInNode if o.getNode().c(Iteration) != c(Iteration) => true
+          case _ => false
+        } toList)
 
         // app-lib membrane sensitivity
         //        if (options(IteRaceOption.BubbleUp)) {
