@@ -139,7 +139,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
       }
 
       // we're outside the loop
-      case c: Context if c.get(Loop) == null =>
+      case c: Context =>
         callee match {
           case M(C(_, "ParallelArray"), opsPattern()) => new LoopCallSiteContext(caller, site)
           //          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())            
