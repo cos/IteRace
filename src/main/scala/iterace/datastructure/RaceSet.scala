@@ -26,10 +26,10 @@ abstract sealed class RaceSet extends Set[Race] {
    */
   def printSameSet(p: (String, Set[_])) = p match {
     case (groupName: String, set: Set[_]) =>
-      groupName + (if (set.size > 1) " [" + level + set.size + "x]" else "")
+      groupName + (if (set.size > 1) " [" + timesLabel + set.size + "x]" else "")
   }
-  def level: String
-  
+  def timesLabel: String
+
   def prettyPrint(decorator: S[I] => String = noDecorator): String
 }
 
@@ -78,7 +78,7 @@ abstract sealed class LowLevelRaceSet(val l: Loop, val o: O, val alphaAccesses: 
     case _ => false
   }
 
-  override def level = ""
+  override def timesLabel = ""
 }
 
 final class FieldRaceSet(l: Loop, o: O, val f: F, alphaAccesses: Set[S[I]], betaAccesses: Set[S[I]])
@@ -149,8 +149,9 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
   override def foreach[U](f: (Race) => U): Unit = children.foreach({ _.foreach(f) })
   override def size = children.toList map { _.size } reduceOption { _ + _ } getOrElse 0
 
-  override def prettyPrint(decorator: S[I] => String = noDecorator) = children.groupBy(_.prettyPrint(decorator)).map(printSameSet).
-    toList.sorted.reduceOption(_ + "\n" + _).getOrElse("")
+  override def prettyPrint(decorator: S[I] => String = noDecorator) =
+    children.groupBy(_.prettyPrint(decorator)).map(printSameSet).
+      toList.sorted.mkString("\n")
 
   def getRaceSet(children: Set[Child]): This
 
@@ -180,7 +181,7 @@ final class ObjectRaceSet(val l: Loop, val o: O, override val children: Set[LowL
   override def hashCode = l.hashCode() * 97 + o.hashCode()
   def getLowLevelRaceSets: Set[LowLevelRaceSet] = children
 
-  override def level = "Object - "
+  override def timesLabel = "Low level - "
 }
 
 final class LoopRaceSet(val l: Loop, children: Set[ObjectRaceSet])
@@ -200,7 +201,7 @@ final class LoopRaceSet(val l: Loop, children: Set[ObjectRaceSet])
   }
   override def hashCode = l.hashCode()
   def getLowLevelRaceSets: Set[LowLevelRaceSet] = children flatMap { _.getLowLevelRaceSets }
-  override def level = "Loop - "
+  override def timesLabel = "Object - "
 }
 
 final class ProgramRaceSet(children: Set[LoopRaceSet])
@@ -213,7 +214,7 @@ final class ProgramRaceSet(children: Set[LoopRaceSet])
 
   def getLowLevelRaceSets: Set[LowLevelRaceSet] = children flatMap { _.getLowLevelRaceSets }
 
-  override def level = "Program - "
+  override def timesLabel = "Loop - "
 }
 
 object ProgramRaceSet {
