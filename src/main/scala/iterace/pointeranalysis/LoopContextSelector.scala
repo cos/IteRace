@@ -51,7 +51,14 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
       case Interesting if interesting => Interesting
       case _ => null
     }
-    override def toString = loop.prettyPrint + "," + (if (alphaIteration) "alpha" else "beta")
+    override def toString =
+      (if (parallel) "P" else "S") + "-" +
+        (if (alphaIteration) "a" else "b") +
+        " (" + (arguments map { if (_) "s" else "-" } mkString (",")) + ") " +
+        (if (threadSafeOnClosure) "TSC" else "") +
+        (if (interesting) "ITT" else "") +
+        (if (uninteresting) "UITT" else "")
+    //      loop.prettyPrint + "," + (if (alphaIteration) "alpha" else "beta")
   }
 
   private object UninterestingContext extends Context {
