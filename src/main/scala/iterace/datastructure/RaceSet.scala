@@ -131,11 +131,13 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
   override def iterator: Iterator[Race] = children.reduce[Set[Race]]({ _ ++ _ }) iterator
   override def +(race: Race): This = {
     if (!accepts(race)) throw new Exception("Race not accepted: " + race + " by " + this)
-    val hasAcceptingChild = children exists { _.accepts(race) }
-    val newChildren = if (hasAcceptingChild) {
-      (children map (child => if (child.accepts(race)) child + race else child)).asInstanceOf[Set[Child]] // ugly but I'm tired of messing with types
-    } else
-      children + getChild(race)
+
+    val acceptingChild = children find { _.accepts(race) }
+
+    val newChildren = acceptingChild map
+      { child => children - child + (child + race).asInstanceOf[Child] } getOrElse
+      { children + getChild(race).asInstanceOf[Child] }
+
     getRaceSet(newChildren)
   }
   def getChild(r: Race): Child
