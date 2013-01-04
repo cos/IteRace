@@ -83,6 +83,7 @@ class IteRace private (
 
   val races = currentRaces
   log("races", races.size)
+  log("enumerated-races", races map {case r => r.prettyPrint} size)
 
   debug(log.entries)
   try {
