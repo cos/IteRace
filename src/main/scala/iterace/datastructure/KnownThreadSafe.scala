@@ -8,7 +8,6 @@ import wala.WALAConversions._
 import com.ibm.wala.analysis.reflection.InstanceKeyWithNode
 import scala.collection._
 import com.ibm.wala.ipa.callgraph.ContextKey
-import iterace.pointeranalysis.Uninteresting
 import com.ibm.wala.ipa.callgraph.propagation.ContainerUtil
 
 object threadSafeOnClosure extends ContextKey {
@@ -109,7 +108,6 @@ object threadSafeOnClosure extends ContextKey {
    * is it thread-safe on closure when called from caller
    */
   def apply(caller: N): Boolean =
-    caller.c(Uninteresting) != null ||
       caller.c(ThreadSafeOnClosure) != null ||
       apply(caller.m)
 

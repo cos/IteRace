@@ -37,8 +37,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
     alphaIteration: Boolean,
     arguments: List[Boolean] = List(),
     threadSafeOnClosure: Boolean = false,
-    interesting: Boolean = false,
-    uninteresting: Boolean = false) extends Context {
+    interesting: Boolean = false) extends Context {
     val loop = Loop(l, parallel)
     val iteration = if (alphaIteration) AlphaIteration else BetaIteration
 
@@ -56,17 +55,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         (if (alphaIteration) "a" else "b") +
         " (" + (arguments map { if (_) "s" else "-" } mkString (",")) + ") " +
         (if (threadSafeOnClosure) "TSC" else "") +
-        (if (interesting) "ITT" else "") +
-        (if (uninteresting) "UITT" else "")
-    //      loop.prettyPrint + "," + (if (alphaIteration) "alpha" else "beta")
-  }
-
-  private object UninterestingContext extends Context {
-    override def get(key: ContextKey) = key match {
-      case Uninteresting => Uninteresting
-      case _ => null
-    }
-    override def toString = "Uninteresting"
+        (if (interesting) "ITT" else "") 
   }
 
   private val opsPattern = ".*Ops.*".r
@@ -74,12 +63,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
   // Describes how contexts are chosen
   def getCalleeTarget(caller: CGNode, site: CallSiteReference, callee: IMethod, actualParameters: Array[InstanceKey]): Context = {
 
-    //    if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
-    //      return UninterestingContext
-
     caller.getContext() match {
-
-      case UninterestingContext => UninterestingContext
 
       // we've entered the loop but not the iteration. callee is the iteration
       case c: LoopCallSiteContext => {
@@ -113,9 +97,6 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
 
       // we're inside the loop (the objectKey test is to avoid recursion)
       case c: LoopContext if c.get(Loop) != null => {
-        //        if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
-        //          return UninterestingContext
-
         var newC: LoopContext = c
 
         if (options(IteRaceOption.Filtering)) {
@@ -129,7 +110,6 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
           // !!! 	question: "generatesSafeObjects" all generated objects from here on are thread-safe
           // 								or just the ones instantiated in callee (i.e., is it on transitive closure)
           //    
-          // I'll make it more extreme... and simply remove all context from now on Uninteresting
 
           newC = if (!newC.is(Interesting) && (generatesSafeObjects(callee) || movesObjectsAround(callee)))
             newC.copy(interesting = true)
@@ -137,8 +117,6 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
             newC
         }
 
-        //        if (newC.is(ThreadSafeOnClosure) && !newC.is(Interesting))
-        //          return UninterestingContext
 
         newC = newC.copy(arguments = actualParameters map {
           case o: AllocationSiteInNode if o.getNode().c(Iteration) != c(Iteration) => true
@@ -165,10 +143,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         callee match {
           case M(C(_, "ParallelArray"), opsPattern()) => new LoopCallSiteContext(caller, site)
           //          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())            
-          case _ =>
-            if (!instankeKeyFactory.isInteresting(callee.getDeclaringClass()))
-              return UninterestingContext
-            else c
+          case _ => c
         }
     }
   }
@@ -178,9 +153,6 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
   def isInterestingForUs(callee: M) =
     ContainerUtil.isContainer(callee.getDeclaringClass()) || callee.toString().contains("DateFormat");
 }
-
-// completely uninteresting context
-case object Uninteresting extends ContextKey with ContextItem
 
 // completely uninteresting context
 case object Interesting extends ContextKey with ContextItem
