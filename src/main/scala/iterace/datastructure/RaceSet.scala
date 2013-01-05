@@ -148,7 +148,8 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
     getRaceSet(newChildren)
   }
   override def foreach[U](f: (Race) => U): Unit = children.foreach({ _.foreach(f) })
-  override def size = children.toList map { _.size } reduceOption { _ + _ } getOrElse 0
+
+  override def size = children.toList map { _.size } sum
 
   override def prettyPrint(decorator: S[I] => String = noDecorator) =
     children.groupBy(_.prettyPrint(decorator)).map(printSameSet).
