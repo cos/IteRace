@@ -81,9 +81,11 @@ class IteRace private (
     log("app-level-synchronized", currentRaces.size)
   }
 
-  val races = currentRaces
-  log("races", races.size)
-  log("enumerated-races", races map {case r => r.prettyPrint} size)
+  val races = currentRaces filter { x => true }
+  
+  val enumeratedRaces = races map { r => r.prettyPrint }
+
+  log("races", enumeratedRaces.size)
 
   debug(log.entries)
   try {

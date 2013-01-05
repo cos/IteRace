@@ -132,6 +132,7 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
   override def +(race: Race): This = {
     if (!accepts(race)) throw new Exception("Race not accepted: " + race + " by " + this)
 
+    assert(accepts(race))
     val acceptingChild = children find { _.accepts(race) }
 
     val newChildren = acceptingChild map
