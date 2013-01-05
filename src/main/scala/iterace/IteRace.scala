@@ -53,12 +53,12 @@ class IteRace private (
   //  potentialRaces.children.foreach { _.children.foreach(set => debug(set.prettyPrint)) }
   private var currentRaces = potentialRaces
 
-  log.startTimer("locksets")
-  val lockSetMapping = new LockSets(pa, new MayAliasLockConstructor(pa))
-  log.endTimer
-  //  log("locks",)
-
-  val filterByLockMayAlias = new FilterByLockMayAlias(pa, lockSetMapping)
+  lazy val (lockSetMapping, filterByLockMayAlias) = {
+    log.startTimer("locksets")
+    val lockSetMapping = new LockSets(pa, new MayAliasLockConstructor(pa))
+    log.endTimer
+    (lockSetMapping, new FilterByLockMayAlias(pa, lockSetMapping))
+  }
 
   if (iteRaceOptions(DeepSynchronized)) {
     log.startTimer("deep-synchronized")
