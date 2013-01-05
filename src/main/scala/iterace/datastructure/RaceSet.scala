@@ -130,8 +130,6 @@ abstract class CompositeRaceSet[Child <: RaceSet](val children: Set[Child])
   override def contains(race: Race) = children.exists({ _.contains(race) })
   override def iterator: Iterator[Race] = children.reduce[Set[Race]]({ _ ++ _ }) iterator
   override def +(race: Race): This = {
-    if (!accepts(race)) throw new Exception("Race not accepted: " + race + " by " + this)
-
     assert(accepts(race))
     val acceptingChild = children find { _.accepts(race) }
 
