@@ -31,6 +31,7 @@ import DefaultProtocol._
 import JsonSerialization._
 import java.io.File
 import com.typesafe.config.ConfigException
+import wala.extra.StaticClassObject
 
 class IteRace private (
   options: AnalysisOptions,
@@ -82,7 +83,7 @@ class IteRace private (
   }
 
   val races = currentRaces filter { x => true }
-  
+
   val enumeratedRaces = races map { r => r.prettyPrint }
 
   log("races", enumeratedRaces.size)
@@ -93,6 +94,34 @@ class IteRace private (
     val fw = new FileWriter(racesFile)
     fw.write(races.prettyPrint())
     fw.close()
+    
+    val racesForJson = "[" +
+      ((races map { r =>
+        {
+          val (ofile, oline) = r.o.s match {
+            case Some(s) => (s.sourceFilePath, s.lineNo)
+            case None => r.o match {
+              case o: StaticClassObject => (o.klass.sourceFilePath, 1)
+              case o => (r.o.getConcreteType.sourceFilePath, 1)
+            }
+          }
+          val data = List(
+            "is_true" -> "",
+            "ofile" -> ofile,
+            "oline" -> oline,
+            "a1file" -> r.a.sourceFilePath,
+            "a1line" -> r.a.lineNo,
+            "a2file" -> r.b.sourceFilePath,
+            "a2line" -> r.b.lineNo)
+
+          "{" + (data map { case (k, v) => "\"" + k + "\": \"" + v + "\"" } mkString ", ") + "}"
+        }
+      }).toList.sorted mkString ", \n") +
+      "]"
+
+    val fwEnum = new FileWriter(racesFile.replace(".races", ".json.races"))
+    fwEnum.write(racesForJson)
+    fwEnum.close()
   } catch {
     case e: ConfigException.Missing => println(e)
   }
