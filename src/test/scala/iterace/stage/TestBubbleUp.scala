@@ -15,7 +15,7 @@ Loop: particles.ParticleUsingLibrary.raceOnArrayList(ParticleUsingLibrary.java:9
 
 java.util.ArrayList: particles.ParticleUsingLibrary.raceOnArrayList(ParticleUsingLibrary.java:88)
  application level
-   (a)  particles.ParticleUsingLibrary$6.op(ParticleUsingLibrary$6.java:93)
-   (b)  particles.ParticleUsingLibrary$6.op(ParticleUsingLibrary$6.java:93)
+   (a)  particles.ParticleUsingLibrary$6.op(ParticleUsingLibrary.java:93)
+   (b)  particles.ParticleUsingLibrary$6.op(ParticleUsingLibrary.java:93)
 """)
 }

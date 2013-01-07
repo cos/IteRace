@@ -35,9 +35,9 @@ particles.Particle: particles.ParticleWithKnownThreadSafe.racePastKnownThreadSaf
 	@Test def raceOnSafeObjectAccessedDirectly = expect("""
 Loop: particles.ParticleWithKnownThreadSafe.raceOnSafeObjectAccessedDirectly(ParticleWithKnownThreadSafe.java:93)
 
-particles.Particle: particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.getSafeParticle(ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.java:105)
+particles.Particle: particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.getSafeParticle(ParticleWithKnownThreadSafe.java:105)
  .x
-   (a)  particles.ParticleWithKnownThreadSafe$6.op(ParticleWithKnownThreadSafe$6.java:96)
-   (b)  particles.ParticleWithKnownThreadSafe$6.op(ParticleWithKnownThreadSafe$6.java:96) [2x]
+   (a)  particles.ParticleWithKnownThreadSafe$6.op(ParticleWithKnownThreadSafe.java:96)
+   (b)  particles.ParticleWithKnownThreadSafe$6.op(ParticleWithKnownThreadSafe.java:96) [2x]
 """)
 }

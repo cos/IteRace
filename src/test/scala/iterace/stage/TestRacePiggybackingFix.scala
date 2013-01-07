@@ -15,7 +15,7 @@ Loop: particles.TestRacePiggybackingFix.testCross(TestRacePiggybackingFix.java:1
 
 particles.Particle: particles.TestRacePiggybackingFix.testCross(TestRacePiggybackingFix.java:14)
  .x
-   (a)  particles.TestRacePiggybackingFix$1.op(TestRacePiggybackingFix$1.java:20)
-   (b)  particles.TestRacePiggybackingFix$1.op(TestRacePiggybackingFix$1.java:20)
+   (a)  particles.TestRacePiggybackingFix$1.op(TestRacePiggybackingFix.java:20)
+   (b)  particles.TestRacePiggybackingFix$1.op(TestRacePiggybackingFix.java:20)
 """)
 }

@@ -17,8 +17,8 @@ Loop: particles.ParticleWithKnownThreadSafe.simpleKnownThreadSafe(ParticleWithKn
 
 Static: particles.ParticleWithKnownThreadSafe$ThreadSafe
  .noRaceOnMe
-   (a)  particles.ParticleWithKnownThreadSafe$ThreadSafe.raceInThreadSafe(ParticleWithKnownThreadSafe$ThreadSafe.java:126)
-   (b)  particles.ParticleWithKnownThreadSafe$ThreadSafe.raceInThreadSafe(ParticleWithKnownThreadSafe$ThreadSafe.java:126)
+   (a)  particles.ParticleWithKnownThreadSafe$ThreadSafe.raceInThreadSafe(ParticleWithKnownThreadSafe.java:126)
+   (b)  particles.ParticleWithKnownThreadSafe$ThreadSafe.raceInThreadSafe(ParticleWithKnownThreadSafe.java:126)
 """)
   
   @Test def racePastKnownThreadSafe = expect("""
@@ -26,8 +26,8 @@ Loop: particles.ParticleWithKnownThreadSafe.racePastKnownThreadSafe(ParticleWith
 
 Static: particles.ParticleWithKnownThreadSafe$ThreadSafe
  .noRaceOnMe
-   (a)  particles.ParticleWithKnownThreadSafe$ThreadSafe.moveParticle(ParticleWithKnownThreadSafe$ThreadSafe.java:131)
-   (b)  particles.ParticleWithKnownThreadSafe$ThreadSafe.moveParticle(ParticleWithKnownThreadSafe$ThreadSafe.java:131)
+   (a)  particles.ParticleWithKnownThreadSafe$ThreadSafe.moveParticle(ParticleWithKnownThreadSafe.java:131)
+   (b)  particles.ParticleWithKnownThreadSafe$ThreadSafe.moveParticle(ParticleWithKnownThreadSafe.java:131)
 particles.Particle: particles.ParticleWithKnownThreadSafe.racePastKnownThreadSafe(ParticleWithKnownThreadSafe.java:33)
  .x
    (a)  particles.Particle.moveTo(Particle.java:13)
@@ -42,8 +42,8 @@ Loop: particles.ParticleWithKnownThreadSafe.noRaceOnTransitiveClosureVerySimple(
 
 Static: particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure
  .noRaceOnMe
-   (a)  particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure.raceInThreadSafe(ParticleWithKnownThreadSafe$ThreadSafeOnClosure.java:113)
-   (b)  particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure.raceInThreadSafe(ParticleWithKnownThreadSafe$ThreadSafeOnClosure.java:113)
+   (a)  particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure.raceInThreadSafe(ParticleWithKnownThreadSafe.java:113)
+   (b)  particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure.raceInThreadSafe(ParticleWithKnownThreadSafe.java:113)
 """)
 	
 	@Test def noRaceOnTransitiveClosure = expect("""
@@ -51,8 +51,8 @@ Loop: particles.ParticleWithKnownThreadSafe.noRaceOnTransitiveClosure(ParticleWi
 
 Static: particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure
  .noRaceOnMe
-   (a)  particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure.moveParticle(ParticleWithKnownThreadSafe$ThreadSafeOnClosure.java:117)
-   (b)  particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure.moveParticle(ParticleWithKnownThreadSafe$ThreadSafeOnClosure.java:117)
+   (a)  particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure.moveParticle(ParticleWithKnownThreadSafe.java:117)
+   (b)  particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure.moveParticle(ParticleWithKnownThreadSafe.java:117)
 particles.Particle: particles.ParticleWithKnownThreadSafe.noRaceOnTransitiveClosure(ParticleWithKnownThreadSafe.java:61)
  .x
    (a)  particles.Particle.moveTo(Particle.java:13)
@@ -65,7 +65,7 @@ particles.Particle: particles.ParticleWithKnownThreadSafe.noRaceOnTransitiveClos
 	@Test def noRaceOnSafeObject = expect("""
 Loop: particles.ParticleWithKnownThreadSafe.noRaceOnSafeObject(ParticleWithKnownThreadSafe.java:78)
 
-particles.Particle: particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.getSafeParticle(ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.java:105)
+particles.Particle: particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.getSafeParticle(ParticleWithKnownThreadSafe.java:105)
  .x
    (a)  particles.Particle.moveTo(Particle.java:13)
    (b)  particles.Particle.moveTo(Particle.java:13)
@@ -77,9 +77,9 @@ particles.Particle: particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGene
 	@Test def raceOnSafeObjectAccessedDirectly = expect("""
 Loop: particles.ParticleWithKnownThreadSafe.raceOnSafeObjectAccessedDirectly(ParticleWithKnownThreadSafe.java:93)
 
-particles.Particle: particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.getSafeParticle(ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.java:105)
+particles.Particle: particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator.getSafeParticle(ParticleWithKnownThreadSafe.java:105)
  .x
-   (a)  particles.ParticleWithKnownThreadSafe$6.op(ParticleWithKnownThreadSafe$6.java:96)
-   (b)  particles.ParticleWithKnownThreadSafe$6.op(ParticleWithKnownThreadSafe$6.java:96) [2x]
+   (a)  particles.ParticleWithKnownThreadSafe$6.op(ParticleWithKnownThreadSafe.java:96)
+   (b)  particles.ParticleWithKnownThreadSafe$6.op(ParticleWithKnownThreadSafe.java:96) [2x]
 """)
 }
