@@ -130,7 +130,7 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
       case c: Context =>
         callee match {
           case M(C(_, "ParallelArray"), opsPattern()) => new LoopCallSiteContext(caller, site)
-          //          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())            
+          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
           case _ => c
         }
     }
