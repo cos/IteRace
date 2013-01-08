@@ -1,16 +1,17 @@
 package particles;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import extra166y.Ops;
-import extra166y.ParallelArray;
+import java.util.*;
+import java.util.regex.*;
+import extra166y.*;
 
+//
+//
+//
 public class ParticleUsingLibrary {
-	
+
 	public void noRaceWhenPrintln() {
-		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
-				ParallelArray.defaultExecutor());
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(
+				new Particle[10], ParallelArray.defaultExecutor());
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
@@ -20,10 +21,10 @@ public class ParticleUsingLibrary {
 			}
 		});
 	}
-	
+
 	public void noRaceOnPattern() {
-		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
-				ParallelArray.defaultExecutor());
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(
+				new Particle[10], ParallelArray.defaultExecutor());
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
@@ -34,10 +35,10 @@ public class ParticleUsingLibrary {
 			}
 		});
 	}
-	
+
 	public void noRaceOnSafeMatcher() {
-		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
-				ParallelArray.defaultExecutor());
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(
+				new Particle[10], ParallelArray.defaultExecutor());
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
@@ -49,10 +50,10 @@ public class ParticleUsingLibrary {
 			}
 		});
 	}
-	
+
 	public void raceOnUnsafeMatcher() {
-		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
-				ParallelArray.defaultExecutor());
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(
+				new Particle[10], ParallelArray.defaultExecutor());
 
 		Pattern pattern = Pattern.compile(".*");
 		final Matcher matcher = pattern.matcher("testtest");
@@ -64,10 +65,10 @@ public class ParticleUsingLibrary {
 			}
 		});
 	}
-	
+
 	public void noRaceOnStringConcatenation() {
-		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
-				ParallelArray.defaultExecutor());
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(
+				new Particle[10], ParallelArray.defaultExecutor());
 
 		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
 			@Override
@@ -82,15 +83,30 @@ public class ParticleUsingLibrary {
 	}
 
 	public void raceOnArrayList() {
-		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(new Particle[10],
-				ParallelArray.defaultExecutor());
-		
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(
+				new Particle[10], ParallelArray.defaultExecutor());
+
 		final ArrayList<Integer> someList = new ArrayList<Integer>();
 
 		particles.replaceWithMappedIndex(new Ops.IntToObject<Particle>() {
 			@Override
 			public Particle op(int i) {
 				someList.add(i);
+				return new Particle();
+			}
+		});
+	}
+
+	public void noRaceOnSynchronizedList() {
+		ParallelArray<Particle> particles = ParallelArray.createUsingHandoff(
+				new Particle[10], ParallelArray.defaultExecutor());
+		
+		final List s = Collections.synchronizedList(new ArrayList());
+
+		particles.replaceWithGeneratedValue(new Ops.Generator<Particle>() {
+			@Override
+			public Particle op() {
+				s.add(new Object());
 				return new Particle();
 			}
 		});
