@@ -29,6 +29,8 @@ object generatesSafeObjects extends SelectorOfClassesAndMethods {
     "particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator")
 
   val classPatterns = List()
+  
+  val methods = List((".*java.util.Collections.*", "synchronized.*"))
 }
 
 object movesObjectsAround extends SelectorOfClassesAndMethods {
@@ -54,6 +56,8 @@ object movesObjectsAround extends SelectorOfClassesAndMethods {
     "java.lang.ref.WeakReference")
     
   val classPatterns = List()
+  
+  val methods = List()
 
   override def apply(c: C): Boolean = super.apply(c) || ContainerUtil.isContainer(c)
 }

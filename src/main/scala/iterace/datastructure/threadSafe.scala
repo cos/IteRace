@@ -17,17 +17,18 @@ object threadSafe extends SelectorOfClassesAndMethods {
     // collections
     "java.util.Collections$SynchronizedCollection", // not true
     "java.util.Vector", // not true
-    "java.util.concurrent.ConcurrentHashMap",
-    "java.util.Collections$SingletonList",
-    "java.util.Collections$SynchronizedList",
-    "java.util.Collections$SynchronizedRandomAccessList",
-    "java.util.Collections$UnmodifiableList",
-    "java.util.Collections$UnmodifiableRandomAccessList",
-
     "somethig at the end")
 
+  val classPatterns = List(
+    "java.util.concurrent.ConcurrentHashMap.*",
+    "java.util.Collections.SingletonList.*",
+    "java.util.Collections.SynchronizedList.*",
+    "java.util.Collections.SynchronizedRandomAccessList.*",
+    "java.util.Collections.UnmodifiableList.*",
+    "java.util.Collections.UnmodifiableRandomAccessList.*")
     
-  val classPatterns = List()
+    
+  val methods = List()
   /**
    * is the node,i.e., invocation, thread-safe?
    */
@@ -156,7 +157,7 @@ object threadSafeOnClosure extends SelectorOfClassesAndMethods {
 
   val classPatterns = List()
 
-  val classAndMethod = Set(
+  val methods = List(
 
     // this shouldn't be here but there is a bug in wala:
     // "found a bug in the wala framework - it sees as the same weka.core.Attribute and 
@@ -167,15 +168,10 @@ object threadSafeOnClosure extends SelectorOfClassesAndMethods {
   /**
    * is it thread-safe on closure when called from caller
    */
-  override def apply(caller: N): Boolean = caller.c(ThreadSafeOnClosure) != null || super.apply(caller.m)
+  override def apply(caller: N): Boolean =
+    caller.c(ThreadSafeOnClosure) != null || super.apply(caller.m)
 
-  /**
-   * is any method callee thread-safe on closure
-   */
-  override def apply(callee: M): Boolean =
-    super.apply(callee.getDeclaringClass()) ||
-      classAndMethod.exists({ case (c, m) => callee.getDeclaringClass().getName().toString() == c && callee.getName().toString() == m }) ||
-      ZeroXInstanceKeys.isThrowable(callee.getDeclaringClass())
+  override def apply(c: C) = ZeroXInstanceKeys.isThrowable(c) || super.apply(c)
 
   /**
    * is this particular object thread-safe on closure

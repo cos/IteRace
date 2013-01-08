@@ -53,6 +53,8 @@ object isActuallyLibraryCode extends SelectorOfClassesAndMethods {
     // for lucene4
     "org/apache/lucene/search/FieldComparator.*",
     "org/apache/lucene/search/FieldCacheImpl.*")
+    
+  val methods = List()
 }
 
 object isActuallyApplicationScope {
