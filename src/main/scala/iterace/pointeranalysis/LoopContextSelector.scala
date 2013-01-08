@@ -123,18 +123,6 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
           case _ => false
         } toList)
 
-        // app-lib membrane sensitivity
-        //        if (options(IteRaceOption.BubbleUp)) {
-        //          newC = if (!c.is(AppObject) &&
-        //            isActuallyApplicationScope(caller) && !isActuallyApplicationScope(callee) && // membrane between app and lib
-        //            (generatesSafeObjects(callee) || movesObjectsAround(callee)) &&
-        //            actualParameters.size > 1)
-        //
-        //            newC.copy(appObject = Some(actualParameters(0)))
-        //          else
-        //            newC
-        //        }
-
         newC
       }
 
