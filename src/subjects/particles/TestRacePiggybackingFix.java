@@ -10,15 +10,30 @@ public class TestRacePiggybackingFix {
 				ParallelArray.defaultExecutor());
 	}
 
-	public void testCross() {
+	public void testCrossWithMain() {
 		final Particle shared = new Particle();
 
 		createParticleArray().replaceWithGeneratedValue(
 				new Ops.Generator<Particle>() {
 					@Override
 					public Particle op() {
-						shared.x = 7;
 						bar(shared);
+						Particle nonShared = bar(new Particle());
+						nonShared.x = 8;
+						return null;
+					}
+				});
+	}
+
+	public void testCrossWithTheOtherThread() {
+		final Particle shared = new Particle();
+
+		createParticleArray().replaceWithGeneratedValue(
+				new Ops.Generator<Particle>() {
+					@Override
+					public Particle op() {
+						shared.origin = new Particle();
+						bar(shared.origin);
 						Particle nonShared = bar(new Particle());
 						nonShared.x = 8;
 						return null;
