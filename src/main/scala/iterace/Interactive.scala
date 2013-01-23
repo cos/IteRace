@@ -60,6 +60,8 @@ object Interactive extends App {
           case p: PointerKey => println(p.prettyPrint)
         }
       }
+      case s: String if s.startsWith("cha") => println(iteRace.pa.cha.asScala.find({ case c => c.toString.contains(s.substring(4)) }))
+      case s: String if s.startsWith("cg") => println(iteRace.pa.cg.asScala.filter({ case c => c.toString.contains(s.substring(3)) }) mkString "\n")
       case _ => println("unknown command")
     }
   } while (l != "q")
