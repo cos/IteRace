@@ -86,6 +86,9 @@ class IteRace private (
 
   val enumeratedRaces = races map { r => r.prettyPrint }
 
+  log("cg-size", pa.cg.size)
+  log("heap-size", pa.heap.size)
+
   log("races", enumeratedRaces.size)
 
   debug(log.entries)
