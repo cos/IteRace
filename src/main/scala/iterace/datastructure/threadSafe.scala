@@ -142,6 +142,8 @@ object threadSafeOnClosure extends SelectorOfClassesAndMethods {
 
     // not very sure about this one
     "java.text.AttributedString",
+    
+    "javax.xml.parsers.SAXParserFactory",
 
     // for testing
     "particles.ParticleWithKnownThreadSafe$ThreadSafeOnClosure",
