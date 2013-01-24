@@ -7,7 +7,7 @@ import extra166y.Ops.Procedure;
 import extra166y.ParallelArray;
 
 public class Particle {
-	public double x, y, m; Particle origin, origin1;
+	public double x, y, m, vX, vY, fX, fY; Particle origin, origin1;
 
 	public void moveTo(double x, double y) {
 		this.x = x; 
