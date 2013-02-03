@@ -88,6 +88,7 @@ class IteRace private (
 
   log("cg-size", pa.cg.size)
   log("heap-size", pa.heap.size)
+  log("methods-num", (pa.cg map {_.getMethod()} toSet).size)
 
   log("races", enumeratedRaces.size)
 
