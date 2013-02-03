@@ -25,9 +25,9 @@ object threadSafe extends SelectorOfClassesAndMethods {
     "java.util.Collections.SynchronizedList.*",
     "java.util.Collections.SynchronizedRandomAccessList.*",
     "java.util.Collections.UnmodifiableList.*",
-    "java.util.Collections.UnmodifiableRandomAccessList.*")
-    
-    
+    "java.util.Collections.UnmodifiableRandomAccessList.*",
+    "net.sourceforge.cilib.type.types.container.Vector.*")
+
   val methods = List()
   /**
    * is the node,i.e., invocation, thread-safe?
@@ -81,6 +81,7 @@ object threadSafeOnClosure extends SelectorOfClassesAndMethods {
     "java.io.FileInputStream",
     "java.io.FilePermission",
     "java.io.ObjectStreamClass",
+    "java.io.BufferedWriter",
 
     "java.io.FilePermission",
 
@@ -142,7 +143,7 @@ object threadSafeOnClosure extends SelectorOfClassesAndMethods {
 
     // not very sure about this one
     "java.text.AttributedString",
-    
+
     "javax.xml.parsers.SAXParserFactory",
 
     // for testing
@@ -165,7 +166,8 @@ object threadSafeOnClosure extends SelectorOfClassesAndMethods {
     // "found a bug in the wala framework - it sees as the same weka.core.Attribute and 
     // java.text.NumberFormat$Field; the latter is of class AttributedCharacterIterator$Attribute - that might be the reason
 
-    ("weka/core/Attribute", "equalsMsg"))
+    ("weka/core/Attribute", "equalsMsg"),
+    ("com/google/common/collect/Lists", "new.*"))
 
   /**
    * is it thread-safe on closure when called from caller

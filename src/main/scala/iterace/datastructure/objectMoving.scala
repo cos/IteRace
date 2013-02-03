@@ -28,7 +28,7 @@ object generatesSafeObjects extends SelectorOfClassesAndMethods {
     // for testing
     "particles.ParticleWithKnownThreadSafe$ThreadSafeParticleGenerator")
 
-  val classPatterns = List()
+  val classPatterns = List("net.sourceforge.cilib.type.types.container.Vector.*")
   
   val methods = List((".*java.util.Collections.*", "synchronized.*"))
 }

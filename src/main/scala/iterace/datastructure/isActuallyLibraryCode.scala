@@ -20,9 +20,13 @@ object isActuallyLibraryCode extends SelectorOfClassesAndMethods {
     "weka.core.DenseInstance",
     "weka.core.AbstractInstance",
     "weka.core.Capabilities",
-    "weka.core.StringLocator",    
+    "weka.core.StringLocator",
     "weka.core.RelationalLocator",
     "weka.filters.Filter",
+
+//    // for cilib
+//    "net.sourceforge.cilib.simulator.MeasurementSuite",
+//    "net.sourceforge.cilib.algorithm.AbstractAlgorithm",
 
     // for lucene
     "org.apache.lucene.util.PriorityQueue",
@@ -36,9 +40,7 @@ object isActuallyLibraryCode extends SelectorOfClassesAndMethods {
     "org.apache.lucene.analysis.standard.StandardTokenizerImpl",
     "org.apache.lucene.search.PhrasePositions",
     "org.apache.lucene.analysis.TokenStream",
-    "org.apache.lucene.analysis.standard.StandardAnalyzer"
-//    "org.apache.lucene.queryParser.QueryParser" // for lucene 4    
-   
+    "org.apache.lucene.analysis.standard.StandardAnalyzer" //    "org.apache.lucene.queryParser.QueryParser" // for lucene 4
     )
 
   def classPatterns = List(
@@ -62,11 +64,16 @@ object isActuallyLibraryCode extends SelectorOfClassesAndMethods {
 
     // for cilib
     "com.google.common..*",
-    
+    "net.sourceforge.cilib.util.selection..*",
+    "fj.*",
+    "net.sourceforge.cilib.type.types.*",
+    "net.sourceforge.cilib.niching.NichingFunctions.*",
+    "net.sourceforge.cilib.boa.bee.WorkerBee",
+
     // for lucene4
     "org/apache/lucene/search/FieldComparator.*",
     "org/apache/lucene/search/FieldCacheImpl.*")
-    
+
   val methods = List()
 }
 
