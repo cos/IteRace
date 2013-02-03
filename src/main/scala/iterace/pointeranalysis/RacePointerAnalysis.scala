@@ -23,7 +23,7 @@ import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteRaceOption])
   extends FlexibleCallGraphBuilder(options) {
 
-  override def cs: ContextSelector = new LoopContextSelector(iteraceOptions, instanceKeys)
+  override def cs: ContextSelector = new LoopContextSelector(iteraceOptions, cha, instanceKeys)
   
   // Hooks
   override def policy = { import ZeroXInstanceKeys._;  ALLOCATIONS }

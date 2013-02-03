@@ -28,8 +28,13 @@ import iterace.IteRaceOption
 import iterace.datastructure.isActuallyLibraryCode
 import iterace.datastructure.isActuallyApplicationScope
 import com.ibm.wala.ipa.callgraph.propagation.AllocationSiteInNode
+import com.ibm.wala.ipa.callgraph.propagation.cfa.ContainerContextSelector
+import com.ibm.wala.ipa.cha.ClassHierarchy
+import com.ibm.wala.ipa.cha.IClassHierarchy
+import com.ibm.wala.util.intset.BitVectorIntSetFactory
+import com.ibm.wala.util.intset.IntSetUtil
 
-class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
+class LoopContextSelector(options: Set[IteRaceOption], cha: IClassHierarchy, instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
   // this is the context for all the nodes in the loop iterations
   private case class LoopContext(
     l: CGNode,
@@ -37,7 +42,8 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
     alphaIteration: Boolean,
     arguments: List[Boolean] = List(),
     threadSafeOnClosure: Boolean = false,
-    interesting: Boolean = false) extends Context {
+    interesting: Boolean = false,
+    container: Option[Context] = None) extends Context {
     val loop = Loop(l, parallel)
     val iteration = if (alphaIteration) AlphaIteration else BetaIteration
 
@@ -55,11 +61,14 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         (if (alphaIteration) "a" else "b") +
         " (" + (arguments map { if (_) "s" else "-" } mkString (",")) + ") " +
         (if (threadSafeOnClosure) "TSC" else "") +
-        (if (interesting) "ITT" else "") 
+        (if (interesting) "ITT" else "")
   }
 
   private val opsPattern = ".*Ops.*".r
   private val parallelArrayPattern = ".*ParallelArray.*".r
+
+  val containerContextSelector = new ContainerContextSelector(cha, instankeKeyFactory)
+
   // Describes how contexts are chosen
   def getCalleeTarget(caller: CGNode, site: CallSiteReference, callee: IMethod, actualParameters: Array[InstanceKey]): Context = {
 
@@ -117,11 +126,12 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
             newC
         }
 
-
         newC = newC.copy(arguments = actualParameters map {
           case o: AllocationSiteInNode if o.getNode().c(Iteration) != c(Iteration) => true
           case _ => false
         } toList)
+
+        newC = newC.copy(container = Option(containerContextSelector.getCalleeTarget(caller, site, callee, actualParameters)))
 
         newC
       }
@@ -135,9 +145,9 @@ class LoopContextSelector(options: Set[IteRaceOption], instankeKeyFactory: ZeroX
         }
     }
   }
-  override def getRelevantParameters(caller: CGNode, site: CallSiteReference): IntSet = {
-    EmptyIntSet.instance
-  }
+
+  override def getRelevantParameters(caller: CGNode, site: CallSiteReference): IntSet = EmptyIntSet.instance
+  
   def isInterestingForUs(callee: M) =
     ContainerUtil.isContainer(callee.getDeclaringClass()) || callee.toString().contains("DateFormat");
 }
