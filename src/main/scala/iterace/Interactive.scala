@@ -7,6 +7,7 @@ import wala.WALAConversions._
 import scala.collection.JavaConverters._
 import com.ibm.wala.ipa.callgraph.propagation.AbstractFieldPointerKey
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey
+import com.ibm.wala.ipa.callgraph.propagation.LocalPointerKey
 
 object Interactive extends App {
   val r = new IteRaceRunner(args.toList)
@@ -35,6 +36,20 @@ object Interactive extends App {
         val s = intToAccess(n)
         println(s.prettyPrint)
         t.trace(s)
+      }
+      case s: String if s.startsWith("list-vars") => { // list the variables in a cg node
+        val name = s.split(" ").tail mkString " "
+        (iteRace.pa.cg.asScala.find(_.toString.contains(name))) match {
+          case Some(n) => {
+            println(n.toString)
+            Range(1, n.getIR().getSymbolTable().getMaxValueNumber()) foreach { x =>
+              println(iteRace.pa.heap.asScala.find(_ == new P(n, x))
+                map { pk => x + " : \n" + (iteRace.pa.heap.getSuccNodes(pk).asScala map { _.asInstanceOf[O].prettyPrint } mkString "\n") }
+                mkString "\n")
+            }
+          }
+          case None => println("node not found");
+        }
       }
       case "o" => {
         val intToObjects = O.printRepo map { _.swap }
