@@ -6,15 +6,14 @@ import org.junit.Assert._
 import iterace.IteRace
 import iterace.IteRaceOption
 import sppa.util.debug
-import wala.Dependency
 import wala.WALAConversions._
-import wala.S
+import edu.illinois.wala.S
 import iterace.datastructure.LockSets
-import wala.AnalysisOptions
 import sppa.util.JavaTest
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions
 import com.typesafe.config.ConfigResolveOptions
+import edu.illinois.wala.ipa.callgraph.AnalysisOptions
 
 abstract class RaceAbstractTest extends JavaTest {
   debug.activate

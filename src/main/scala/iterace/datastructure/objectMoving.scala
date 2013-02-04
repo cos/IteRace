@@ -10,7 +10,7 @@ import com.ibm.wala.ipa.callgraph.propagation.ContainerUtil
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 
 import iterace.pointeranalysis.ThreadSafeOnClosure
-import wala.S
+import edu.illinois.wala.S
 import wala.WALAConversions._
 
 object generatesSafeObjects extends SelectorOfClassesAndMethods {

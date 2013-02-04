@@ -18,9 +18,9 @@ import iterace.datastructure.ObjectRaceSet
 import iterace.datastructure.LoopRaceSet
 import iterace.datastructure.FieldRaceSet
 import iterace.IteRaceOption
-import wala.S
+import edu.illinois.wala.S
 import wala.extra.StaticClassObject
-import wala.O
+import edu.illinois.wala.ipa.callgraph.propagation.O
 
 class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
 

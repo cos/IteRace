@@ -6,7 +6,7 @@ import com.ibm.wala.analysis.reflection.InstanceKeyWithNode
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 import iterace.pointeranalysis.ThreadSafeOnClosure
 import wala.WALAConversions._
-import wala.S
+import edu.illinois.wala.S
 
 object threadSafe extends SelectorOfClassesAndMethods {
   val classes = Set(

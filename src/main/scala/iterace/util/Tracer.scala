@@ -12,7 +12,7 @@ import com.ibm.wala.ipa.callgraph.propagation.PointerAnalysis
 import iterace.pointeranalysis.Loop
 import iterace.pointeranalysis.Iteration
 import iterace.pointeranalysis.AlphaIteration
-import wala.S
+import edu.illinois.wala.S
 import scala.collection.JavaConverters._
 import wala.util.viz.NodeDecorator
 import com.ibm.wala.ipa.slicer.NormalStatement

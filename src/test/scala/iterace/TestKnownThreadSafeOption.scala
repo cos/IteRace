@@ -3,7 +3,6 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import iterace.stage.RaceAbstractTest
 import org.junit.Test
-import wala.Dependency
 
 class TestKnownThreadSafeOption extends RaceAbstractTest {
 

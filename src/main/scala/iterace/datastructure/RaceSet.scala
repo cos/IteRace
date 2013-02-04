@@ -3,7 +3,7 @@ package iterace.datastructure
 import wala.WALAConversions._
 import scala.collection.immutable._
 import scala.collection.JavaConverters._
-import wala.S
+import edu.illinois.wala.S
 import iterace.util._
 import scala.collection.mutable.{ Builder, SetBuilder }
 import scala.collection.generic.CanBuildFrom
@@ -171,7 +171,7 @@ final class ObjectRaceSet(val l: Loop, val o: O, override val children: Set[LowL
   override def accepts(r: Race) = r.l == l && r.o == o
   override def getChild(r: Race) = RaceSet(r)
 
-  override def prettyPrint(decorator: S[I] => String = noDecorator) = o.prettyPrint() + "\n" + super.prettyPrint(decorator)
+  override def prettyPrint(decorator: S[I] => String = noDecorator) = o.prettyPrint + "\n" + super.prettyPrint(decorator)
 
   override def equals(other: Any) = other match {
     case that: ObjectRaceSet => this.l == that.l && this.o == that.o && super.equals(that)

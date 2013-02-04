@@ -8,8 +8,7 @@ import iterace.pointeranalysis.RacePointerAnalysis
 import iterace.IteRaceOption
 import sppa.util.JavaTest
 import com.typesafe.config.ConfigFactory
-import wala.AnalysisOptions
-import wala.Dependency
+import edu.illinois.wala.ipa.callgraph.AnalysisOptions
 
 abstract class LockSetAbstractTest(startClass: String) extends JavaTest {
   def analyze(method: String) = {

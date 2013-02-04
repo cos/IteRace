@@ -5,7 +5,7 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import wala.WALAConversions._
 import scala.collection._
-import wala.S
+import edu.illinois.wala.S
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.properties.WalaProperties
 import com.ibm.wala.util.collections.Filter
@@ -13,12 +13,12 @@ import iterace.datastructure.LockSets
 import iterace.datastructure.Lock
 import iterace.IteRaceOption
 import com.ibm.wala.ipa.callgraph.AnalysisScope
-import wala.extra.arrayContents
-import wala.FlexibleCallGraphBuilder
 import com.ibm.wala.ipa.cha.ClassHierarchy
-import wala.AnalysisOptions
 import com.ibm.wala.ipa.callgraph.ContextSelector
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
+import edu.illinois.wala.ipa.callgraph.AnalysisOptions
+import edu.illinois.wala.ipa.callgraph.FlexibleCallGraphBuilder
+import wala.extra.ArrayContents
 
 class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteRaceOption])
   extends FlexibleCallGraphBuilder(options) {
@@ -66,7 +66,7 @@ class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteR
 
   implicit def iWithField(i: I) = new {
     lazy val f: Option[F] = i match {
-      case i: ArrayReferenceI => Some(arrayContents)
+      case i: ArrayReferenceI => Some(ArrayContents)
       case i: AccessI => Option(cha.resolveField(i.getDeclaredField()))
       case _ => None
     }

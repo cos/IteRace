@@ -2,7 +2,7 @@ package iterace.stage
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.util.graph.impl.GraphInverter
 import com.ibm.wala.util.collections.Filter
-import wala.S
+import edu.illinois.wala.S
 import wala.WALAConversions._
 import iterace.util.crossProduct
 import scala.collection.JavaConverters._
@@ -13,7 +13,7 @@ import iterace.datastructure.ShallowRace
 import iterace.datastructure.LowLevelRaceSet
 import iterace.datastructure.ShallowRaceSet
 import iterace.datastructure.FieldRaceSet
-import wala.O
+import edu.illinois.wala.ipa.callgraph.propagation.O
 import wala.extra.StaticClassObject
 import iterace.IteRaceOption
 import iterace.datastructure.isActuallyLibraryCode

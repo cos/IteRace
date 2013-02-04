@@ -10,8 +10,8 @@ import org.scalatest.FunSuite
 import org.scalatest.matchers.MustMatchers
 import iterace.pointeranalysis.RacePointerAnalysis
 import com.typesafe.config.ConfigFactory
-import wala.Dependency
-import wala.AnalysisOptions
+import edu.illinois.wala.ipa.callgraph.AnalysisOptions
+import edu.illinois.wala.ipa.callgraph.Dependency
 
 class TestRacePointerAnalysis extends FunSpec with BeforeAndAfter with MustMatchers {
 

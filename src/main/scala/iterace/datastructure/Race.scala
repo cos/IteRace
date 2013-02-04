@@ -4,7 +4,8 @@ import scala.collection._
 import wala.WALAConversions._
 import iterace.util._
 import iterace.pointeranalysis.Loop
-import wala.S
+import edu.illinois.wala.S
+import edu.illinois.wala.PrettyPrintable
 
 object Race {
   def apply(l: Loop, o: O, f:F, a: S[I], b: S[I]) = new RaceOnField(l,o,f,a,b)
@@ -40,10 +41,10 @@ class RaceOnField(l: Loop, o: O, val f: F, a: S[I], b: S[I]) extends Race(l, o, 
   override def isComparable(other: Any) = other.isInstanceOf[RaceOnField]
 
   override def prettyPrint() =
-    o.prettyPrint() + "   " + f.getName() + "\n" + super.prettyPrint()
+    o.prettyPrint + "   " + f.getName() + "\n" + super.prettyPrint()
 }
 
 class ShallowRace(l: Loop, o: O, a: S[I], b: S[I]) extends Race(l, o, a, b) {
   override def prettyPrint() =
-    o.prettyPrint() + "   \n" + super.prettyPrint()
+    o.prettyPrint + "   \n" + super.prettyPrint()
 }

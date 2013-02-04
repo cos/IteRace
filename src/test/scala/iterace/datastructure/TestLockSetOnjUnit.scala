@@ -3,7 +3,6 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.junit.Test
 import org.junit.Ignore
-import wala.Dependency
 
 class TestLockSetOnjUnit extends LockSetAbstractTest("Ljunit/tests/ParallelAllTests") {
 

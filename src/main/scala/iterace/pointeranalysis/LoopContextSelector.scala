@@ -1,4 +1,5 @@
 package iterace.pointeranalysis
+
 import com.ibm.wala.ipa.callgraph.ContextSelector
 import com.ibm.wala.ipa.callgraph.CGNode
 import com.ibm.wala.classLoader.CallSiteReference
@@ -10,6 +11,7 @@ import com.ibm.wala.util.intset.EmptyIntSet
 import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
 import wala.WALAConversions._
+import scala.collection._
 import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
 import com.ibm.wala.ssa.SSAPutInstruction
@@ -18,7 +20,6 @@ import com.ibm.wala.ipa.callgraph.impl.Everywhere
 import com.ibm.wala.ipa.callgraph.propagation.cfa.CallerSiteContextPair
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 import iterace.AnalysisException
-import scala.collection._
 import com.ibm.wala.ipa.callgraph.DelegatingContext
 import iterace.datastructure.threadSafeOnClosure
 import iterace.datastructure.generatesSafeObjects
@@ -33,6 +34,10 @@ import com.ibm.wala.ipa.cha.ClassHierarchy
 import com.ibm.wala.ipa.cha.IClassHierarchy
 import com.ibm.wala.util.intset.BitVectorIntSetFactory
 import com.ibm.wala.util.intset.IntSetUtil
+import edu.illinois.wala.PrettyPrintable
+import edu.illinois.wala.classLoader.M
+import edu.illinois.wala.classLoader.C
+import edu.illinois.wala.ssa.V
 
 class LoopContextSelector(options: Set[IteRaceOption], cha: IClassHierarchy, instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
   // this is the context for all the nodes in the loop iterations
@@ -81,15 +86,16 @@ class LoopContextSelector(options: Set[IteRaceOption], cha: IClassHierarchy, ins
           throw new AnalysisException("There should be only invocation for an mock operation call site");
 
         val e0PutVals = caller.getIR().getInstructions().
-          collect { case x: SSAPutInstruction if x.getDeclaredField.toString.contains("e0") => x.getVal() }
+          collect { case x: SSAPutInstruction if x.getDeclaredField.toString.contains("e0") => x.v }
 
         val e0GetVals = caller.getIR().getInstructions().
-          collect { case x: SSAGetInstruction if x.getDeclaredField.toString.contains("e0") => x.getDef() }
+          collect { case x: SSAGetInstruction if x.getDeclaredField.toString.contains("e0") => x.d }
 
         val e0Vals = (e0PutVals ++ e0GetVals).toSet
 
         val invoke = invocations.head
-        val defAndUses = (invoke.uses ++ Iterable(invoke.getDef())).toSet
+        
+        val defAndUses = (invoke.uses :+ V(invoke.getDef())) toSet
 
         val alphaIteration =
           if (options.contains(IteRaceOption.TwoThreads))

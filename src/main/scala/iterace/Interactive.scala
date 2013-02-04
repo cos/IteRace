@@ -1,8 +1,7 @@
 package iterace
 
 import iterace.util.Tracer
-import wala.S
-import wala.O
+import edu.illinois.wala.S
 import wala.WALAConversions._
 import scala.collection.JavaConverters._
 import com.ibm.wala.ipa.callgraph.propagation.AbstractFieldPointerKey
@@ -52,28 +51,28 @@ object Interactive extends App {
         }
       }
       case "o" => {
-        val intToObjects = O.printRepo map { _.swap }
-        val x = readLine.toInt
-        println(intToObjects(x).prettyPrint)
+//        val intToObjects = O.printRepo map { _.swap }
+//        val x = readLine.toInt
+//        println(intToObjects(x).prettyPrint)
       }
       case s: String if s.startsWith("opp") => {
-        val x = s.split(" ")(1).toInt
-        val intToObjects = O.printRepo map { _.swap }
-        val heap = iteRace.pa.heap
-        heap.getPredNodes(intToObjects(x)).asScala flatMap { heap.getPredNodes(_).asScala } foreach {
-          case o: O => println(o.prettyPrint)
-          case p => println(p.toString)
-        }
+//        val x = s.split(" ")(1).toInt
+//        val intToObjects = O.printRepo map { _.swap }
+//        val heap = iteRace.pa.heap
+//        heap.getPredNodes(intToObjects(x)).asScala flatMap { heap.getPredNodes(_).asScala } foreach {
+//          case o: O => println(o.prettyPrint)
+//          case p => println(p.toString)
+//        }
       }
       case s: String if s.startsWith("op") => {
         val x = s.split(" ")(1).toInt
-        val intToObjects = O.printRepo map { _.swap }
-        val heap = iteRace.pa.heap
-        heap.getPredNodes(intToObjects(x)).asScala foreach {
-          case o: O => println(o.prettyPrint)
-          case o: P =>
-          case p: PointerKey => println(p.prettyPrint)
-        }
+//        val intToObjects = O.printRepo map { _.swap }
+//        val heap = iteRace.pa.heap
+//        heap.getPredNodes(intToObjects(x)).asScala foreach {
+//          case o: O => println(o.prettyPrint)
+//          case o: P =>
+//          case p: PointerKey => println(p.prettyPrint)
+//        }
       }
       case s: String if s.startsWith("cha") => println(iteRace.pa.cha.asScala.find({ case c => c.toString.contains(s.substring(4)) }))
       case s: String if s.startsWith("cg") => println(iteRace.pa.cg.asScala.filter({ case c => c.toString.contains(s.substring(3)) }) mkString "\n")

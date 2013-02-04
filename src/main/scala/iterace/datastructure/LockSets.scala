@@ -25,7 +25,7 @@ import com.ibm.wala.dataflow.IFDS.IFlowFunctionMap
 import com.ibm.wala.dataflow.IFDS.TabulationSolver
 import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.dataflow.IFDS.IMergeFunction
-import wala.S
+import edu.illinois.wala.S
 import iterace.pointeranalysis._
 import com.ibm.wala.util.collections.Filter
 import com.ibm.wala.ssa.SSAInvokeInstruction
@@ -33,6 +33,9 @@ import com.ibm.wala.ssa.SSAAbstractInvokeInstruction
 import com.ibm.wala.util.graph.GraphUtil
 import com.ibm.wala.ipa.callgraph.impl.PartialCallGraph
 import sppa.util._
+import edu.illinois.wala.PrettyPrintable
+import edu.illinois.wala.classLoader.M
+import edu.illinois.wala.classLoader.C
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
 
 abstract class Lock extends PrettyPrintable
@@ -218,7 +221,7 @@ class LockSets(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
       val bbic = new BasicBlockInContext(s.n, explodedBasicBlock)
       val intSet = solver.getResult(bbic)
       val notHeldLocks = intSet.map({ locksDomain.getMappedObject(_) }).toSet
-      locksDomain.elements.toSet.&~(notHeldLocks).&~(Set(null)) // have to figure out why it doesn't propagate 0 here
+      locksDomain.toSet.&~(notHeldLocks).&~(Set(null)) // have to figure out why it doesn't propagate 0 here
     }
     (funct _)
   }

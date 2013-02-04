@@ -20,7 +20,6 @@ import iterace.datastructure.MayAliasLockConstructor
 import iterace.IteRaceOption._
 import sppa.util._
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
-import wala.AnalysisOptions
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigParseOptions
@@ -32,6 +31,7 @@ import JsonSerialization._
 import java.io.File
 import com.typesafe.config.ConfigException
 import wala.extra.StaticClassObject
+import edu.illinois.wala.ipa.callgraph.AnalysisOptions
 
 class IteRace private (
   options: AnalysisOptions,
