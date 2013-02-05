@@ -3,7 +3,7 @@ import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.util.graph.impl.GraphInverter
 import com.ibm.wala.util.collections.Filter
 import edu.illinois.wala.S
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import iterace.util.crossProduct
 import scala.collection.JavaConverters._
 import scala.collection._
@@ -14,10 +14,10 @@ import iterace.datastructure.LowLevelRaceSet
 import iterace.datastructure.ShallowRaceSet
 import iterace.datastructure.FieldRaceSet
 import edu.illinois.wala.ipa.callgraph.propagation.O
-import wala.extra.StaticClassObject
 import iterace.IteRaceOption
 import iterace.datastructure.isActuallyLibraryCode
 import iterace.datastructure.isActuallyApplicationScope
+import edu.illinois.wala.ipa.callgraph.propagation.StaticClassObject
 
 class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   import pa._

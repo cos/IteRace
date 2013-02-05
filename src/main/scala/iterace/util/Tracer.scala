@@ -4,7 +4,7 @@ import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.util.graph.GraphSlicer
 import com.ibm.wala.util.graph.impl.GraphInverter
 import com.ibm.wala.ipa.callgraph.CallGraph
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import wala.util.viz.DotUtil
 import com.ibm.wala.ipa.slicer.Slicer
 import com.ibm.wala.ipa.slicer.SDG
@@ -80,12 +80,12 @@ class Tracer(callGraph: CallGraph, pa: PointerAnalysis) {
         val ss = s.asInstanceOf[Statement]
         "" + (ss match {
           case s: StatementWithInstructionIndex =>
-            s.getNode().m.lineNoFromIRNo(S(s.getNode(), s.getInstruction()).irNo)
+            S(s.getNode(), s.getInstruction()).lineNo
           //            S(s.getNode(), s.getInstruction()).prettyPrint // it is enclosed in the method as a cluster
           case s: HeapStatement =>
             (s match {
-              case s: HeapParamCaller => "" + s.getNode().m.lineNoFromIRNo(S(s.getNode(), s.getCall()).irNo) + ":"
-              case s: HeapReturnCaller => "" + s.getNode().m.lineNoFromIRNo(S(s.getNode(), s.getCall()).irNo) + ":"
+              case s: HeapParamCaller => "" + S(s.getNode(), s.getCall()).lineNo + ":"
+              case s: HeapReturnCaller => "" + S(s.getNode(), s.getCall()).lineNo + ":"
               case _ => ""
             }) + s.getLocation.prettyPrint("\\n")
 

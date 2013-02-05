@@ -4,7 +4,7 @@
 //import org.scalatest.{ Spec, BeforeAndAfter }
 //import org.scalatest.junit.JUnitRunner
 //import scala.collection.JavaConversions._
-//import wala.WALAConversions._
+//import edu.illinois.wala.Facade._
 //import org.junit.Assert._
 //import scala.collection.mutable._
 //import org.scalatest.FunSuite

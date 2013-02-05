@@ -6,7 +6,7 @@ import org.junit.Assert._
 import iterace.IteRace
 import iterace.IteRaceOption
 import sppa.util.debug
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import edu.illinois.wala.S
 import iterace.datastructure.LockSets
 import sppa.util.JavaTest

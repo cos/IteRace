@@ -1,10 +1,9 @@
 package iterace.datastructure
 
-import wala.WALAConversions._
+import edu.illinois.wala.ipa.callgraph.propagation.O
 import iterace.pointeranalysis.Iteration
 import iterace.pointeranalysis.RacePointerAnalysis
-import edu.illinois.wala.ipa.callgraph.propagation.O
-import com.ibm.wala.ipa.callgraph.propagation.InstanceKey
+import edu.illinois.wala.Facade._
 
 class MayAliasLockConstructor(pa: RacePointerAnalysis) extends LockConstructor {
   import pa._

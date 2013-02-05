@@ -4,7 +4,7 @@
 //import com.ibm.wala.ssa.SSAInvokeInstruction
 //import scala.collection.JavaConversions._
 //import scala.collection._
-//import wala.WALAConversions._
+//import edu.illinois.wala.Facade._
 //import com.ibm.wala.analysis.pointers.HeapGraph
 //import com.ibm.wala.ssa.SSAPutInstruction
 //import iterace.pointeranalysis.RacePointerAnalysis

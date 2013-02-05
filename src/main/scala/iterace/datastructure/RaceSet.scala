@@ -1,6 +1,6 @@
 package iterace.datastructure
 
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import scala.collection.immutable._
 import scala.collection.JavaConverters._
 import edu.illinois.wala.S

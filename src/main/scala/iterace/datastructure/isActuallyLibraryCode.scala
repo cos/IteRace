@@ -1,6 +1,7 @@
 package iterace.datastructure
 
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
+import com.ibm.wala.types.ClassLoaderReference
 
 object isActuallyLibraryCode extends SelectorOfClassesAndMethods {
   /**
@@ -78,7 +79,7 @@ object isActuallyLibraryCode extends SelectorOfClassesAndMethods {
 }
 
 object isActuallyApplicationScope {
-  def apply(c: C): Boolean = inApplicationScope(c) && !isActuallyLibraryCode(c)
-  def apply(m: M): Boolean = inApplicationScope(m) && !isActuallyLibraryCode(m)
-  def apply(n: N): Boolean = inApplicationScope(n) && !isActuallyLibraryCode(n)
+  def apply(c: C): Boolean = c.getClassLoader().getReference() == ClassLoaderReference.Application && !isActuallyLibraryCode(c)
+  def apply(m: M): Boolean = isActuallyApplicationScope(m.c) && !isActuallyLibraryCode(m)
+  def apply(n: N): Boolean = isActuallyApplicationScope(n.m.c) && !isActuallyLibraryCode(n)
 }

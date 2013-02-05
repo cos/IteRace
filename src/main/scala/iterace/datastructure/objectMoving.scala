@@ -11,7 +11,7 @@ import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 
 import iterace.pointeranalysis.ThreadSafeOnClosure
 import edu.illinois.wala.S
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 
 object generatesSafeObjects extends SelectorOfClassesAndMethods {
   /**

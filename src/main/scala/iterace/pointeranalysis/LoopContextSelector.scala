@@ -10,7 +10,7 @@ import com.ibm.wala.util.intset.IntSet
 import com.ibm.wala.util.intset.EmptyIntSet
 import com.ibm.wala.ipa.callgraph.ContextKey
 import com.ibm.wala.ipa.callgraph.ContextItem
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import scala.collection._
 import com.ibm.wala.ssa.SSAGetInstruction
 import com.ibm.wala.ssa.SSAFieldAccessInstruction
@@ -23,7 +23,7 @@ import iterace.AnalysisException
 import com.ibm.wala.ipa.callgraph.DelegatingContext
 import iterace.datastructure.threadSafeOnClosure
 import iterace.datastructure.generatesSafeObjects
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import iterace.datastructure.movesObjectsAround
 import iterace.IteRaceOption
 import iterace.datastructure.isActuallyLibraryCode
@@ -38,6 +38,8 @@ import edu.illinois.wala.PrettyPrintable
 import edu.illinois.wala.classLoader.M
 import edu.illinois.wala.classLoader.C
 import edu.illinois.wala.ssa.V
+import edu.illinois.wala.classLoader.CodeLocation
+import edu.illinois.wala.classLoader.ProgramCounter
 
 class LoopContextSelector(options: Set[IteRaceOption], cha: IClassHierarchy, instankeKeyFactory: ZeroXInstanceKeys) extends ContextSelector {
   // this is the context for all the nodes in the loop iterations
@@ -194,7 +196,5 @@ class LoopCallSiteContext(val n: N, val site: CallSiteReference) extends Context
     }
   }
 
-  def prettyPrint = {
-    printCodeLocation(n.getMethod(), site.getProgramCounter())
-  }
+  def prettyPrint = CodeLocation(n.m, ProgramCounter(site.getProgramCounter())).toString
 }

@@ -2,7 +2,7 @@ package iterace
 
 import iterace.util.Tracer
 import edu.illinois.wala.S
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import scala.collection.JavaConverters._
 import com.ibm.wala.ipa.callgraph.propagation.AbstractFieldPointerKey
 import com.ibm.wala.ipa.callgraph.propagation.PointerKey
@@ -37,18 +37,18 @@ object Interactive extends App {
         t.trace(s)
       }
       case s: String if s.startsWith("list-vars") => { // list the variables in a cg node
-        val name = s.split(" ").tail mkString " "
-        (iteRace.pa.cg.asScala.find(_.toString.contains(name))) match {
-          case Some(n) => {
-            println(n.toString)
-            Range(1, n.getIR().getSymbolTable().getMaxValueNumber()) foreach { x =>
-              println(iteRace.pa.heap.asScala.find(_ == new P(n, x))
-                map { pk => x + " : \n" + (iteRace.pa.heap.getSuccNodes(pk).asScala map { _.asInstanceOf[O].prettyPrint } mkString "\n") }
-                mkString "\n")
-            }
-          }
-          case None => println("node not found");
-        }
+//        val name = s.split(" ").tail mkString " "
+//        (iteRace.pa.cg.asScala.find(_.toString.contains(name))) match {
+//          case Some(n) => {
+//            println(n.toString)
+//            Range(1, n.getIR().getSymbolTable().getMaxValueNumber()) foreach { x =>
+//              println(iteRace.pa.heap.asScala.find(_ == P(n, x))
+//                map { pk => x + " : \n" + (iteRace.pa.heap.getSuccNodes(pk).asScala map { _.asInstanceOf[O].prettyPrint } mkString "\n") }
+//                mkString "\n")
+//            }
+//          }
+//          case None => println("node not found");
+//        }
       }
       case "o" => {
 //        val intToObjects = O.printRepo map { _.swap }

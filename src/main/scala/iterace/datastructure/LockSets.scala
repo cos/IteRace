@@ -2,7 +2,7 @@ package iterace.datastructure
 
 import scala.collection._
 import scala.collection.JavaConversions._
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import com.ibm.wala.dataflow.IFDS.PartiallyBalancedTabulationProblem
 import com.ibm.wala.dataflow.IFDS.UnorderedDomain
 import com.ibm.wala.dataflow.IFDS.ICFGSupergraph
@@ -37,6 +37,7 @@ import edu.illinois.wala.PrettyPrintable
 import edu.illinois.wala.classLoader.M
 import edu.illinois.wala.classLoader.C
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
+import edu.illinois.wala.ipa.callgraph.propagation.P
 
 abstract class Lock extends PrettyPrintable
 
@@ -60,7 +61,7 @@ trait LockConstructor {
 
 class LockSets(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
   import pa._
-
+  
   val supergraph = ICFGSupergraph.make(callGraph, cache)
   //    val filterdCallGraph = PartialCallGraph.make(callGraph,callGraph.getEntrypointNodes())
 
@@ -217,7 +218,7 @@ class LockSets(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
     solver.solve()
     def funct(s: S[I]) = {
       val icfg = supergraph.getICFG().getCFG(s.n)
-      val explodedBasicBlock = icfg.getBlockForInstruction(s.irNo)
+      val explodedBasicBlock = icfg.getBlockForInstruction(s.irNo.get)
       val bbic = new BasicBlockInContext(s.n, explodedBasicBlock)
       val intSet = solver.getResult(bbic)
       val notHeldLocks = intSet.map({ locksDomain.getMappedObject(_) }).toSet

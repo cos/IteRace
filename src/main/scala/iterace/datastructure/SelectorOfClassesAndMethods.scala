@@ -2,7 +2,7 @@ package iterace.datastructure
 
 import scala.collection.Set
 
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 
 trait SelectorOfClassesAndMethods { // I should find a better name for this
 

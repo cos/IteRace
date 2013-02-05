@@ -5,7 +5,7 @@ import scala.collection.immutable
 import com.ibm.wala.analysis.reflection.InstanceKeyWithNode
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 import iterace.pointeranalysis.ThreadSafeOnClosure
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import edu.illinois.wala.S
 
 object threadSafe extends SelectorOfClassesAndMethods {

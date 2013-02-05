@@ -1,7 +1,7 @@
 package iterace.datastructure
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import org.junit.Assert._
 import scala.collection._
 import iterace.pointeranalysis.RacePointerAnalysis

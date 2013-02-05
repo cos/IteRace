@@ -3,7 +3,7 @@ package iterace.pointeranalysis
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import scala.collection._
 import edu.illinois.wala.S
 import com.ibm.wala.util.graph.traverse.DFS
@@ -18,7 +18,6 @@ import com.ibm.wala.ipa.callgraph.ContextSelector
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
 import edu.illinois.wala.ipa.callgraph.AnalysisOptions
 import edu.illinois.wala.ipa.callgraph.FlexibleCallGraphBuilder
-import wala.extra.ArrayContents
 
 class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteRaceOption])
   extends FlexibleCallGraphBuilder(options) {
@@ -28,7 +27,7 @@ class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteR
   // Hooks
   override def policy = { import ZeroXInstanceKeys._;  ALLOCATIONS }
 
-  // we return an interable but we know it is actually a set
+  // we return an Iterable but we know it is actually a set
   def statementsReachableFrom(n: N, filter: N => Boolean = null): Iterable[S[I]] = {
     val reachableNs = if (filter == null)
       DFS.getReachableNodes(callGraph, Set(n))
@@ -62,27 +61,6 @@ class RacePointerAnalysis(options: AnalysisOptions, val iteraceOptions: Set[IteR
         }).get
       else
         alphaIterationN
-  }
-
-  implicit def iWithField(i: I) = new {
-    lazy val f: Option[F] = i match {
-      case i: ArrayReferenceI => Some(ArrayContents)
-      case i: AccessI => Option(cha.resolveField(i.getDeclaredField()))
-      case _ => None
-    }
-  }
-
-  implicit def iWithReferencePointer[T <: I](s: S[T]) = new {
-    lazy val refP: Option[P] = s.i match {
-      case i: AccessI if !i.isStatic => Some(P(s.n, i.getRef()))
-      case i: ArrayReferenceI => Some(P(s.n, i.getArrayRef()))
-      case i: InvokeI if !i.isStatic => Some(P(s.n, i.getReceiver()))
-      case _ => None
-    }
-  }
-
-  implicit def invokeIWithMethod(i: InvokeI) = new {
-    lazy val m = cha.resolveMethod(i.getDeclaredTarget())
   }
 
   implicit def accessIWithReferencePointer[T <: AccessI](s: S[T]) = new {

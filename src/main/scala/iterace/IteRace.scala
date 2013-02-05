@@ -2,7 +2,7 @@ package iterace
 import com.ibm.wala.analysis.pointers.HeapGraph
 import scala.collection._
 import scala.collection.JavaConversions._
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.ipa.cfg.ExplodedInterproceduralCFG
 import com.ibm.wala.ssa.SSAPutInstruction
@@ -30,8 +30,8 @@ import DefaultProtocol._
 import JsonSerialization._
 import java.io.File
 import com.typesafe.config.ConfigException
-import wala.extra.StaticClassObject
 import edu.illinois.wala.ipa.callgraph.AnalysisOptions
+import edu.illinois.wala.ipa.callgraph.propagation.StaticClassObject
 
 class IteRace private (
   options: AnalysisOptions,

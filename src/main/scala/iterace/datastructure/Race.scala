@@ -1,7 +1,7 @@
 package iterace.datastructure
 
 import scala.collection._
-import wala.WALAConversions._
+import edu.illinois.wala.Facade._
 import iterace.util._
 import iterace.pointeranalysis.Loop
 import edu.illinois.wala.S
