@@ -32,6 +32,8 @@ import java.io.File
 import com.typesafe.config.ConfigException
 import edu.illinois.wala.ipa.callgraph.AnalysisOptions
 import edu.illinois.wala.ipa.callgraph.propagation.StaticClassObject
+import edu.illinois.wala.S
+import edu.illinois.wala.ipa.callgraph.propagation.P
 
 class IteRace private (
   options: AnalysisOptions,
@@ -45,6 +47,7 @@ class IteRace private (
   log.startTimer("pointer-analysis");
 
   val pa = new RacePointerAnalysis(options, iteRaceOptions)
+
   import pa._
   log.endTimer
   log.startTimer("potential-races")
@@ -88,7 +91,7 @@ class IteRace private (
 
   log("cg-size", pa.cg.size)
   log("heap-size", pa.heap.size)
-  log("methods-num", (pa.cg map {_.getMethod()} toSet).size)
+  log("methods-num", (pa.cg map { _.getMethod() } toSet).size)
 
   log("races", enumeratedRaces.size)
 
@@ -98,7 +101,7 @@ class IteRace private (
     val fw = new FileWriter(racesFile)
     fw.write(races.prettyPrint())
     fw.close()
-    
+
     val racesForJson = "[" +
       ((races map { r =>
         {
