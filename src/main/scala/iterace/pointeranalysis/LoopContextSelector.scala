@@ -196,5 +196,5 @@ class LoopCallSiteContext(val n: N, val site: CallSiteReference) extends Context
     }
   }
 
-  def prettyPrint = CodeLocation(n.m, ProgramCounter(site.getProgramCounter())).toString
+  def prettyPrint = ProgramCounter(site.getProgramCounter()) map { new CodeLocation(n.m, _) } map { _.toString } getOrElse ""
 }
