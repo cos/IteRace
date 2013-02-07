@@ -214,15 +214,18 @@ class LockSets(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
       }
     }
 
+    val allLocks = locksDomain.toSet
     val solver = TabulationSolver.make(problem)
     solver.solve()
     def funct(s: S[I]) = {
       val icfg = supergraph.getICFG().getCFG(s.n)
-      val explodedBasicBlock = icfg.getBlockForInstruction(s.irNo.get)
-      val bbic = new BasicBlockInContext(s.n, explodedBasicBlock)
-      val intSet = solver.getResult(bbic)
-      val notHeldLocks = intSet.map({ locksDomain.getMappedObject(_) }).toSet
-      locksDomain.toSet.&~(notHeldLocks).&~(Set(null)) // have to figure out why it doesn't propagate 0 here
+      val notHeldLocks = s.irNo map { i =>
+        val explodedBasicBlock = icfg.getBlockForInstruction(i)
+        val bbic = new BasicBlockInContext(s.n, explodedBasicBlock)
+        val intSet = solver.getResult(bbic)
+        intSet.map({ locksDomain.getMappedObject(_) }).toSet
+      } getOrElse allLocks
+      allLocks.&~(notHeldLocks).&~(Set(null)) // have to figure out why it doesn't propagate 0 here
     }
     (funct _)
   }
