@@ -1,7 +1,7 @@
 
 libraryDependencies += "com.typesafe" % "config" % "0.5.+"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.0.M5" % "test"
+libraryDependencies += "org.scalatest" % "scalatest_2.10.0" % "2.0.M5" % "test"
 
 libraryDependencies += "net.debasishg" % "sjson_2.9.1" % "0.17"
 
