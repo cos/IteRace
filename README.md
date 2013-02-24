@@ -12,4 +12,4 @@ You can find more details in the [IteRace technical report](https://www.ideals.i
 
 We haven't yet made the tool as user-friendly as we would like to. If you want to use it in your own project, contact me and I'll assist with the setup.
 
-The repository also contains the infrastructure and results for the tool evaluation.
+[This git repo](https://github.com/cos/workspace-iterace) contains a workspace with a multi-project sbt build that grabs all dependencies, builds the tool, and has infrastructure for running benchmarks.
