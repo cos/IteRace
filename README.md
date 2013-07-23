@@ -8,7 +8,7 @@ IteRace tackles this problem by specialization:
  - reports races in application, not library, code. For example, you don't have to track down races occurring in HashSet - all it will tell you is that you have inadvertently shared a particular HashSet object.   
  - filters races based on a thread-safety model of classes. It is slightly more involved then that, but, for example, you won't get race raports on an AtomicInteger.
 
-You can find more details in our [ISSTA '13 paper](http://issta2013.inf.usi.ch/program).
+You can find more details in our [ISSTA '13 paper](http://publish.illinois.edu/cos/files/2012/11/IteRace-ISSTA-13.pdf).
 
 We haven't yet made the tool as user-friendly as we would like to. If you want to use it in your own project, contact me and I'll assist with the setup.
 
