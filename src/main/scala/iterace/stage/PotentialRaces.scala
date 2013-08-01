@@ -30,6 +30,8 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
 
   import pa._
 
+  val callGraph = pa.getCallGraph()
+  
   private val icfg = ExplodedInterproceduralCFG.make(callGraph)
 
   def toObjectMap(accesses: Iterable[S[I]]) =

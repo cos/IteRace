@@ -21,6 +21,8 @@ import edu.illinois.wala.ipa.callgraph.propagation.StaticClassObject
 
 class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   import pa._
+  
+  val cha = pa.getClassHierarchy()
 
   def groupByObject(accesses: Set[S[I]]): immutable.Map[O, immutable.Set[S[I]]] = {
     val bigSet = accesses.flatMap[(O, S[I]), Set[(O, S[I])]](s =>
@@ -76,6 +78,8 @@ class BubbleUp(pa: RacePointerAnalysis) extends Stage {
   }
 
   private val bubbledUp: mutable.Map[S[I], Set[S[I]]] = mutable.Map()
+  
+  val callGraph = pa.getCallGraph()
 
   val invertedCallGraph = GraphInverter.invert(callGraph)
   val libraryCodeFilter = new Filter[N]() {
