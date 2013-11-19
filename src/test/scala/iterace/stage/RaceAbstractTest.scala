@@ -19,10 +19,12 @@ abstract class RaceAbstractTest extends JavaTest {
   debug.activate
 
   def entryClass: String
+  
+  def entryMethod = testName.getMethodName() + "()V"
 
   def localConfig = "wala.entry { " +
     "class: " + entryClass + "\n" +
-    "method: " + testName.getMethodName() + "()V \n" +
+    "method: " + entryMethod + " \n" +
     "}\n"
 
   def config = ConfigFactory.parseString(localConfig) withFallback ConfigFactory.load("test")
@@ -39,8 +41,8 @@ abstract class RaceAbstractTest extends JavaTest {
     }) + "\n"
 
   def expect(entry: String, expectedResult: String) = assertEquals(expectedResult, printRaces(analysis))
-  def expect(expectedResult: String): Unit = expect(testName.getMethodName() + "()V", expectedResult)
+  def expect(expectedResult: String): Unit = expect(expectedResult)
   def expectNoRaces: Unit = expectNoRaces(testName.getMethodName() + "()V")
-  def expectNoRaces(entry: String) = expect(entry, "\n\n")
+  def expectNoRaces(entry: String) = expect("\n\n")
   def expectSomeRaces = assertNotSame("\n\n", printRaces(analysis))
 }
