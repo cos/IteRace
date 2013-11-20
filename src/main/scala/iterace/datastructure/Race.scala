@@ -6,13 +6,14 @@ import iterace.util._
 import iterace.pointeranalysis.Loop
 import edu.illinois.wala.S
 import edu.illinois.wala.PrettyPrintable
+import iterace.pointeranalysis.MayRunInParallel
 
 object Race {
-  def apply(l: Loop, o: O, f:F, a: S[I], b: S[I]) = new RaceOnField(l,o,f,a,b)
-  def apply(l: Loop, o: O, a: S[I], b: S[I]) = new ShallowRace(l,o,a,b) 
+  def apply(l: MayRunInParallel, o: O, f:F, a: S[I], b: S[I]) = new RaceOnField(l,o,f,a,b)
+  def apply(l: MayRunInParallel, o: O, a: S[I], b: S[I]) = new ShallowRace(l,o,a,b) 
 }
 
-abstract sealed class Race(val l: Loop, val o: O, val a: S[I], val b: S[I]) extends PrettyPrintable {
+abstract sealed class Race(val l: MayRunInParallel, val o: O, val a: S[I], val b: S[I]) extends PrettyPrintable {
 
   override def hashCode = l.hashCode * 41 + o.hashCode
   
@@ -30,7 +31,7 @@ abstract sealed class Race(val l: Loop, val o: O, val a: S[I], val b: S[I]) exte
   }
 }
 
-class RaceOnField(l: Loop, o: O, val f: F, a: S[I], b: S[I]) extends Race(l, o, a, b) with PrettyPrintable {
+class RaceOnField(l: MayRunInParallel, o: O, val f: F, a: S[I], b: S[I]) extends Race(l, o, a, b) with PrettyPrintable {
   override def hashCode = super.hashCode * 71 + f.hashCode
   override def equals(other: Any) = other match {
     case that: RaceOnField =>
@@ -44,7 +45,7 @@ class RaceOnField(l: Loop, o: O, val f: F, a: S[I], b: S[I]) extends Race(l, o, 
     o.prettyPrint + "   " + f.getName() + "\n" + super.prettyPrint()
 }
 
-class ShallowRace(l: Loop, o: O, a: S[I], b: S[I]) extends Race(l, o, a, b) {
+class ShallowRace(l: MayRunInParallel, o: O, a: S[I], b: S[I]) extends Race(l, o, a, b) {
   override def prettyPrint() =
     o.prettyPrint + "   \n" + super.prettyPrint()
 }

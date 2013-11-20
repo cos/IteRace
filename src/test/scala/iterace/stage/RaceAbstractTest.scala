@@ -19,7 +19,7 @@ abstract class RaceAbstractTest extends JavaTest {
   debug.activate
 
   def entryClass: String
-  
+
   def entryMethod = testName.getMethodName() + "()V"
 
   def localConfig = "wala.entry { " +
@@ -40,8 +40,7 @@ abstract class RaceAbstractTest extends JavaTest {
       }
     }) + "\n"
 
-  def expect(entry: String, expectedResult: String) = assertEquals(expectedResult, printRaces(analysis))
-  def expect(expectedResult: String): Unit = expect(expectedResult)
+  def expect(expectedResult: String) = assertEquals(expectedResult, printRaces(analysis))
   def expectNoRaces: Unit = expectNoRaces(testName.getMethodName() + "()V")
   def expectNoRaces(entry: String) = expect("\n\n")
   def expectSomeRaces = assertNotSame("\n\n", printRaces(analysis))

@@ -166,9 +166,15 @@ case object Interesting extends ContextKey with ContextItem
 // thread-safe on transitive closure
 case object ThreadSafeOnClosure extends ContextKey with ContextItem
 
+
+trait MayRunInParallel {
+  def prettyPrintDetail: String
+}
+
 object Loop extends ContextKey
-case class Loop(n: N, parallel: Boolean) extends ContextItem {
+case class Loop(n: N, parallel: Boolean) extends ContextItem with MayRunInParallel {
   def prettyPrint = "Loop: " + (if (parallel) "parallel" else "sequential")
+  def prettyPrintDetail = n.getContext().asInstanceOf[LoopCallSiteContext].prettyPrint + "\n\n" 
 }
 
 object Iteration extends ContextKey

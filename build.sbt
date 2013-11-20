@@ -19,4 +19,5 @@ libraryDependencies ++= Seq(
 "com.ibm.wala" % "com.ibm.wala.shrike" % "1.3.4-SNAPSHOT",
 "com.ibm.wala" % "com.ibm.wala.core" % "1.3.4-SNAPSHOT",
 "University of Illinois" %% "walafacade" % "0.1",
-"University of Illinois" %% "util" % "0.1")
+"University of Illinois" %% "util" % "0.1",
+"University of Illinois" %% "parallelarraymock" % "0.1")

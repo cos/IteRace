@@ -15,12 +15,13 @@ import iterace.datastructure.Race
 import iterace.util._
 import iterace.datastructure.threadSafe
 import iterace.datastructure.ObjectRaceSet
-import iterace.datastructure.LoopRaceSet
+import iterace.datastructure.RegionRaceSet
 import iterace.datastructure.FieldRaceSet
 import iterace.IteRaceOption
 import edu.illinois.wala.S
 import edu.illinois.wala.ipa.callgraph.propagation.O
 import edu.illinois.wala.ipa.callgraph.propagation.StaticClassObject
+import iterace.datastructure.RegionRaceSet
 
 class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
 
@@ -31,7 +32,7 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
   import pa._
 
   val callGraph = pa.getCallGraph()
-  
+
   private val icfg = ExplodedInterproceduralCFG.make(callGraph)
 
   def toObjectMap(accesses: Iterable[S[I]]) =
@@ -43,7 +44,7 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
       case _ => s.refP.get.pt map { (_, s) } toSeq
     }) groupBy { _._1 } mapValues { _ map { _._2 } toSet }
 
-  private val races = new ProgramRaceSet(parLoops map (l => {
+  private val racesInLoops = parLoops map { l =>
     val alphaWrites = statementsReachableFrom(l.alphaIterationN).
       filter(s => s.i.isInstanceOf[PutI] || s.i.isInstanceOf[ArrayStoreI]).
       filter(s => !iteraceOptions.contains(IteRaceOption.Filtering) || !threadSafe(s))
@@ -68,14 +69,18 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
         (o, aSet collect { case (f, aSet1) if bSet.contains(f) => (f, (aSet1, bSet(f))) })
     }
 
-    new LoopRaceSet(l, greatMapping map {
+    new RegionRaceSet(l, greatMapping map {
       case (o, mapByField) =>
         new ObjectRaceSet(l, o, mapByField map {
           case (f, (aSet, bSet)) =>
             new FieldRaceSet(l, o, f, aSet, bSet)
         } filter { _.size > 0 } toSet)
     } filter { _.size > 0 } toSet)
-  }) filter { _.size > 0 })
+  } filter { _.size > 0 }
+
+  private val racesInAsyncs: Set[RegionRaceSet] = Set()
+
+  private val races = new ProgramRaceSet(racesInLoops ++ racesInAsyncs)
 
   //    val pairsOnSameField = crossProduct(alphaWrites groupBy { _.i.f.get }, betaAccesses groupBy { _.i.f.get }).
   //      filter { case ((f1, _), (f2, _)) => f1 == f2 }.
