@@ -2,6 +2,7 @@ package iterace.stage
 import com.ibm.wala.analysis.pointers.HeapGraph
 import scala.collection._
 import scala.collection.JavaConverters._
+import scala.collection.JavaConversions._
 import edu.illinois.wala.Facade._
 import com.ibm.wala.util.graph.traverse.DFS
 import com.ibm.wala.ipa.cfg.ExplodedInterproceduralCFG
@@ -22,6 +23,9 @@ import edu.illinois.wala.S
 import edu.illinois.wala.ipa.callgraph.propagation.O
 import edu.illinois.wala.ipa.callgraph.propagation.StaticClassObject
 import iterace.datastructure.RegionRaceSet
+import iterace.pointeranalysis.MayRunInParallel
+import iterace.pointeranalysis.MayRunInParallel
+import com.ibm.wala.classLoader.IClassLoader
 
 class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
 
@@ -44,14 +48,19 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
       case _ => s.refP.get.pt map { (_, s) } toSeq
     }) groupBy { _._1 } mapValues { _ map { _._2 } toSet }
 
-  private val racesInLoops = parLoops map { l =>
-    val alphaWrites = statementsReachableFrom(l.alphaIterationN).
-      filter(s => s.i.isInstanceOf[PutI] || s.i.isInstanceOf[ArrayStoreI]).
-      filter(s => !iteraceOptions.contains(IteRaceOption.Filtering) || !threadSafe(s))
+  private val notThreadSafeOrFiltered = (s: S[I]) => !iteraceOptions.contains(IteRaceOption.Filtering) || !threadSafe(s)
+  private val isWriteLike = (s: S[I]) => s.i.isInstanceOf[PutI] || s.i.isInstanceOf[ArrayStoreI]
+  private val isAccessLike = (s: S[I]) => s.i.isInstanceOf[AccessI] || s.i.isInstanceOf[ArrayReferenceI]
 
-    val betaAccesses = statementsReachableFrom(l.betaIterationN).
-      filter(s => s.i.isInstanceOf[AccessI] || s.i.isInstanceOf[ArrayReferenceI]).
-      filter(s => !iteraceOptions.contains(IteRaceOption.Filtering) || !threadSafe(s))
+  implicit class BooleanFunction[T](f1: T => Boolean) {
+    def ||(f2: T => Boolean)(x: T): Boolean = f1(x) || f2(x)
+    def &&(f2: T => Boolean)(x: T): Boolean = f1(x) && f2(x)
+  }
+
+  def makeRegionRaceSet(l: MayRunInParallel, s1: Iterable[S[I]], s2: Iterable[S[I]]) = {
+    val alphaWrites = s1.filter(isWriteLike && notThreadSafeOrFiltered)
+
+    val betaAccesses = s2.filter(isAccessLike && notThreadSafeOrFiltered)
 
     // it is enough to consider object created outside and in the the first iteration
     // so, filter out the objects created in the second iteration. they are duplicates of the first iteration 
@@ -76,9 +85,46 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
             new FieldRaceSet(l, o, f, aSet, bSet)
         } filter { _.size > 0 } toSet)
     } filter { _.size > 0 } toSet)
+  }
+
+  private val racesInLoops = parLoops map { l =>
+    makeRegionRaceSet(l,
+      statementsReachableFrom(l.alphaIterationN),
+      statementsReachableFrom(l.betaIterationN))
   } filter { _.size > 0 }
 
-  private val racesInAsyncs: Set[RegionRaceSet] = Set()
+  private val reachableAsyncTasks = callGraph filter { n =>
+    (n.toString contains "doInBackground") &&
+      !(n.instructions exists {
+        case i: InvokeI => i.getDeclaredTarget().toString contains "doInBackground"
+        case _ => false
+      })
+  }
+
+  private val instructionsOutsideAsyncs =
+    callGraph filterNot { n =>
+      Seq("doInBackground", "onPostExecute")
+        .exists(n.toString contains)
+    } flatMap { n => n.instructions map (S(n, _)) }
+
+  case class AsyncTask(n: N) extends MayRunInParallel {
+    def prettyPrintDetail = "async task: " + n
+  }
+
+  private val racesInAsyncs: Set[RegionRaceSet] = reachableAsyncTasks map { t =>
+    val writeOnArgumentOfDoInBackground = t.instructions find {
+      case i: ArrayReferenceI => i.getUse(0) == 2
+      case _ => false
+    } map { S(t, _) }
+
+    println("!!! " + writeOnArgumentOfDoInBackground)
+    println(t.instructions.toList mkString "\n")
+
+    val inTask = statementsReachableFrom(t) filter (_ != writeOnArgumentOfDoInBackground.get)
+
+    makeRegionRaceSet(AsyncTask(t), instructionsOutsideAsyncs, inTask) ++
+      makeRegionRaceSet(AsyncTask(t), inTask, instructionsOutsideAsyncs filterNot isWriteLike)
+  } toSet
 
   private val races = new ProgramRaceSet(racesInLoops ++ racesInAsyncs)
 

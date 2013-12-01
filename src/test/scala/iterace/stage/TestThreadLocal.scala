@@ -17,7 +17,7 @@ class TestThreadLocal extends RaceAbstractTest {
   @Test def testNoRaceOnThreadLocalSetGet = expectNoRaces
   @Test def testNoRaceOnThreadLocalObject = expectNoRaces
   @Test def testNoRaceOnThreadLocalRetrivedObject = expectNoRaces
-  @Test def testRaceOnThreadLocalRetrivedObject = expect("""
+  @Ignore @Test def testRaceOnThreadLocalRetrivedObject = expect("""
 Loop: particles.TestThreadLocal.testRaceOnThreadLocalRetrivedObject(TestThreadLocal.java:87)
 
 particles.Particle: particles.TestThreadLocal.testRaceOnThreadLocalRetrivedObject(TestThreadLocal.java:85)
@@ -27,7 +27,7 @@ particles.Particle: particles.TestThreadLocal.testRaceOnThreadLocalRetrivedObjec
 """)
   
 	@Test def testNoRaceOnObjectSetOutsideTheLoop = expectNoRaces
-	@Test def testRaceOnThreadLocalReferredSharedObject = expect("""
+	@Ignore @Test def testRaceOnThreadLocalReferredSharedObject = expect("""
 Loop: particles.TestThreadLocal.testRaceOnThreadLocalReferredSharedObject(TestThreadLocal.java:116)
 
 particles.Particle: particles.TestThreadLocal.testRaceOnThreadLocalReferredSharedObject(TestThreadLocal.java:114)

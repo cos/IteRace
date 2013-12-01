@@ -851,6 +851,28 @@
 				<method name="initIDs" descriptor="()J" static="true" />
 			</class>
 		</package>
+		
+		<package name="android/os">
+			<class name="AsyncTask">
+				<method name="execute" descriptor="([Ljava/lang/Object;)Landroid/os/AsyncTask;">
+					<getfield class="[Ljava/lang/Object" field="length"
+						fieldType="I" def="size" ref="arg1" />  
+					<new def="clonedArray" class="[Ljava/lang/Object" size="size" />
+					<call type="static" name="arraycopy"
+						class="Lcom/ibm/wala/model/java/lang/System"
+						descriptor="(Ljava/lang/Object;Ljava/lang/Object;)V" 
+						arg0="arg1"
+						arg1="clonedArray" />
+					<call type="virtual" name="doInBackground"
+						class="Landroid/os/AsyncTask"
+						descriptor="([Ljava/lang/Object;)Ljava/lang/Object;"
+						arg0="arg0" arg1="arg1" />
+					<return value="arg0" />
+				</method>
+				<method name="doInBackground" descriptor="(Landroid/os/AsyncTask;[Ljava/lang/Object;)V">
+				</method>
+			</class>
+		</package>
 
 	</classloader>
 </summary-spec>

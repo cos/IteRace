@@ -10,7 +10,7 @@ class TestBubbleUp extends RaceAbstractTest {
   val entryClass = "Lparticles/ParticleUsingLibrary"
   override val options = Set[IteRaceOption](IteRaceOption.TwoThreads, IteRaceOption.BubbleUp)
 
-  @Test  def raceOnArrayList = expect("""
+  @Ignore @Test  def raceOnArrayList = expect("""
 Loop: particles.ParticleUsingLibrary.raceOnArrayList(ParticleUsingLibrary.java:90)
 
 java.util.ArrayList: particles.ParticleUsingLibrary.raceOnArrayList(ParticleUsingLibrary.java:88)
