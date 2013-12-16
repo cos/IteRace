@@ -9,10 +9,6 @@ IteRace tackles this problem by specialization:
 
 You can find more details in our [ISSTA '13 paper](http://publish.illinois.edu/cos/files/2013/08/IteRace-ISSTA-13.pdf).
 
-We haven't yet made the tool as user-friendly as we would like to. If you want to use it in your own project, contact me and I'll assist with the setup.
-
-[This git repo](https://github.com/cos/workspace-iterace) contains a workspace with a multi-project sbt build that grabs all dependencies, builds the tool, and has infrastructure for running benchmarks.
-
 ## Getting started
 
 IteRace is implemented in Scala, relies on [WALA](http://wala.sourceforge.net/wiki/index.php/Main_Page) as the underlying analysis engine, and uses [SBT](http://www.scala-sbt.org) for building.
@@ -43,5 +39,8 @@ IteRace is implemented in Scala, relies on [WALA](http://wala.sourceforge.net/wi
     
 If you use Eclipse, you can `sbt eclipse` and import the project into your workspace (dependencies will be linked to the Ivy repo).
 
+### Also:
 
-    
+We haven't yet made the tool as user-friendly as we would like to. If you encounter any problem with the setup or the tool, report it [here](https://github.com/cos/IteRace/issues) and I'll try to solve it quickly.
+
+[This git repo](https://github.com/cos/workspace-iterace) contains the workspace we used for running the benchmarks and gathering the results presented in the paper. It is not as user friendly as we would like but we'll improve it shortly.
