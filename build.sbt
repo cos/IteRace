@@ -13,7 +13,7 @@ javaOptions += "-Xmx4G"
 
 libraryDependencies ++= Seq(
 "com.typesafe" % "config" % "0.5.+",
-"org.scalatest" % "scalatest_2.10.0" % "2.0.M5" % "test",
+"org.scalatest" % "scalatest_2.10" % "2.0" % "test",
 "net.debasishg" % "sjson_2.10" % "0.19",
 "com.ibm.wala" % "com.ibm.wala.util" % "1.3.4-SNAPSHOT",
 "com.ibm.wala" % "com.ibm.wala.shrike" % "1.3.4-SNAPSHOT",
