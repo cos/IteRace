@@ -32,15 +32,35 @@ IteRace is implemented in Scala, relies on [WALA](http://wala.sourceforge.net/wi
     - `cd Util`
     - `sbt publishLocal`
     
-4. Finally, clone IteRace and compile
+4. Clone IteRace and compile
     - `git clone https://github.com/cos/IteRace.git`
     - `cd IteRace`
     - `sbt compile`
-    
+
+5. Edit `/src/main/resources/local.config` to point to your Java library jar
+  
 If you use Eclipse, you can `sbt eclipse` and import the project into your workspace (dependencies will be linked to the Ivy repo).
+
+## Analyzing a program
+
+SBT puts the compiled binary in the `/target` directory. You can play with IteRace using its Interactive tool (`iterace.Interactive` main class). It accepts configuration options as arguments, or you can provide it a configuration file via the `configFile=...` argument.
+
+### Configuration options examples:
+
+- `wala.entry.class="NBodySimulation"`
+- `wala.entry.method = "main([Ljava/lang/String;)V"` (also the default)
+- `iterace.races-file="test.races"`
+- `iterace.log-file="verbose.log"`
+- `wala.dependencies.binary+="path/to/class/folder"`
+- `wala.dependencies.jar+="path/to/a/jar"`
+- `wala.dependencies.source+="path/to/sources"` (WALA is sometimes fickle about loading sources)
+- `wala.exclussions="javax\/.*"`
+
+See `src/main/resources` for the default option values.
+
 
 ### Also:
 
-We haven't yet made the tool as user-friendly as we would like to. If you encounter any problem with the setup or the tool, report it [here](https://github.com/cos/IteRace/issues) and I'll try to solve it quickly.
+We haven't yet made the tool as user-friendly as we would like to. If you encounter any problem with the setup or use of the tool, report it [here](https://github.com/cos/IteRace/issues) and I'll try to solve it quickly.
 
 [This git repo](https://github.com/cos/workspace-iterace) contains the workspace we used for running the benchmarks and gathering the results presented in the paper. It is not as user friendly as we would like but we'll improve it shortly.
