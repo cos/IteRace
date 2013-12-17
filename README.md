@@ -18,7 +18,7 @@ IteRace is implemented in Scala, relies on [WALA](http://wala.sourceforge.net/wi
 1. Make sure you have [Scala 2.10](http://www.scala-lang.org/download/), [Maven](http://maven.apache.org/download.cgi), [Apache Ivy](http://ant.apache.org/ivy/download.cgi), and [SBT 0.13](http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html) 
 
 2. Clone WALA and install it to your local Maven repo
-    - `export JAVA_HOME="<java's home on your system>"` (on OS X: `/usr/libexec/java_home`)
+    - `export JAVA_HOME="<java's home on your system>"` (on OS X: `/usr/libexec/java_home`) Also, you might want to add this line to your system loading profile
     - `git clone https://github.com/wala/WALA.git`
     - `cd WALA`
     - `mvn clean install -DskipTests=true` 
