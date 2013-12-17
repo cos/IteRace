@@ -43,16 +43,16 @@ If you use Eclipse, you can `sbt eclipse` and import the project into your works
 
 ## Using IteRace
 
-### As a library
+#### As a library
 
 See [this example project](https://github.com/cos/IteRace-example-client)
 
-### As a standalone tool
+#### As a standalone tool
 
 SBT puts the compiled binary in the `/target` directory. You can play with IteRace using its Interactive tool (`iterace.Interactive` main class). It accepts configuration options as arguments, or you can provide it a configuration file via the `configFile=...` argument.
 
 
-## Configuration options
+### Configuration options
 
 Examples:
 - `wala.entry.class="NBodySimulation"`
