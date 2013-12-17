@@ -67,7 +67,7 @@ Examples:
 See `src/main/resources` for the default option values.
 
 
-## Also:
+## Also
 
 We haven't yet made the tool as user-friendly as we would like to. If you encounter any problem with the setup or use of the tool, report it [here](https://github.com/cos/IteRace/issues) and I'll try to solve it quickly.
 
