@@ -26,6 +26,7 @@ import iterace.datastructure.RegionRaceSet
 import iterace.pointeranalysis.MayRunInParallel
 import iterace.pointeranalysis.MayRunInParallel
 import com.ibm.wala.classLoader.IClassLoader
+import com.ibm.wala.util.graph.GraphUtil
 
 class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
 
@@ -102,25 +103,29 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
   }
 
   private val instructionsOutsideAsyncs =
-    callGraph filterNot { n =>
+    DFS.getReachableNodes(callGraph, callGraph.getEntrypointNodes(), { n: N =>
       Seq("doInBackground", "onPostExecute")
         .exists(n.toString contains)
-    } flatMap { n => n.instructions map (S(n, _)) }
+    }) flatMap { n => n.instructions map (S(n, _)) }
 
   case class AsyncTask(n: N) extends MayRunInParallel {
     def prettyPrintDetail = "async task: " + n
   }
 
   private val racesInAsyncs: Set[RegionRaceSet] = reachableAsyncTasks map { t =>
-    val writeOnArgumentOfDoInBackground = t.instructions find {
+    val writeOnArgumentOfDoInBackground = t.instructions filter {
       case i: ArrayReferenceI => i.getUse(0) == 2
       case _ => false
-    } map { S(t, _) }
+    } map { S(t, _) } toList
 
     println("!!! " + writeOnArgumentOfDoInBackground)
     println(t.instructions.toList mkString "\n")
 
-    val inTask = statementsReachableFrom(t) filter (_ != writeOnArgumentOfDoInBackground.get)
+    val inTask = statementsReachableFrom(t) filterNot (writeOnArgumentOfDoInBackground contains _)
+
+    println(instructionsOutsideAsyncs mkString "\n")
+    println("---" * 10)
+    println(inTask mkString "\n")
 
     makeRegionRaceSet(AsyncTask(t), instructionsOutsideAsyncs, inTask) ++
       makeRegionRaceSet(AsyncTask(t), inTask, instructionsOutsideAsyncs filterNot isWriteLike)
