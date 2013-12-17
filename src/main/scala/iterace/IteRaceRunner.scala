@@ -7,13 +7,11 @@ import com.typesafe.config.ConfigFactory
 import sjson.json._
 import DefaultProtocol._
 import JsonSerialization._
-import com.typesafe.config.ConfigParseOptions
-import com.typesafe.config.ConfigResolveOptions
-import com.typesafe.config.Config
+import com.typesafe.config._
 import sppa.util.Timer
 
 class IteRaceRunner(args: List[String]) {
-  println(args)
+  println("Configuration: "+args.mkString("\n"))
   val config = loadConfig
   val fw = new FileWriter(config.getString("iterace.log-file"))
 
