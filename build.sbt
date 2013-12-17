@@ -1,4 +1,12 @@
 
+name := "IteRace"
+
+version := "0.5"
+
+organization := "University of Illinois"
+
+scalaVersion := "2.10.0"
+
 resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
 
 unmanagedSourceDirectories in Test <+= sourceDirectory / "subjects"
