@@ -41,12 +41,20 @@ IteRace is implemented in Scala, relies on [WALA](http://wala.sourceforge.net/wi
   
 If you use Eclipse, you can `sbt eclipse` and import the project into your workspace (dependencies will be linked to the Ivy repo).
 
-## Analyzing a program
+## Using IteRace
+
+### As a library
+
+See [this example project](https://github.com/cos/IteRace-example-client)
+
+### As a standalone tool
 
 SBT puts the compiled binary in the `/target` directory. You can play with IteRace using its Interactive tool (`iterace.Interactive` main class). It accepts configuration options as arguments, or you can provide it a configuration file via the `configFile=...` argument.
 
-### Configuration options examples:
 
+## Configuration options
+
+Examples:
 - `wala.entry.class="NBodySimulation"`
 - `wala.entry.method = "main([Ljava/lang/String;)V"` (also the default)
 - `iterace.races-file="test.races"`
@@ -59,7 +67,7 @@ SBT puts the compiled binary in the `/target` directory. You can play with IteRa
 See `src/main/resources` for the default option values.
 
 
-### Also:
+## Also:
 
 We haven't yet made the tool as user-friendly as we would like to. If you encounter any problem with the setup or use of the tool, report it [here](https://github.com/cos/IteRace/issues) and I'll try to solve it quickly.
 
