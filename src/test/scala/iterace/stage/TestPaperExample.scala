@@ -8,9 +8,9 @@ import org.junit.Ignore
 class TestPaperExample extends RaceAbstractTest {
   import IteRaceOption._
   val entryClass = "Lparticles/NBodySimulation"
-  override val options = Set[IteRaceOption](Filtering, TwoThreads, BubbleUp)
+  override val options = Set[IteRaceOption](Filtering, TwoThreads, BubbleUp, Synchronized)
 
-  @Ignore @Test def compute = expect("""
+  @Test def compute = expect("""
 
 """)
 }

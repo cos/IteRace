@@ -9,7 +9,7 @@ import extra166y.ParallelArray;
 public class NBodySimulation {
 	Particle centerOfMass;
 	double dT = 1.0;
-	protected Object lock;
+	protected Object lock = new Object();
 	ArrayList<Particle> history = new ArrayList<Particle>();
 
 	void compute() {
