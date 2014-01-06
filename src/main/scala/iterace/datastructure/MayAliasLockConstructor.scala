@@ -12,12 +12,26 @@ class MayAliasLockConstructor(pa: RacePointerAnalysis) extends LockConstructor {
   def apply(c: C) = Some(CLock(c))
 }
 
+class BetterLockConstructor(pa: RacePointerAnalysis) extends LockConstructor {
+  import pa._
+
+  def apply(p: P) = p match {
+    case p: LocalP => Some(PLock(p))
+    case _ => None
+  }
+  def apply(c: C) = Some(CLock(c))
+}
+
+case class PLock(p: LocalP) extends Lock {
+  def prettyPrint = "L: " + (Option(p.n.c(Iteration)) getOrElse "outside") + " " + p.prettyPrint
+}
+
 case class OLock(o: O) extends Lock {
-  def prettyPrint = "L: " + o.prettyPrint + 
-  		(o match {
-  		  case O(n,_) => "-"+ (Option(n.c(Iteration)) getOrElse "outside")
-  		  case _ => ""
-  		})
+  def prettyPrint = "L: " + o.prettyPrint +
+    (o match {
+      case O(n, _) => "-" + (Option(n.c(Iteration)) getOrElse "outside")
+      case _ => ""
+    })
 }
 case class CLock(c: C) extends Lock {
   def prettyPrint = "L: " + c.prettyPrint

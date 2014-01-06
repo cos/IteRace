@@ -103,11 +103,11 @@ Loop: particles.Particle.raceOnSharedObjectCarriedByArray(Particle.java:259)
 
 particles.Particle: particles.Particle$16.op(Particle.java:253)
  .x
-   (a)  particles.Particle.moveTo(Particle.java:13) [2x]
-   (b)  particles.Particle.moveTo(Particle.java:13) [2x]
+   (a)  particles.Particle.moveTo(Particle.java:13)
+   (b)  particles.Particle.moveTo(Particle.java:13)
  .y
-   (a)  particles.Particle.moveTo(Particle.java:14) [2x]
-   (b)  particles.Particle.moveTo(Particle.java:14) [2x]
+   (a)  particles.Particle.moveTo(Particle.java:14)
+   (b)  particles.Particle.moveTo(Particle.java:14)
 """)
 
   @Test def raceBecauseOfDirectArrayLoad = expect("""

@@ -231,6 +231,5 @@ class LockSets(pa: RacePointerAnalysis, lockConstructor: LockConstructor) {
     }
     (funct _)
   }
-
   parLoops.foreach { getLockSetMapping(_) }
 }

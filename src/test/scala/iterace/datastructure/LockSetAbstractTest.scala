@@ -11,12 +11,15 @@ import com.typesafe.config.ConfigFactory
 import edu.illinois.wala.ipa.callgraph.AnalysisOptions
 
 abstract class LockSetAbstractTest(startClass: String) extends JavaTest {
+  
+  def lockConstructor(pa: RacePointerAnalysis): LockConstructor
+  
   def analyze(method: String) = {
     implicit val config = ConfigFactory.load("test")
     val pa = new RacePointerAnalysis(AnalysisOptions(startClass, method),
       Set(IteRaceOption.TwoThreads))
     
-    (new LockSets(pa, new MayAliasLockConstructor(pa)), pa)
+    (new LockSets(pa, lockConstructor(pa)), pa)
   }
 
   /**

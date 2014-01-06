@@ -52,7 +52,12 @@ object threadSafe extends SelectorOfClassesAndMethods {
   /**
    * is the node,i.e., invocation, thread-safe?
    */
-  def apply(s: S[I]): Boolean = apply(s.n) || writeInConstructorOnThis(s)
+  def apply(s: S[I]): Boolean = {
+    //    if (s.toString contains "HashMap") {
+    //      println(s + "----> " + apply(s.n) + " "+ writeInConstructorOnThis(s)+ s.n.c(ThreadSafeOnClosure))
+    //    }
+    apply(s.n) || writeInConstructorOnThis(s)
+  }
 
   def writeInConstructorOnThis(s: S[I]): Boolean = s.n.getMethod().isInit() &&
     (s.i match {
@@ -175,7 +180,9 @@ object threadSafeOnClosure extends SelectorOfClassesAndMethods {
   override def apply(caller: N): Boolean =
     caller.c(ThreadSafeOnClosure) != null || super.apply(caller.m)
 
-  override def apply(c: C) = ZeroXInstanceKeys.isThrowable(c) || super.apply(c)
+  override def apply(c: C) =
+    ZeroXInstanceKeys.isThrowable(c) ||
+      super.apply(c)
 
   /**
    * is this particular object thread-safe on closure
@@ -183,20 +190,18 @@ object threadSafeOnClosure extends SelectorOfClassesAndMethods {
   def apply(o: O): Boolean =
     o match {
       case o: InstanceKeyWithNode =>
-        generatesSafeObjects(o.getNode) ||
-          apply(o.getConcreteType())
+        generatesSafeObjects(o.getNode) || apply(o.getConcreteType())
       case _ => false
     }
 
   /**
    * is it thread-safe on closure
    */
-  def apply(caller: N, callee: M, params: Array[O]): Boolean =
-    apply(caller) ||
-      apply(callee) ||
-      // receiver is thread-safe
-      (params.headOption match {
-        case Some(o) => apply(o)
-        case None => false
-      })
+  def apply(callee: M, params: Array[O]): Boolean =
+    apply(callee) ||
+      (!callee.isStatic() && // receiver is thread-safe
+        (params.headOption match {
+          case Some(o) => apply(o)
+          case None => false
+        }))
 }

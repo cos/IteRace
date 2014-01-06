@@ -13,11 +13,15 @@ trait SelectorOfClassesAndMethods { // I should find a better name for this
   lazy val classesFullName = classes map { "L" + _.replace(".", "/") }
   lazy val classesPatterns = classPatterns map { "L" + _ }
 
-  def apply(c: C): Boolean = classesFullName.contains(c.getName.toString) || (classesPatterns exists { c.getName.toString matches _ })
+  def apply(c: C): Boolean =
+    classesFullName.contains(c.getName.toString) ||
+      (classesPatterns exists { c.getName.toString matches _ })
 
-  def apply(m: M): Boolean = apply(m.getDeclaringClass()) || methods.exists({
-    case (cPattern, mPattern) => m.getDeclaringClass.getName.toString.matches(cPattern) && m.getName.toString.matches(mPattern)
-  })
-      
+  def apply(m: M): Boolean =
+    apply(m.getDeclaringClass()) ||
+      methods.exists({
+        case (cPattern, mPattern) => m.getDeclaringClass.getName.toString.matches(cPattern) && m.getName.toString.matches(mPattern)
+      })
+
   def apply(n: N): Boolean = apply(n.m)
 }

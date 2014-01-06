@@ -117,9 +117,9 @@ class LoopContextSelector(options: Set[IteRaceOption], cha: IClassHierarchy, ins
         var newC: LoopContext = c
 
         if (options(IteRaceOption.Filtering)) {
-          newC = if (!c.is(ThreadSafeOnClosure) && threadSafeOnClosure(caller, callee, actualParameters))
+          newC = if (!c.is(ThreadSafeOnClosure) && threadSafeOnClosure(callee, actualParameters)) {
             newC.copy(threadSafeOnClosure = true)
-          else
+          } else
             newC
 
           // we are not adding additional context when we know no races can happen from here on
@@ -128,10 +128,10 @@ class LoopContextSelector(options: Set[IteRaceOption], cha: IClassHierarchy, ins
           // 								or just the ones instantiated in callee (i.e., is it on transitive closure)
           //    
 
-          newC = if (!newC.is(Interesting) && (generatesSafeObjects(callee) || movesObjectsAround(callee)))
-            newC.copy(interesting = true)
-          else
-            newC
+//          newC = if (!newC.is(Interesting) && (generatesSafeObjects(callee) || movesObjectsAround(callee)))
+//            newC.copy(interesting = true)
+//          else
+//            newC
         }
 
         newC = newC.copy(arguments = actualParameters map {
@@ -148,16 +148,16 @@ class LoopContextSelector(options: Set[IteRaceOption], cha: IClassHierarchy, ins
       case c: Context =>
         callee match {
           case M(C(_, "ParallelArray"), opsPattern()) => new LoopCallSiteContext(caller, site)
-          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext())
+          case M(_, parallelArrayPattern()) => new CallerSiteContextPair(caller, site, caller.getContext()) 
+          // fix this according to paper
           case _ => c
         }
     }
   }
 
-  override def getRelevantParameters(caller: CGNode, site: CallSiteReference): IntSet = EmptyIntSet.instance
-  
-  def isInterestingForUs(callee: M) =
-    ContainerUtil.isContainer(callee.getDeclaringClass()) || callee.toString().contains("DateFormat");
+  override def getRelevantParameters(caller: CGNode, site: CallSiteReference): IntSet = {
+    IntSetUtil.make(0.until(site.getDeclaredTarget().getNumberOfParameters()) toArray)
+  }
 }
 
 // completely uninteresting context

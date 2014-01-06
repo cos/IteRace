@@ -30,9 +30,9 @@ Loop: particles.ParticleWithLocks.oneSimpleLock(ParticleWithLocks.java:44)
 particles.ParticleWithLocks: particles.ParticleWithLocks.oneSimpleLock(ParticleWithLocks.java:42)
  .xyz
    (a)  particles.ParticleWithLocks$3.op(ParticleWithLocks.java:49)
-         L: java.lang.Object: particles.ParticleWithLocks$3.op(ParticleWithLocks.java:47)-alpha
+         L: alpha particles.ParticleWithLocks$3.op vv3(x)
    (b)  particles.ParticleWithLocks$3.op(ParticleWithLocks.java:49)
-         L: java.lang.Object: particles.ParticleWithLocks$3.op(ParticleWithLocks.java:47)-beta
+         L: beta particles.ParticleWithLocks$3.op vv3(x)
 """)
 
   @Test def oneSimpleSafeLock = expectNoRaces
@@ -43,8 +43,8 @@ Loop: particles.ParticleWithLocks.imbricatedLocks(ParticleWithLocks.java:97)
 particles.ParticleWithLocks: particles.ParticleWithLocks.imbricatedLocks(ParticleWithLocks.java:95)
  .xyz
    (a)  particles.ParticleWithLocks$6.op(ParticleWithLocks.java:105)
-         L: java.lang.Object: particles.ParticleWithLocks$6.op(ParticleWithLocks.java:100)-alpha
+         L: alpha particles.ParticleWithLocks$6.op vv3(x)
    (b)  particles.ParticleWithLocks$6.op(ParticleWithLocks.java:105)
-         L: java.lang.Object: particles.ParticleWithLocks$6.op(ParticleWithLocks.java:100)-beta
+         L: beta particles.ParticleWithLocks$6.op vv3(x)
 """)
 }

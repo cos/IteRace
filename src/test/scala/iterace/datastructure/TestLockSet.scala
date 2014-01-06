@@ -3,8 +3,13 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.junit.Test
 import org.junit.Ignore
+import com.ibm.wala.ipa.callgraph.propagation.PointerAnalysis
+import iterace.pointeranalysis.RacePointerAnalysis
 
 class TestLockSet extends LockSetAbstractTest("Lparticles/ParticleWithLocks") {
+  
+  def lockConstructor(pa: RacePointerAnalysis) = new MayAliasLockConstructor(pa)
+  
   @Test def noLocks = assertAllLocks("{  }")
   @Test def synchronizedMethod = assertAllLocks("{ L: particles.ParticleWithLocks$14: particles.ParticleWithLocks.synchronizedMethod(ParticleWithLocks.java:282)-outside }")
 

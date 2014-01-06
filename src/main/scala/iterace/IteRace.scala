@@ -34,6 +34,7 @@ import edu.illinois.wala.ipa.callgraph.AnalysisOptions
 import edu.illinois.wala.ipa.callgraph.propagation.StaticClassObject
 import edu.illinois.wala.S
 import edu.illinois.wala.ipa.callgraph.propagation.P
+import iterace.datastructure.BetterLockConstructor
 
 class IteRace private (
   options: AnalysisOptions,
@@ -59,14 +60,15 @@ class IteRace private (
 
   lazy val (lockSetMapping, filterByLockMayAlias) = {
     log.startTimer("locksets")
-    val lockSetMapping = new LockSets(pa, new MayAliasLockConstructor(pa))
+    val lockSetMapping = new LockSets(pa, new BetterLockConstructor(pa))
     log.endTimer
     (lockSetMapping, new FilterByLockMayAlias(pa, lockSetMapping))
   }
 
   if (iteRaceOptions(DeepSynchronized)) {
+    val x = filterByLockMayAlias
     log.startTimer("deep-synchronized")
-    currentRaces = filterByLockMayAlias(currentRaces)
+    currentRaces = x(currentRaces)
     log.endTimer
     log("deep-synchronized", currentRaces.size)
   }
@@ -79,8 +81,9 @@ class IteRace private (
   }
 
   if (iteRaceOptions(Synchronized)) {
+    val x = filterByLockMayAlias
     log.startTimer("app-level-synchronized")
-    currentRaces = filterByLockMayAlias(currentRaces)
+    currentRaces = x(currentRaces)
     log.endTimer
     log("app-level-synchronized", currentRaces.size)
   }
