@@ -19,7 +19,7 @@ IteRace is implemented in Scala, relies on [WALA](http://wala.sourceforge.net/wi
 
 2. Clone WALA and install it to your local Maven repo
     - `export JAVA_HOME="<java's home on your system>"` (on OS X: `/usr/libexec/java_home`) Also, you might want to add this line to your system loading profile
-    - `git clone https://github.com/wala/WALA.git` (or use my fork `https://github.com/cos/wala/tree/for-iterace` instead. It makes dispath more precise. See the discussion about cilib results in the ISSTA paper)
+    - `git clone https://github.com/wala/WALA.git` (or use my fork `https://github.com/cos/wala/tree/for-iterace` instead. It makes dispatch more precise. See the discussion about cilib results in the ISSTA paper)
     - `cd WALA`
     - `mvn clean install -DskipTests=true` 
     
