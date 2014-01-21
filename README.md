@@ -17,21 +17,13 @@ IteRace is implemented in Scala, relies on [WALA](http://wala.sourceforge.net/wi
 
 1. Make sure you have [Scala 2.10](http://www.scala-lang.org/download/), [Maven](http://maven.apache.org/download.cgi), [Apache Ivy](http://ant.apache.org/ivy/download.cgi), and [SBT 0.13](http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html) 
 
-2. Clone WALA and install it to your local Maven repo
-    - `export JAVA_HOME="<java's home on your system>"` (on OS X: `/usr/libexec/java_home`) Also, you might want to add this line to your system loading profile
-    - `git clone https://github.com/wala/WALA.git` (or use my fork `https://github.com/cos/wala/tree/for-iterace` instead. It makes dispatch more precise. See the discussion about cilib results in the ISSTA paper)
-    - `cd WALA`
-    - `mvn clean install -DskipTests=true` 
-    
-3. Clone WALAFacade and cos/Util and install them to your local Ivy repo
-    - `git clone https://github.com/cos/WALAFacade.git`
-    - `cd WALAFacade`
-    - `sbt publishLocal`
-    - `cd ..`
+2. [Clone WALA and WALAFacade](https://github.com/cos/WALAFacade/blob/master/README.md#getting-started)
+
+3.  Clone cos/Util
     - `git clone https://github.com/cos/Util.git`
     - `cd Util`
-    - `sbt publishLocal`
-    
+    - `sbt publishLocal`    
+
 4. Clone IteRace and compile
     - `git clone https://github.com/cos/IteRace.git`
     - `cd IteRace`
