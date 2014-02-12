@@ -69,8 +69,8 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
     val aObjectMap = toObjectMap(alphaWrites) filter { case (o, _) => isRelevant(o) }
     val bObjectMap = toObjectMap(betaAccesses) filter { case (o, _) => isRelevant(o) }
 
-    val aMap = aObjectMap mapValues { _ groupBy { _.i.f.get } }
-    val bMap = bObjectMap mapValues { _ groupBy { _.i.f.get } }
+    val aMap = aObjectMap mapValues { _ groupBy { _.i.f.getOrElse(null) } }
+    val bMap = bObjectMap mapValues { _ groupBy { _.i.f.getOrElse(null) } }
 
     val pairsByObjects = aMap collect { case (o, aSet) if bMap.contains(o) => (o, (aSet, bMap(o))) }
 
@@ -104,7 +104,7 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
 
   private val instructionsOutsideAsyncs =
     DFS.getReachableNodes(callGraph, callGraph.getEntrypointNodes(), { n: N =>
-      Seq("doInBackground", "onPostExecute")
+      !Seq("doInBackground", "onPostExecute")
         .exists(n.toString contains)
     }) flatMap { n => n.instructions map (S(n, _)) }
 
@@ -118,14 +118,14 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
       case _ => false
     } map { S(t, _) } toList
 
-    println("!!! " + writeOnArgumentOfDoInBackground)
-    println(t.instructions.toList mkString "\n")
+//    println("!!! " + writeOnArgumentOfDoInBackground)
+//    println(t.instructions.toList mkString "\n")
 
     val inTask = statementsReachableFrom(t) filterNot (writeOnArgumentOfDoInBackground contains _)
 
-    println(instructionsOutsideAsyncs mkString "\n")
-    println("---" * 10)
-    println(inTask mkString "\n")
+//    println(instructionsOutsideAsyncs mkString "\n")
+//    println("---" * 10)
+//    println(inTask mkString "\n")
 
     makeRegionRaceSet(AsyncTask(t), instructionsOutsideAsyncs, inTask) ++
       makeRegionRaceSet(AsyncTask(t), inTask, instructionsOutsideAsyncs filterNot isWriteLike)

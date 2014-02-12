@@ -1,12 +1,20 @@
 package iterace.datastructure
 
 import scala.collection.Set
-import scala.collection.immutable
+
 import com.ibm.wala.analysis.reflection.InstanceKeyWithNode
 import com.ibm.wala.ipa.callgraph.propagation.cfa.ZeroXInstanceKeys
-import iterace.pointeranalysis.ThreadSafeOnClosure
-import edu.illinois.wala.Facade._
+
+import edu.illinois.wala.Facade.ArrayStoreI
+import edu.illinois.wala.Facade.C
+import edu.illinois.wala.Facade.I
+import edu.illinois.wala.Facade.M
+import edu.illinois.wala.Facade.N
+import edu.illinois.wala.Facade.O
+import edu.illinois.wala.Facade.PutI
+import edu.illinois.wala.Facade.wrapN
 import edu.illinois.wala.S
+import iterace.pointeranalysis.ThreadSafeOnClosure
 
 object threadSafe extends SelectorOfClassesAndMethods {
   val classes = Set(
@@ -26,7 +34,8 @@ object threadSafe extends SelectorOfClassesAndMethods {
     "java.util.Collections.SynchronizedRandomAccessList.*",
     "java.util.Collections.UnmodifiableList.*",
     "java.util.Collections.UnmodifiableRandomAccessList.*",
-    "net.sourceforge.cilib.type.types.container.Vector.*")
+    "net.sourceforge.cilib.type.types.container.Vector.*"
+    )
 
   val methods = List()
   /**
@@ -155,10 +164,15 @@ object threadSafeOnClosure extends SelectorOfClassesAndMethods {
 
     // for lucene4
     "org.apache.lucene.index.CompositeReader",
-
+    
+    // for android system lib
     "the end of the list")
 
-  val classPatterns = List()
+  val classPatterns = List("(android.*|com.android.*)",
+      "com.trilead.ssh2.*",
+      "org.apache.*",
+      "oauth.signpost.*",
+      "com.google.*")
 
   val methods = List(
 
