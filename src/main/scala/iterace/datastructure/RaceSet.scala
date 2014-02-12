@@ -100,7 +100,11 @@ final class FieldRaceSet(l: MayRunInParallel, o: O, val f: F, alphaAccesses: Set
     case _ => false
   }
 
-  override def hashCode = l.hashCode() * 71 + o.hashCode() * 31 + f.hashCode()
+  override def hashCode = {
+    if (f != null)
+      l.hashCode() * 71 + o.hashCode() * 31 + f.hashCode()
+    else l.hashCode() * 71 + o.hashCode() * 31
+  }
 }
 
 final class ShallowRaceSet(l: MayRunInParallel, o: O, alphaAccesses: Set[S[I]], betaAccesses: Set[S[I]])

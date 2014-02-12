@@ -32,7 +32,9 @@ abstract sealed class Race(val l: MayRunInParallel, val o: O, val a: S[I], val b
 }
 
 class RaceOnField(l: MayRunInParallel, o: O, val f: F, a: S[I], b: S[I]) extends Race(l, o, a, b) with PrettyPrintable {
-  override def hashCode = super.hashCode * 71 + f.hashCode
+  var fCode = 0
+  if(f != null) fCode = f.hashCode
+  override def hashCode = super.hashCode * 71 + fCode
   override def equals(other: Any) = other match {
     case that: RaceOnField =>
       (that isComparable this) &&

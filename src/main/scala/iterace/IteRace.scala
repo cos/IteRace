@@ -34,6 +34,11 @@ import edu.illinois.wala.ipa.callgraph.AnalysisOptions
 import edu.illinois.wala.ipa.callgraph.propagation.StaticClassObject
 import edu.illinois.wala.S
 import edu.illinois.wala.ipa.callgraph.propagation.P
+import com.ibm.wala.ipa.callgraph.MethodTargetSelector
+import com.ibm.wala.classLoader.CallSiteReference
+import com.ibm.wala.classLoader.IClass
+import com.ibm.wala.classLoader.IMethod
+import com.ibm.wala.ipa.summaries.BypassMethodTargetSelector
 
 class IteRace private (
   options: AnalysisOptions,
