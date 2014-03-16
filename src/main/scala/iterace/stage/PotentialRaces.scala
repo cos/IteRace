@@ -27,6 +27,14 @@ import iterace.pointeranalysis.MayRunInParallel
 import iterace.pointeranalysis.MayRunInParallel
 import com.ibm.wala.classLoader.IClassLoader
 import com.ibm.wala.util.graph.GraphUtil
+import com.ibm.wala.ipa.cfg.ExplodedInterproceduralCFG
+import com.ibm.wala.util.graph.dominators.Dominators
+import com.ibm.wala.dataflow.IFDS.ICFGSupergraph
+import com.ibm.wala.util.graph.impl.DelegatingNumberedGraph
+import com.ibm.wala.util.graph.NodeManager
+import com.ibm.wala.ipa.cfg.BasicBlockInContext
+import com.ibm.wala.ssa.analysis.IExplodedBasicBlock
+import com.ibm.wala.util.graph.impl.DelegatingGraph
 
 class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] {
 
@@ -102,11 +110,65 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
       })
   }
 
+  private val supergraph = ICFGSupergraph.make(callGraph, pa.cache)
+
+  private val executeInvoke = supergraph find {
+    _.getLastInstruction() match {
+      case i: InvokeI => {
+        val m = i.getDeclaredTarget()
+        m.getName().toString().contains("execute")
+      }
+      case _ => false
+    }
+  } get
+
+  println("execute node: " + (executeInvoke: S[I]))
+
+  private val dominators = Dominators.make(supergraph, supergraph.getICFG().getEntry(callGraph.getEntrypointNodes().head))
+
+  //  val testtest = supergraph.find(s => s.toString == "ExplodedBlock[20](original:BB[SSA:19..22]10 - asyncsubjects.AndroidTest.onCreate(Landroid/os/Bundle;)V)")
+  //  println(testtest.get)
+  //  println("IDOM: " + dominators.getIdom(testtest.get))
+  //  val testtest1 = supergraph.find(s => s.toString.contains("original:BB[SSA:16..18]9 - asyncsubjects.AndroidTest.onCreate(Landroid/os/Bundle;)V)"))
+  //  println("IDOM: " + dominators.getIdom(testtest1.get))
+
+  val dominatingExecute = dominators.dominators(executeInvoke).toList
+
+  println(executeInvoke.getNode().getIR())
+
+  println(dominatingExecute mkString "\n")
+
+  val statementsDominatingExecute = (dominatingExecute collect {
+    case b if b != null && b.getNode() != null && b.getLastInstruction() != null => b: S[I]
+  }).toSet
+
+  val methodContainingExecuteCFG = executeInvoke.getNode().getIR().getControlFlowGraph()
+  val instructionDominators = Dominators.make(methodContainingExecuteCFG, methodContainingExecuteCFG.entry())
+  val executeInvokeInstruction = methodContainingExecuteCFG.find(bb =>
+    bb.size > 0 && (bb.getLastInstruction() match {
+      case i: InvokeI =>
+        {
+          val m = i.getDeclaredTarget()
+          m.getName().toString().contains("execute")
+        }
+      case _ => false
+    }))
+  val instructionDominatingExecute = instructionDominators.dominators(executeInvokeInstruction.get) flatMap { _.iterator() } toList
+
+  println(instructionDominatingExecute.size)
+  val dominatorsFromMethodContainingExecute = instructionDominatingExecute map { i => S(executeInvoke.getNode(), i) }
+  //  val instructionsDominatingExecute = Do
+
+  println("statements:\n" + statementsDominatingExecute.mkString("\n"))
+
   private val instructionsOutsideAsyncs =
     DFS.getReachableNodes(callGraph, callGraph.getEntrypointNodes(), { n: N =>
       !Seq("doInBackground", "onPostExecute")
         .exists(n.toString contains)
     }) flatMap { n => n.instructions map (S(n, _)) }
+
+  private val mayHappenInParallelWithAsyncTask =
+    instructionsOutsideAsyncs.toSet &~ statementsDominatingExecute // &~ dominatorsFromMethodContainingExecute.toSet
 
   case class AsyncTask(n: N) extends MayRunInParallel {
     def prettyPrintDetail = "async task: " + n
@@ -118,17 +180,17 @@ class PotentialRaces(pa: RacePointerAnalysis) extends Function0[ProgramRaceSet] 
       case _ => false
     } map { S(t, _) } toList
 
-//    println("!!! " + writeOnArgumentOfDoInBackground)
-//    println(t.instructions.toList mkString "\n")
+    //    println("!!! " + writeOnArgumentOfDoInBackground)
+    //    println(t.instructions.toList mkString "\n")
 
     val inTask = statementsReachableFrom(t) filterNot (writeOnArgumentOfDoInBackground contains _)
 
-//    println(instructionsOutsideAsyncs mkString "\n")
-//    println("---" * 10)
-//    println(inTask mkString "\n")
+    //    println(instructionsOutsideAsyncs mkString "\n")
+    //    println("---" * 10)
+    //    println(inTask mkString "\n")
 
-    makeRegionRaceSet(AsyncTask(t), instructionsOutsideAsyncs, inTask) ++
-      makeRegionRaceSet(AsyncTask(t), inTask, instructionsOutsideAsyncs filterNot isWriteLike)
+    makeRegionRaceSet(AsyncTask(t), mayHappenInParallelWithAsyncTask, inTask) ++
+      makeRegionRaceSet(AsyncTask(t), inTask, mayHappenInParallelWithAsyncTask filterNot isWriteLike)
   } toSet
 
   private val races = new ProgramRaceSet(racesInLoops ++ racesInAsyncs)
